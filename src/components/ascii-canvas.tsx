@@ -108,8 +108,8 @@ export function AsciiCanvas({ ref, className }: AsciiCanvasProps) {
         canvas.width = Math.round(cssWidth * dpr);
         canvas.height = Math.round(cssHeight * dpr);
       }
-      canvas.style.width = `${cssWidth}px`;
-      canvas.style.height = `${cssHeight}px`;
+      // CSS owns display sizing now (object-fit: contain against the parent).
+      // The buffer above gives the canvas its intrinsic aspect for scaling.
       setSize({ width: cssWidth, height: cssHeight });
 
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -337,10 +337,11 @@ export function AsciiCanvas({ ref, className }: AsciiCanvasProps) {
     >
       <canvas
         ref={canvasRef}
-        className="block max-w-full max-h-full"
+        className="block h-full w-full"
         style={{
           background: appearance.backgroundColor,
           borderRadius: appearance.borderRadius,
+          objectFit: "contain",
         }}
       />
     </div>

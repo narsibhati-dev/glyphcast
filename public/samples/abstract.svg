@@ -1,0 +1,39 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 400" width="600" height="400">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0f172a"/>
+      <stop offset="100%" stop-color="#020617"/>
+    </linearGradient>
+    <radialGradient id="orb1" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fef9c3"/>
+      <stop offset="60%" stop-color="#f97316"/>
+      <stop offset="100%" stop-color="#7c2d12" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="orb2" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#dbeafe"/>
+      <stop offset="60%" stop-color="#3b82f6"/>
+      <stop offset="100%" stop-color="#1e3a8a" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="orb3" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fbcfe8"/>
+      <stop offset="60%" stop-color="#ec4899"/>
+      <stop offset="100%" stop-color="#831843" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="600" height="400" fill="url(#bg)"/>
+  <circle cx="180" cy="160" r="160" fill="url(#orb1)"/>
+  <circle cx="430" cy="240" r="170" fill="url(#orb2)"/>
+  <circle cx="320" cy="120" r="120" fill="url(#orb3)" opacity="0.85"/>
+  <g stroke="#f8fafc" stroke-opacity="0.18" stroke-width="1" fill="none">
+    <path d="M0 320 Q150 260 300 300 T600 280"/>
+    <path d="M0 340 Q150 290 300 320 T600 310"/>
+    <path d="M0 360 Q150 320 300 340 T600 340"/>
+  </g>
+  <g fill="#f8fafc" opacity="0.9">
+    <circle cx="80" cy="60" r="2"/>
+    <circle cx="540" cy="80" r="1.5"/>
+    <circle cx="490" cy="40" r="1"/>
+    <circle cx="120" cy="30" r="1.5"/>
+    <circle cx="220" cy="70" r="1"/>
+  </g>
+</svg>

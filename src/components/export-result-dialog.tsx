@@ -22,6 +22,18 @@ interface Props {
   onClose: () => void;
 }
 
+const TITLES: Record<string, string> = {
+  png: "Image exported",
+  zip: "Frames exported",
+  component: "React component",
+};
+
+const KICKERS: Record<string, string> = {
+  png: "01 / Plate",
+  zip: "02 / Sequence",
+  component: "03 / Module",
+};
+
 export function ExportResultDialog({ result, onClose }: Props) {
   const [copied, setCopied] = useState(false);
 
@@ -55,35 +67,31 @@ export function ExportResultDialog({ result, onClose }: Props) {
     a.remove();
   };
 
-  const titles: Record<string, string> = {
-    png: "Image exported",
-    zip: "Frames exported",
-    component: "React component",
-  };
-
   return (
     <Dialog open={result !== null} onOpenChange={(open) => !open && onClose()}>
       <DialogContent
         className={
           result?.kind === "component"
-            ? "sm:max-w-2xl"
-            : "sm:max-w-md"
+            ? "max-w-[calc(100vw-2rem)] md:max-w-3xl"
+            : "max-w-[calc(100vw-2rem)] md:max-w-md"
         }
       >
         <DialogHeader>
-          <DialogTitle>{result ? titles[result.kind] : ""}</DialogTitle>
+          <p className="font-mono text-[10px] font-medium uppercase tracking-[0.22em] text-muted-foreground">
+            {result ? KICKERS[result.kind] : ""}
+          </p>
+          <DialogTitle>{result ? TITLES[result.kind] : ""}</DialogTitle>
         </DialogHeader>
 
         {/* ── PNG ── */}
         {result?.kind === "png" && (
-          <div className="space-y-3">
-            <div className="overflow-hidden rounded-lg border border-border bg-muted/30">
-              {/* checkerboard for transparency */}
+          <div className="space-y-2">
+            <div className="border border-border">
               <div
                 className="relative"
                 style={{
                   backgroundImage:
-                    "repeating-conic-gradient(#80808020 0% 25%, transparent 0% 50%)",
+                    "repeating-conic-gradient(var(--muted) 0% 25%, transparent 0% 50%)",
                   backgroundSize: "16px 16px",
                 }}
               >
@@ -94,7 +102,7 @@ export function ExportResultDialog({ result, onClose }: Props) {
                 />
               </div>
             </div>
-            <p className="font-mono text-xs text-muted-foreground text-center">
+            <p className="text-center font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/70">
               {result.filename}
             </p>
           </div>
@@ -102,16 +110,16 @@ export function ExportResultDialog({ result, onClose }: Props) {
 
         {/* ── ZIP ── */}
         {result?.kind === "zip" && (
-          <div className="space-y-3">
-            <div className="rounded-lg border border-border bg-muted/20 py-8 text-center">
-              <p className="font-mono text-5xl font-bold text-primary">
+          <div className="space-y-2">
+            <div className="border border-border bg-secondary/30 py-10 text-center">
+              <p className="font-heading text-6xl font-black tabular-nums leading-none text-foreground">
                 {result.frameCount}
               </p>
-              <p className="mt-1.5 text-sm text-muted-foreground">
-                frames exported as text files
+              <p className="mt-3 font-mono text-[10px] font-medium uppercase tracking-[0.22em] text-muted-foreground">
+                Frames · Text Files
               </p>
             </div>
-            <p className="font-mono text-xs text-muted-foreground text-center">
+            <p className="text-center font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/70">
               {result.filename}
             </p>
           </div>
@@ -119,38 +127,38 @@ export function ExportResultDialog({ result, onClose }: Props) {
 
         {/* ── Component ── */}
         {result?.kind === "component" && (
-          <div className="space-y-3">
-            <div className="overflow-hidden rounded-lg border border-border">
-              <div className="flex items-center justify-between border-b border-border bg-muted/40 px-3 py-2">
-                <span className="text-[11px] font-medium text-muted-foreground">
+          <div className="min-w-0 space-y-2 overflow-hidden">
+            <div className="min-w-0 overflow-hidden border border-border">
+              <div className="flex items-center justify-between gap-2 border-b border-border bg-secondary/40 px-3 py-1.5">
+                <span className="truncate font-mono text-[10px] font-medium uppercase tracking-[0.18em] text-muted-foreground">
                   {result.filename}
                 </span>
-                <div className="flex items-center gap-1.5">
+                <div className="flex shrink-0 items-center gap-1">
                   <Button
                     variant="ghost"
-                    size="sm"
-                    className="h-6 gap-1.5 px-2 text-xs"
+                    size="xs"
                     onClick={handleCopyCode}
+                    className="font-mono text-[10px] uppercase tracking-[0.14em]"
                   >
                     {copied ? (
-                      <Check className="size-3 text-green-500" />
+                      <Check className="size-3" />
                     ) : (
                       <Copy className="size-3" />
                     )}
-                    {copied ? "Copied!" : "Copy"}
+                    {copied ? "Copied" : "Copy"}
                   </Button>
                   <Button
                     variant="ghost"
-                    size="sm"
-                    className="h-6 gap-1.5 px-2 text-xs"
+                    size="xs"
                     onClick={handleDownloadComponent}
+                    className="font-mono text-[10px] uppercase tracking-[0.14em]"
                   >
                     <Download className="size-3" />
                     Download
                   </Button>
                 </div>
               </div>
-              <pre className="max-h-96 overflow-auto bg-muted/10 p-4 text-[11px] font-mono leading-relaxed text-foreground/85">
+              <pre className="max-h-96 max-w-full overflow-auto whitespace-pre bg-muted/40 p-4 font-mono text-[11px] leading-relaxed text-foreground">
                 <code>{result.code}</code>
               </pre>
             </div>
