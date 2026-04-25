@@ -30,6 +30,7 @@ export interface StudioState {
   charset: string;
   charsetPresetId: string | null;
   invert: boolean;
+  responsiveFit: boolean;
 
   currentFrame: number;
   totalFrames: number;
@@ -45,6 +46,7 @@ export interface StudioState {
   setCharset: (chars: string) => void;
   setCharsetPreset: (id: string) => void;
   setInvert: (v: boolean) => void;
+  setResponsiveFit: (v: boolean) => void;
   setMode: (mode: StudioMode) => void;
   setPlaying: (playing: boolean) => void;
   togglePlaying: () => void;
@@ -64,6 +66,7 @@ export const useAsciiStore = create<StudioState>((set) => ({
   charset: DEFAULT_PRESET.chars,
   charsetPresetId: DEFAULT_PRESET.id,
   invert: false,
+  responsiveFit: true,
 
   currentFrame: 0,
   totalFrames: 0,
@@ -112,6 +115,7 @@ export const useAsciiStore = create<StudioState>((set) => ({
     }),
 
   setInvert: (v) => set(() => ({ invert: v })),
+  setResponsiveFit: (v) => set(() => ({ responsiveFit: v })),
   setMode: (mode) => set(() => ({ mode })),
   setPlaying: (playing) => set(() => ({ isPlaying: playing })),
   togglePlaying: () => set((s) => ({ isPlaying: !s.isPlaying })),

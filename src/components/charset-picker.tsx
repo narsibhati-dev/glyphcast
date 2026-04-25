@@ -9,26 +9,39 @@ export function CharsetPicker() {
   const setCharsetPreset = useAsciiStore((s) => s.setCharsetPreset);
 
   return (
-    <div className="grid grid-cols-2 gap-1.5">
-      {ASCII_CHAR_PRESETS.map((preset) => {
+    <div className="grid grid-cols-2 bg-background">
+      {ASCII_CHAR_PRESETS.map((preset, i) => {
         const selected = preset.id === charsetPresetId;
-        // Show first ~12 non-space chars so the preview is never blank
-        const preview = preset.chars.replace(/^\s+/, "").slice(0, 12) || preset.chars.slice(0, 12);
+        const preview =
+          preset.chars.replace(/^\s+/, "").slice(0, 14) ||
+          preset.chars.slice(0, 14);
+        const isLastRow =
+          i >= ASCII_CHAR_PRESETS.length - (ASCII_CHAR_PRESETS.length % 2 || 2);
         return (
           <button
             key={preset.id}
             type="button"
             onClick={() => setCharsetPreset(preset.id)}
             className={cn(
-              "rounded-md border border-border bg-card/60 p-2 text-left transition-colors",
-              "hover:border-foreground/30 hover:bg-card",
-              selected && "border-primary/60 ring-2 ring-primary/40 bg-card",
+              "border-b border-r border-border p-2 text-left transition-colors",
+              "hover:bg-muted/50",
+              /* Remove double borders on right column */
+              i % 2 === 1 && "border-r-0",
+              /* Remove bottom border on last row */
+              isLastRow && "border-b-0",
+              selected &&
+                "bg-primary/8 border-primary/30 ring-inset ring-1 ring-primary/25",
             )}
           >
-            <div className="truncate text-[10px] font-medium uppercase tracking-wider text-muted-foreground">
+            <div className="truncate font-mono text-[9px] uppercase tracking-[0.15em] text-muted-foreground/70">
               {preset.label}
             </div>
-            <div className="mt-1 truncate font-mono text-[11px] text-foreground/80 leading-none">
+            <div
+              className={cn(
+                "mt-0.5 truncate font-mono text-[10px] leading-none",
+                selected ? "text-primary/80" : "text-foreground/60",
+              )}
+            >
               {preview}
             </div>
           </button>

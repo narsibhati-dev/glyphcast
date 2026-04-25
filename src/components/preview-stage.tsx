@@ -3,7 +3,6 @@
 import { Pause, Play } from "lucide-react";
 
 import { AsciiCanvas } from "@/components/ascii-canvas";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { useAsciiStore } from "@/lib/store";
@@ -19,51 +18,54 @@ export function PreviewStage() {
   const setPlaying = useAsciiStore((s) => s.setPlaying);
   const setFrame = useAsciiStore((s) => s.setFrame);
   const columns = useAsciiStore((s) => s.columns);
-  const showFrameCounter = useAsciiStore((s) => s.appearance.showFrameCounter);
+  const mode = useAsciiStore((s) => s.mode);
+  const appearance = useAsciiStore((s) => s.appearance);
 
   const isVideo = source?.kind === "video";
 
+  const cellWidth = appearance.fontSize * 0.6 + appearance.letterSpacing;
+  const cellHeight = appearance.fontSize * appearance.lineHeight;
+  const cellAspect = cellHeight > 0 ? cellWidth / cellHeight : 0.5;
+  const approxRows = source
+    ? Math.max(1, Math.round((columns * source.height * cellAspect) / source.width))
+    : 0;
+
   return (
-    <div className="flex h-full flex-col gap-3">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <Badge variant="outline" className="font-mono text-[11px]">
-            {source ? `${source.width}x${source.height}` : "no source"}
-          </Badge>
-          <Badge variant="outline" className="font-mono text-[11px]">
-            cols {columns}
-          </Badge>
-          {isVideo && showFrameCounter && (
-            <Badge variant="outline" className="font-mono text-[11px]">
-              frame {currentFrame + 1}/{totalFrames || 1}
-            </Badge>
+    <div className="flex h-full flex-col overflow-hidden bg-background">
+      {/* ── Canvas area ─────────────────────────────────────────────────── */}
+      {/*
+        Key: overflow-auto on outer + min-h-full on inner wrapper.
+        When canvas < container → inner is at least container height, canvas centers.
+        When canvas > container → inner grows, outer shows scrollbars. No cropping.
+      */}
+      <div
+        className="flex-1 min-h-0 overflow-auto"
+        style={{
+          backgroundImage:
+            "radial-gradient(circle, var(--border) 1px, transparent 1px)",
+          backgroundSize: "28px 28px",
+        }}
+      >
+        <div className="min-h-full flex items-center justify-center p-6">
+          {source ? (
+            <AsciiCanvas ref={canvasRef} className="inline-block" />
+          ) : (
+            <EmptyState />
           )}
         </div>
       </div>
 
-      <div className="flex-1 min-h-0 overflow-auto rounded-lg border border-border bg-background grid place-items-center p-3">
-        {source ? (
-          <AsciiCanvas ref={canvasRef} className="inline-block" />
-        ) : (
-          <div className="text-sm text-muted-foreground">
-            Drop an image or video to begin.
-          </div>
-        )}
-      </div>
-
+      {/* ── Video scrubber ────────────────────────────────────────────────── */}
       {isVideo && (
-        <div className="flex items-center gap-3 rounded-lg border border-border bg-card/40 px-3 py-2">
+        <div className="flex shrink-0 items-center gap-3 border-t border-border bg-card px-4 py-2.5">
           <Button
             variant="ghost"
-            size="icon-sm"
+            size="icon"
+            className="h-7 w-7 shrink-0"
             onClick={() => setPlaying(!isPlaying)}
             aria-label={isPlaying ? "Pause" : "Play"}
           >
-            {isPlaying ? (
-              <Pause className="size-3.5" />
-            ) : (
-              <Play className="size-3.5" />
-            )}
+            {isPlaying ? <Pause className="size-3.5" /> : <Play className="size-3.5" />}
           </Button>
           <Slider
             value={[currentFrame]}
@@ -73,11 +75,46 @@ export function PreviewStage() {
             onValueChange={([v]) => v !== undefined && setFrame(v)}
             className="flex-1"
           />
-          <span className="font-mono text-[11px] tabular-nums text-muted-foreground w-16 text-right">
-            {currentFrame + 1}/{totalFrames || 1}
+          <span className="w-16 shrink-0 text-right font-mono text-xs tabular-nums text-muted-foreground">
+            {currentFrame + 1} / {totalFrames || 1}
           </span>
         </div>
       )}
+
+      {/* ── Stats bar — always present, no layout shift ───────────────────── */}
+      <div className="flex shrink-0 divide-x divide-border border-t border-border bg-card">
+        <StatCell label="Mode" value={mode.charAt(0).toUpperCase() + mode.slice(1)} />
+        <StatCell label="Source" value={source ? `${source.width}×${source.height}` : "—"} />
+        <StatCell label="Grid" value={source ? `${columns}×${approxRows}` : "—"} />
+        <StatCell label="Frames" value={isVideo ? String(totalFrames) : "—"} />
+      </div>
+    </div>
+  );
+}
+
+function StatCell({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="flex flex-1 flex-col items-center justify-center py-1.5 px-2 min-w-0">
+      <span className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground/60">
+        {label}
+      </span>
+      <span className="font-mono text-xs tabular-nums mt-0.5">{value}</span>
+    </div>
+  );
+}
+
+function EmptyState() {
+  return (
+    <div className="flex select-none flex-col items-center gap-4 text-center">
+      <div className="flex h-16 w-16 items-center justify-center rounded-xl border-2 border-dashed border-border">
+        <span className="text-2xl font-mono text-muted-foreground/30">A</span>
+      </div>
+      <div>
+        <p className="text-sm font-medium text-muted-foreground">No source loaded</p>
+        <p className="mt-1 text-xs text-muted-foreground/60">
+          Drop an image or video in the sidebar to begin
+        </p>
+      </div>
     </div>
   );
 }
