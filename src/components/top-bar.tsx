@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 interface TopBarProps {
   sidebarOpen: boolean;
@@ -10,7 +11,10 @@ interface TopBarProps {
 
 export function TopBar({ sidebarOpen, onToggleSidebar }: TopBarProps) {
   return (
-    <header className="flex h-14 shrink-0 items-center justify-between bg-zinc-950 px-6">
+    <header
+      suppressHydrationWarning
+      className="flex h-14 shrink-0 items-center justify-between bg-zinc-950 px-6"
+    >
       <div className="flex items-center gap-4">
         <button
           type="button"
@@ -18,7 +22,9 @@ export function TopBar({ sidebarOpen, onToggleSidebar }: TopBarProps) {
           className="flex size-9 items-center justify-center rounded-full bg-zinc-900 text-zinc-400 transition-colors hover:bg-zinc-800 hover:text-white md:hidden"
           aria-label={sidebarOpen ? "Close sidebar" : "Open sidebar"}
         >
-          {sidebarOpen ? <X className="size-4" /> : <Menu className="size-4" />}
+          {/* Both icons always in DOM — avoids server/client hydration mismatch */}
+          <Menu className={cn("size-4", sidebarOpen && "hidden")} />
+          <X className={cn("size-4", !sidebarOpen && "hidden")} />
         </button>
 
         <Link

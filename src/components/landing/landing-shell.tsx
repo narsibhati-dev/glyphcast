@@ -14,6 +14,7 @@ import { Examples } from "./examples";
 import { Features } from "./features";
 import { Footer } from "./footer";
 import { Hero } from "./hero";
+import { ASCIIAnimation } from "./ascii-animation";
 import { SiteNav } from "./site-nav";
 import {
   DEFAULT_LANDING_SAMPLE_ID,
@@ -113,6 +114,15 @@ export function LandingShell() {
           onCharsetChange={setCharsetId}
           onInvertChange={setInvert}
         />
+        {/* <section className="py-24 lg:py-32 bg-zinc-950 overflow-hidden flex flex-col items-center border-y border-zinc-900/50">
+          <div className="mb-12 text-center">
+            <h2 className="font-sans text-3xl font-bold tracking-tight text-white md:text-4xl">
+              Studio outputs, <span className="text-zinc-500">ready to ship.</span>
+            </h2>
+            <p className="mt-4 text-zinc-400">React components generated instantly.</p>
+          </div>
+          <ASCIIAnimation className="w-full max-w-5xl" />
+        </section> */}
         <Features />
         <Examples
           activeSampleId={sampleId}

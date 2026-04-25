@@ -110,7 +110,7 @@ export function Examples({ onPick, activeSampleId }: ExamplesProps) {
                       invert={sample.defaults.invert}
                       appearance={{
                         backgroundColor: "#000000",
-                        textColor: "#ffffff",
+                        textColor: "#38bdf8", // Primary sky blue color
                         fontSize: 8,
                         lineHeight: 0.95,
                         letterSpacing: 0,

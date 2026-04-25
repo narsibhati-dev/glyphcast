@@ -23,7 +23,6 @@ import {
   Wand2,
   ChevronDown,
 } from "lucide-react";
-import JSZip from "jszip";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
@@ -58,9 +57,13 @@ import {
   DEFAULT_ASCII_APPEARANCE,
   type ASCIITextEffect,
 } from "@/lib/ascii-config";
+import {
+  buildASCIIAnimationReactComponentSource,
+  exportASCIIAnimationAsVideo,
+  exportASCIIAsImage,
+} from "@/lib/ascii-export";
 import { loadGoogleFont } from "@/lib/font-loader";
 import { useStudio } from "@/lib/studio-context";
-import { buildAnimationComponentSource } from "@/lib/component-export";
 import { cn } from "@/lib/utils";
 
 /* ─────────────────────────────────────────────────────────────────────────── */
@@ -247,6 +250,7 @@ function SourceSection() {
   return (
     <AccordionSection title="Source Media" defaultOpen={true}>
       <div
+        suppressHydrationWarning
         {...getRootProps()}
         className={cn(
           "flex cursor-pointer flex-col items-center justify-center gap-3 rounded-lg border border-dashed border-zinc-700 bg-zinc-900/40 py-6 text-center transition-colors",
@@ -714,6 +718,7 @@ function ExportSection() {
     useStudio();
   const source = useAsciiStore((s) => s.source);
   const appearance = useAsciiStore((s) => s.appearance);
+  const charset = useAsciiStore((s) => s.charset);
   const mode = useAsciiStore((s) => s.mode);
 
   const [filename, setFilename] = useState("");
@@ -730,13 +735,28 @@ function ExportSection() {
   );
 
   const downloadPNG = useCallback(async () => {
-    const dataUrl = canvasRef.current?.exportPNG();
-    if (!dataUrl) {
+    const frame = canvasRef.current?.getFrameText() ?? "";
+    if (!frame) {
       toast.error("Nothing to export yet");
       return;
     }
-    setExportResult({ kind: "png", dataUrl, filename: `${stem()}.png` });
-  }, [canvasRef, stem]);
+    if (isExporting) return;
+    setIsExporting(true);
+    try {
+      await exportASCIIAsImage({
+        appearance,
+        fileName: stem(),
+        frame,
+        chars: charset,
+        quality: 2,
+      });
+      setExportResult({ kind: "image", filename: `${stem()}.png` });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed");
+    } finally {
+      setIsExporting(false);
+    }
+  }, [appearance, canvasRef, charset, isExporting, setIsExporting, stem]);
 
   const copyText = useCallback(async () => {
     const text = canvasRef.current?.getFrameText() ?? "";
@@ -752,7 +772,7 @@ function ExportSection() {
     }
   }, [canvasRef]);
 
-  const exportZip = useCallback(async () => {
+  const exportVideo = useCallback(async () => {
     if (!source || source.kind !== "video") {
       toast.error("Load a video first");
       return;
@@ -772,19 +792,18 @@ function ExportSection() {
         toast.error("No frames captured");
         return;
       }
-      const zip = new JSZip();
-      const pad = String(frames.length).length;
-      frames.forEach((f, i) =>
-        zip.file(`frame-${String(i).padStart(pad, "0")}.txt`, f),
-      );
-      const blob = await zip.generateAsync({ type: "blob" });
-      const url = URL.createObjectURL(blob);
-      triggerDownload(url, `${stem()}.zip`);
-      URL.revokeObjectURL(url);
+      await exportASCIIAnimationAsVideo({
+        appearance,
+        fileName: stem(),
+        fps: 24,
+        frames,
+        chars: charset,
+      });
       setExportResult({
-        kind: "zip",
+        kind: "video",
         frameCount: frames.length,
-        filename: `${stem()}.zip`,
+        durationSec: frames.length / 24,
+        filename: `${stem()}.webm`,
       });
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Export failed");
@@ -793,7 +812,15 @@ function ExportSection() {
       setProgress(0);
       abortRef.current = null;
     }
-  }, [canvasRef, stem, isExporting, setIsExporting, source]);
+  }, [
+    appearance,
+    canvasRef,
+    charset,
+    isExporting,
+    setIsExporting,
+    source,
+    stem,
+  ]);
 
   const exportComponent = useCallback(async () => {
     if (!source) {
@@ -808,16 +835,16 @@ function ExportSection() {
         (await canvasRef.current?.getFrames((done, total) =>
           setProgress(Math.round((done / total) * 100)),
         )) ?? [];
-      const code = buildAnimationComponentSource(frames, {
+      if (!frames.length) {
+        toast.error("No frames captured");
+        return;
+      }
+      const code = buildASCIIAnimationReactComponentSource({
+        appearance,
+        componentName: toPascalCase(stem()),
         fps: 24,
-        fontFamily: appearance.fontFamily,
-        fontSize: appearance.fontSize,
-        lineHeight: appearance.lineHeight,
-        letterSpacing: appearance.letterSpacing,
-        backgroundColor: appearance.backgroundColor,
-        textColor: appearance.textColor,
-        fontWeight: appearance.fontWeight,
-        fontStyle: appearance.fontStyle,
+        frames,
+        chars: charset,
       });
       setExportResult({ kind: "component", code, filename: `${stem()}.tsx` });
     } catch (err) {
@@ -826,18 +853,26 @@ function ExportSection() {
       setIsExporting(false);
       setProgress(0);
     }
-  }, [appearance, canvasRef, stem, isExporting, setIsExporting, source]);
+  }, [
+    appearance,
+    canvasRef,
+    charset,
+    isExporting,
+    setIsExporting,
+    source,
+    stem,
+  ]);
 
   useEffect(() => {
     const h =
       mode === "image"
         ? downloadPNG
         : mode === "video"
-          ? exportZip
+          ? exportVideo
           : exportComponent;
     registerExportHandler(h);
     return () => registerExportHandler(null);
-  }, [mode, downloadPNG, exportZip, exportComponent, registerExportHandler]);
+  }, [mode, downloadPNG, exportVideo, exportComponent, registerExportHandler]);
 
   return (
     <>
@@ -862,7 +897,7 @@ function ExportSection() {
           <ExportChip
             icon={Film}
             label="Video"
-            onClick={exportZip}
+            onClick={exportVideo}
             disabled={isExporting || !source || source.kind !== "video"}
           />
           <ExportChip
@@ -989,12 +1024,11 @@ function loadVideo(url: string): Promise<HTMLVideoElement> {
   });
 }
 
-function triggerDownload(href: string, name: string) {
-  const a = document.createElement("a");
-  a.href = href;
-  a.download = name;
-  a.rel = "noopener";
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
+function toPascalCase(value: string) {
+  const normalized = value
+    .split(/[^a-zA-Z0-9]+/)
+    .filter(Boolean)
+    .map((segment) => segment[0].toUpperCase() + segment.slice(1));
+  const joined = normalized.join("");
+  return joined && /^[A-Z]/.test(joined) ? joined : `Ascii${joined || "Export"}`;
 }

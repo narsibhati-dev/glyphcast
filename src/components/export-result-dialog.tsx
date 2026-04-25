@@ -12,8 +12,8 @@ import {
 import { Button } from "@/components/ui/button";
 
 export type ExportResult =
-  | { kind: "png"; dataUrl: string; filename: string }
-  | { kind: "zip"; frameCount: number; filename: string }
+  | { kind: "image"; filename: string }
+  | { kind: "video"; frameCount: number; durationSec: number; filename: string }
   | { kind: "component"; code: string; filename: string }
   | null;
 
@@ -23,14 +23,14 @@ interface Props {
 }
 
 const TITLES: Record<string, string> = {
-  png: "Image exported",
-  zip: "Frames exported",
+  image: "Image exported",
+  video: "Video exported",
   component: "React component",
 };
 
 const KICKERS: Record<string, string> = {
-  png: "01 / Plate",
-  zip: "02 / Sequence",
+  image: "01 / Plate",
+  video: "02 / Sequence",
   component: "03 / Module",
 };
 
@@ -57,16 +57,6 @@ export function ExportResultDialog({ result, onClose }: Props) {
     URL.revokeObjectURL(url);
   };
 
-  const handleDownloadPng = () => {
-    if (result?.kind !== "png") return;
-    const a = document.createElement("a");
-    a.href = result.dataUrl;
-    a.download = result.filename;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-  };
-
   return (
     <Dialog open={result !== null} onOpenChange={(open) => !open && onClose()}>
       <DialogContent
@@ -83,24 +73,16 @@ export function ExportResultDialog({ result, onClose }: Props) {
           <DialogTitle>{result ? TITLES[result.kind] : ""}</DialogTitle>
         </DialogHeader>
 
-        {/* ── PNG ── */}
-        {result?.kind === "png" && (
+        {/* ── IMAGE ── */}
+        {result?.kind === "image" && (
           <div className="space-y-2">
-            <div className="border border-border">
-              <div
-                className="relative"
-                style={{
-                  backgroundImage:
-                    "repeating-conic-gradient(var(--muted) 0% 25%, transparent 0% 50%)",
-                  backgroundSize: "16px 16px",
-                }}
-              >
-                <img
-                  src={result.dataUrl}
-                  alt="Exported PNG"
-                  className="relative max-h-72 w-full object-contain"
-                />
-              </div>
+            <div className="border border-border bg-secondary/20 py-10 text-center">
+              <p className="font-heading text-5xl font-black tracking-tight text-foreground">
+                SAVED
+              </p>
+              <p className="mt-3 font-mono text-[10px] font-medium uppercase tracking-[0.22em] text-muted-foreground">
+                PNG Download Complete
+              </p>
             </div>
             <p className="text-center font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/70">
               {result.filename}
@@ -108,15 +90,15 @@ export function ExportResultDialog({ result, onClose }: Props) {
           </div>
         )}
 
-        {/* ── ZIP ── */}
-        {result?.kind === "zip" && (
+        {/* ── VIDEO ── */}
+        {result?.kind === "video" && (
           <div className="space-y-2">
             <div className="border border-border bg-secondary/30 py-10 text-center">
               <p className="font-heading text-6xl font-black tabular-nums leading-none text-foreground">
                 {result.frameCount}
               </p>
               <p className="mt-3 font-mono text-[10px] font-medium uppercase tracking-[0.22em] text-muted-foreground">
-                Frames · Text Files
+                Frames · {result.durationSec.toFixed(2)}s · WEBM
               </p>
             </div>
             <p className="text-center font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/70">
@@ -165,14 +147,7 @@ export function ExportResultDialog({ result, onClose }: Props) {
           </div>
         )}
 
-        <DialogFooter showCloseButton>
-          {result?.kind === "png" && (
-            <Button size="sm" onClick={handleDownloadPng} className="gap-2">
-              <Download className="size-3.5" />
-              Download PNG
-            </Button>
-          )}
-        </DialogFooter>
+        <DialogFooter showCloseButton />
       </DialogContent>
     </Dialog>
   );

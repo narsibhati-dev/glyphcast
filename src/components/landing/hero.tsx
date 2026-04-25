@@ -157,7 +157,7 @@ export const Hero = forwardRef<HTMLElement, HeroProps>(function Hero(
                   invert={invert}
                   appearance={{
                     backgroundColor: "#000000",
-                    textColor: "#ffffff",
+                    textColor: "#38bdf8",
                     fontSize: 9,
                     lineHeight: 0.95,
                     letterSpacing: 0,

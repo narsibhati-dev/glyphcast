@@ -26,7 +26,10 @@ function StudioShell() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="flex h-dvh flex-col overflow-hidden bg-zinc-950">
+    <div
+      suppressHydrationWarning
+      className="flex h-dvh flex-col overflow-hidden bg-zinc-950"
+    >
       <TopBar
         sidebarOpen={sidebarOpen}
         onToggleSidebar={() => setSidebarOpen((v) => !v)}
@@ -36,6 +39,7 @@ function StudioShell() {
       <div className="relative flex flex-1 min-h-0 overflow-hidden p-2 sm:p-4 gap-4">
         {/* Sidebar */}
         <aside
+          suppressHydrationWarning
           className={cn(
             "w-[320px] shrink-0 overflow-y-auto rounded-3xl border border-zinc-800 bg-zinc-900/50 backdrop-blur-xl shadow-2xl shadow-black/50",
             "fixed inset-y-4 left-4 z-40 transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]",
@@ -58,6 +62,7 @@ function StudioShell() {
 
         {/* Preview */}
         <main
+          suppressHydrationWarning
           ref={previewRef}
           className="flex flex-1 min-w-0 min-h-0 flex-col overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-900/30"
         >
