@@ -89,6 +89,7 @@
 @layer base {
   * { @apply border-border outline-ring/50; }
   body { @apply bg-background text-foreground; }
+  button, [role="button"] { cursor: pointer; }
   html {
     @apply font-sans;
     scroll-behavior: smooth;

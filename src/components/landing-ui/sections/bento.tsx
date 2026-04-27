@@ -116,9 +116,10 @@ const Bento = () => {
           <div
             className="relative"
             style={{
-              border: "1px solid #E5E5E5",
+              background: "#FFF3EC",
+              border: "1px solid #FFD0AC",
               boxShadow:
-                "0px 4px 16px rgba(0,0,0,0.06), 0px 1px 3px rgba(0,0,0,0.04)",
+                "0px 4px 16px rgba(181,75,0,0.08), 0px 1px 3px rgba(181,75,0,0.06)",
               borderRadius: "16px",
             }}
           >
@@ -126,13 +127,13 @@ const Bento = () => {
               className="pointer-events-none absolute inset-0 z-0 rounded-[16px]"
               style={{
                 background:
-                  "linear-gradient(180deg, rgba(181,75,0,0.12) 0%, rgba(181,75,0,0.04) 46%, rgba(181,75,0,0.1) 100%)",
+                  "linear-gradient(180deg, rgba(181,75,0,0.14) 0%, rgba(181,75,0,0.03) 46%, rgba(181,75,0,0.10) 100%)",
               }}
             />
             <div
               className="pointer-events-none absolute inset-x-0 top-[44%] z-0 h-[18%]"
               style={{
-                background: "rgba(255,255,255,0.14)",
+                background: "rgba(255,255,255,0.18)",
               }}
               aria-hidden="true"
             />
@@ -154,9 +155,10 @@ const Bento = () => {
           <div
             className="relative p-6"
             style={{
-              border: "1px solid #E5E5E5",
+              background: "#FFF3EC",
+              border: "1px solid #FFD0AC",
               boxShadow:
-                "0px 4px 16px rgba(0,0,0,0.06), 0px 1px 3px rgba(0,0,0,0.04)",
+                "0px 4px 16px rgba(181,75,0,0.08), 0px 1px 3px rgba(181,75,0,0.06)",
               borderRadius: "16px",
             }}
           >
@@ -187,9 +189,10 @@ const Bento = () => {
           <div
             className="relative flex h-full min-h-0 flex-col p-6"
             style={{
-              border: "1px solid #E5E5E5",
+              background: "#FFF7F2",
+              border: "1px solid #FFD0AC",
               boxShadow:
-                "0px 4px 16px rgba(0,0,0,0.06), 0px 1px 3px rgba(0,0,0,0.04)",
+                "0px 4px 16px rgba(181,75,0,0.08), 0px 1px 3px rgba(181,75,0,0.06)",
               borderRadius: "16px",
             }}
           >
