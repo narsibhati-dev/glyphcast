@@ -543,7 +543,7 @@ function ConversionSection() {
             )}
           >
             There are many built-in brightness ramps and styles, so the menu is
-            long—scroll the list, or type your own sequence in the field below.
+            long scroll the list, or type your own sequence in the field below.
             Muted gray in each row is a sample of the character order (dark →
             light), not the preview&apos;s ink color (set under Appearance).
           </p>
