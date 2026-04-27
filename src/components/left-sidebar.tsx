@@ -376,7 +376,7 @@ function BackgroundCanvasSection({
         1,
         Math.round((columns * source.height * cellAspect) / source.width),
       )
-    : "—";
+    : "";
 
   useEffect(() => {
     if (!responsiveFit || !previewRef.current) return;

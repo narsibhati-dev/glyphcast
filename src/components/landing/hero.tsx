@@ -16,8 +16,6 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ASCII_CHAR_PRESETS } from "@/lib/ascii-config";
-import { cn } from "@/lib/utils";
-
 import { MiniAsciiCanvas } from "./mini-ascii-canvas";
 import { LANDING_SAMPLES, type LandingSample } from "./samples";
 
@@ -59,8 +57,8 @@ export const Hero = forwardRef<HTMLElement, HeroProps>(function Hero(
   ref,
 ) {
   const sample = useMemo<LandingSample>(
-    () => LANDING_SAMPLES.find((s) => s.id === sampleId) ?? LANDING_SAMPLES[0],
-    [sampleId],
+    () => LANDING_SAMPLES.find((s) => s.id === "abstract") ?? LANDING_SAMPLES[0],
+    [],
   );
   const charset = useMemo(
     () =>
@@ -168,27 +166,6 @@ export const Hero = forwardRef<HTMLElement, HeroProps>(function Hero(
 
             {/* Right: Controls */}
             <div className="flex flex-col gap-6 bg-zinc-950 p-6">
-              <div className="space-y-4">
-                <h3 className="text-sm font-medium text-white">Source Sample</h3>
-                <div className="flex flex-wrap gap-2">
-                  {LANDING_SAMPLES.map((s) => (
-                    <button
-                      key={s.id}
-                      type="button"
-                      onClick={() => onSampleChange(s.id)}
-                      className={cn(
-                        "rounded-full border px-3 py-1.5 text-xs font-medium transition-colors",
-                        s.id === sampleId
-                          ? "border-zinc-700 bg-zinc-800 text-white"
-                          : "border-transparent bg-transparent text-zinc-400 hover:bg-zinc-900 hover:text-white"
-                      )}
-                    >
-                      {s.label}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <h3 className="text-sm font-medium text-white">Columns</h3>

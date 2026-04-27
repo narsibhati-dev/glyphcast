@@ -1,0 +1,34 @@
+<svg width="280" height="340" viewBox="0 0 280 340" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="docShadow2" x="-15%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="8" stdDeviation="18" flood-color="#000" flood-opacity="0.12"></feDropShadow>
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#000" flood-opacity="0.06"></feDropShadow>
+    </filter>
+    <linearGradient id="badgeMp4" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#F56060"></stop>
+      <stop offset="100%" stop-color="#D03030"></stop>
+    </linearGradient>
+  </defs>
+
+  <g filter="url(#docShadow2)">
+    <rect x="10" y="10" width="260" height="320" rx="20" fill="white"></rect>
+    <rect x="10" y="10" width="260" height="320" rx="20" fill="none" stroke="#EAEAED" stroke-width="1.5"></rect>
+  </g>
+
+  
+  <rect x="32" y="32" width="216" height="128" rx="12" fill="#F4F4F8"></rect>
+  
+  <circle cx="140" cy="96" r="26" fill="white" opacity="0.9"></circle>
+  <polygon points="133,84 133,108 157,96" fill="#D03030"></polygon>
+
+  
+  <rect x="32" y="178" width="196" height="10" rx="5" fill="#E8E8EC"></rect>
+  <rect x="32" y="196" width="160" height="10" rx="5" fill="#EEEEF2"></rect>
+  <rect x="32" y="214" width="208" height="10" rx="5" fill="#E8E8EC"></rect>
+  <rect x="32" y="232" width="180" height="10" rx="5" fill="#EEEEF2"></rect>
+  <rect x="32" y="250" width="140" height="10" rx="5" fill="#E8E8EC"></rect>
+
+  
+  <rect x="174" y="286" width="76" height="28" rx="8" fill="url(#badgeMp4)"></rect>
+  <text x="212" y="305" text-anchor="middle" font-family="&#39;Courier New&#39;, monospace" font-size="13" font-weight="700" fill="white">.mp4</text>
+</svg>

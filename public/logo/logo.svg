@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48">
+  <rect width="48" height="48" rx="10" fill="#111111"/>
+  <!-- Pixel-art G — 5×5 grid, cell=7px, gap=1px, origin=(5,5) -->
+  <!-- Row 0: cols 1,2,3 -->
+  <rect x="13" y="5" width="7" height="7" rx="1" fill="#B54B00"/>
+  <rect x="21" y="5" width="7" height="7" rx="1" fill="#B54B00"/>
+  <rect x="29" y="5" width="7" height="7" rx="1" fill="#B54B00"/>
+  <!-- Row 1: col 0 -->
+  <rect x="5" y="13" width="7" height="7" rx="1" fill="#B54B00"/>
+  <!-- Row 2: cols 0,2,3,4  (crossbar) -->
+  <rect x="5" y="21" width="7" height="7" rx="1" fill="#B54B00"/>
+  <rect x="21" y="21" width="7" height="7" rx="1" fill="#B54B00"/>
+  <rect x="29" y="21" width="7" height="7" rx="1" fill="#B54B00"/>
+  <rect x="37" y="21" width="7" height="7" rx="1" fill="#B54B00"/>
+  <!-- Row 3: cols 0,4 -->
+  <rect x="5" y="29" width="7" height="7" rx="1" fill="#B54B00"/>
+  <rect x="37" y="29" width="7" height="7" rx="1" fill="#B54B00"/>
+  <!-- Row 4: cols 1,2,3 -->
+  <rect x="13" y="37" width="7" height="7" rx="1" fill="#B54B00"/>
+  <rect x="21" y="37" width="7" height="7" rx="1" fill="#B54B00"/>
+  <rect x="29" y="37" width="7" height="7" rx="1" fill="#B54B00"/>
+</svg>

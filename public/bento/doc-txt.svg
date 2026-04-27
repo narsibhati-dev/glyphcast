@@ -1,0 +1,39 @@
+<svg width="280" height="340" viewBox="0 0 280 340" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="docShadow" x="-15%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="8" stdDeviation="18" flood-color="#000" flood-opacity="0.12"></feDropShadow>
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#000" flood-opacity="0.06"></feDropShadow>
+    </filter>
+    <linearGradient id="badgeTxt" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#6B8EF7"></stop>
+      <stop offset="100%" stop-color="#4B6EE8"></stop>
+    </linearGradient>
+  </defs>
+
+  <g filter="url(#docShadow)">
+    <rect x="10" y="10" width="260" height="320" rx="20" fill="white"></rect>
+    <rect x="10" y="10" width="260" height="320" rx="20" fill="none" stroke="#EAEAED" stroke-width="1.5"></rect>
+  </g>
+
+  
+  <circle cx="38" cy="46" r="8" fill="#FF4040"></circle>
+
+  
+  <rect x="32" y="72" width="196" height="10" rx="5" fill="#E8E8EC"></rect>
+  <rect x="32" y="90" width="216" height="10" rx="5" fill="#EEEEF2"></rect>
+  <rect x="32" y="108" width="180" height="10" rx="5" fill="#E8E8EC"></rect>
+  <rect x="32" y="126" width="208" height="10" rx="5" fill="#EEEEF2"></rect>
+  <rect x="32" y="144" width="192" height="10" rx="5" fill="#E8E8EC"></rect>
+  <rect x="32" y="162" width="220" height="10" rx="5" fill="#EEEEF2"></rect>
+  <rect x="32" y="180" width="170" height="10" rx="5" fill="#E8E8EC"></rect>
+  <rect x="32" y="198" width="200" height="10" rx="5" fill="#EEEEF2"></rect>
+  <rect x="32" y="216" width="185" height="10" rx="5" fill="#E8E8EC"></rect>
+
+  
+  <rect x="32" y="244" width="140" height="10" rx="5" fill="#EEEEF2"></rect>
+  <rect x="32" y="262" width="110" height="10" rx="5" fill="#E8E8EC"></rect>
+
+  
+  <rect x="180" y="286" width="70" height="28" rx="8" fill="url(#badgeTxt)"></rect>
+  <text x="215" y="305" text-anchor="middle" font-family="&#39;Courier New&#39;, monospace" font-size="13" font-weight="700" fill="white">.txt</text>
+</svg>

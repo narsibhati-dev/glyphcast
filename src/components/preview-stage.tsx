@@ -97,13 +97,13 @@ export function PreviewStage() {
         <StatCell label="Mode" value={mode.charAt(0).toUpperCase() + mode.slice(1)} />
         <StatCell
           label="Resolution"
-          value={source ? `${source.width}×${source.height}` : "—"}
+          value={source ? `${source.width}×${source.height}` : ""}
         />
         <StatCell
           label="Grid"
-          value={source ? `${columns}×${approxRows}` : "—"}
+          value={source ? `${columns}×${approxRows}` : ""}
         />
-        <StatCell label="Frames" value={isVideo ? String(totalFrames) : "—"} />
+        <StatCell label="Frames" value={isVideo ? String(totalFrames) : ""} />
       </div>
     </div>
   );

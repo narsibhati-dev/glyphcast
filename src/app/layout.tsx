@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Archivo, JetBrains_Mono } from "next/font/google";
+import { Archivo, JetBrains_Mono, Silkscreen } from "next/font/google";
 
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
@@ -19,6 +19,13 @@ const jetbrainsMono = JetBrains_Mono({
   display: "swap",
 });
 
+const asciiBrand = Silkscreen({
+  variable: "--font-ascii-brand",
+  subsets: ["latin"],
+  weight: ["400", "700"],
+  display: "swap",
+});
+
 export const metadata: Metadata = {
   title: "Glyphcast — ASCII Studio",
   description:
@@ -34,12 +41,12 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${archivo.variable} ${jetbrainsMono.variable}`}
+      className={`${archivo.variable} ${jetbrainsMono.variable} ${asciiBrand.variable}`}
     >
       <body className="min-h-full font-sans antialiased">
         <ThemeProvider
           attribute="class"
-          defaultTheme="dark"
+          defaultTheme="light"
           enableSystem={false}
           disableTransitionOnChange
         >

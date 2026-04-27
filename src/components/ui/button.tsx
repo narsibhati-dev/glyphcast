@@ -21,6 +21,10 @@ const buttonVariants = cva(
           "border-destructive/40 bg-transparent text-destructive hover:bg-destructive/10",
         link:
           "text-foreground underline underline-offset-4 decoration-foreground/40 hover:decoration-foreground",
+        landing:
+          "bg-[#FFFFFF] shadow-[0px_4px_1px_rgba(0,0,0,0.01),0px_2px_1px_rgba(0,0,0,0.05),0px_1px_1px_rgba(0,0,0,0.09),0px_0px_1px_rgba(0,0,0,0.1),inset_0px_2px_2.2px_#FFFFFF] rounded-[99px] text-[#0f172a] hover:bg-[#FFFFFF]/90",
+        landingBlue:
+          "bg-[#B54B00] shadow-[0px_0px_4px_rgba(0,0,0,0.04),0px_8px_16px_rgba(0,0,0,0.08),inset_2px_3px_3.5px_rgba(255,255,255,0.18)] rounded-[77px] text-white hover:bg-[#9E4200]",
       },
       size: {
         default: "h-8 gap-1.5 px-3 has-data-[icon=inline-end]:pr-2.5 has-data-[icon=inline-start]:pl-2.5",
@@ -31,6 +35,7 @@ const buttonVariants = cva(
         "icon-xs": "size-6 [&_svg:not([class*='size-'])]:size-3",
         "icon-sm": "size-7 [&_svg:not([class*='size-'])]:size-3.5",
         "icon-lg": "size-10",
+        landing: "px-5.5 py-3.5 gap-2",
       },
     },
     defaultVariants: {
