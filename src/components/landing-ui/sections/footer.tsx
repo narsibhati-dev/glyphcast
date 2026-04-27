@@ -10,26 +10,55 @@ const Footer = () => {
     <div className="flex justify-center items-center pb-10 sm:pb-20">
       <div
         className="landing-content-width overflow-hidden relative"
-        style={{ background: "#FFFFFF", border: "1px solid #E5E5E5", boxShadow: "0px 4px 24px rgba(0,0,0,0.06)", borderRadius: "24px" }}
+        style={{
+          background: "#FFFFFF",
+          border: "1px solid #E5E5E5",
+          boxShadow: "0px 4px 24px rgba(0,0,0,0.06)",
+          borderRadius: "24px",
+        }}
       >
         {/* Subtle texture overlay */}
         <div
           className="pointer-events-none absolute inset-0 opacity-[0.04]"
-          style={{ backgroundImage: "url('/textures/bento-pattern.png')", backgroundSize: "40px auto" }}
+          style={{
+            backgroundImage: "url('/textures/bento-pattern.png')",
+            backgroundSize: "40px auto",
+          }}
           aria-hidden="true"
         />
 
         {/* Top nav bar */}
         <div className="relative z-10 flex items-center justify-between px-8 sm:px-12 pt-8 sm:pt-10">
-          <Link href="/" className="flex items-center gap-2.5 hover:opacity-70 transition-opacity">
-            <img src={siteConfig.logoPath} alt="Logo" className="h-8 w-8 rounded-lg object-contain" width={32} height={32} />
+          <Link
+            href="/"
+            className="flex items-center gap-2.5 hover:opacity-70 transition-opacity"
+          >
+            <img
+              src={siteConfig.logoPath}
+              alt="Logo"
+              className="h-8 w-8 rounded-lg object-contain"
+              width={32}
+              height={32}
+            />
             <span className="[font-family:var(--font-ascii-brand)] text-base sm:text-lg font-medium text-[#111] tracking-wide">
               {siteConfig.productName}
             </span>
           </Link>
           <div className="flex items-center gap-6 text-sm text-[#999]">
-            <Link href="/#pricing" className="hover:text-[#111] transition-colors">Pricing</Link>
-            <Link href={siteConfig.githubUrl} target="_blank" rel="noopener noreferrer" className="hover:text-[#111] transition-colors">GitHub</Link>
+            <Link
+              href="/#pricing"
+              className="hover:text-[#111] transition-colors"
+            >
+              Pricing
+            </Link>
+            <Link
+              href={siteConfig.githubUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-[#111] transition-colors"
+            >
+              GitHub
+            </Link>
           </div>
         </div>
 
@@ -40,10 +69,13 @@ const Footer = () => {
               Ready to start?
             </div>
             <div className="text-3xl sm:text-4xl md:text-5xl font-medium text-[#111] leading-tight">
-              Start creating<br />ASCII art.
+              Start creating
+              <br />
+              ASCII art.
             </div>
             <div className="text-sm text-[#888] leading-relaxed max-w-xs">
-              No setup required. Drop in an image or video and convert it to ASCII in seconds.
+              No setup required. Drop in an image or video and convert it to
+              ASCII in seconds.
             </div>
           </div>
 
@@ -59,21 +91,23 @@ const Footer = () => {
               </Button>
             </Link>
             <div className="relative group/repo inline-flex">
-              <Link
-                href={siteConfig.githubUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="relative z-10 inline-flex"
-              >
-                <Button
-                  className="min-w-48 justify-center transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_10px_22px_rgba(181,75,0,0.2)]"
-                  variant="landing"
-                  size="landing"
+              <div className="relative transition-transform duration-200 group-hover/repo:-translate-y-0.5">
+                <Link
+                  href={siteConfig.githubUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="relative z-10 block w-fit"
                 >
-                  Star the repo
-                </Button>
-              </Link>
-              <span className="pointer-events-none absolute -inset-1 rounded-[999px] border border-[#B54B00]/35 opacity-0 group-hover/repo:opacity-100 transition-opacity duration-200" />
+                  <Button
+                    className="min-w-48 justify-center transition-all duration-200 hover:shadow-[0_10px_22px_rgba(181,75,0,0.2)]"
+                    variant="landing"
+                    size="landing"
+                  >
+                    Star the repo
+                  </Button>
+                </Link>
+                <span className="pointer-events-none absolute -inset-1 rounded-[999px] border border-[#B54B00]/35 opacity-0 group-hover/repo:opacity-100 transition-opacity duration-200" />
+              </div>
             </div>
           </div>
         </div>

@@ -35,7 +35,9 @@ export function SiteNav() {
           className="flex items-center gap-3 transition-opacity hover:opacity-80"
         >
           <div className="flex size-8 items-center justify-center rounded-full bg-white text-zinc-950">
-            <span className="font-sans text-sm font-black tracking-tighter">G</span>
+            <span className="font-sans text-sm font-black tracking-tighter">
+              G
+            </span>
           </div>
           <span className="font-sans text-lg font-bold tracking-tight text-white">
             Glyphcast
@@ -57,7 +59,7 @@ export function SiteNav() {
               Examples
             </a>
             <a
-              href="https://github.com"
+              href="https://github.com/narsibhati-dev/glyphcast"
               target="_blank"
               rel="noreferrer"
               aria-label="Source code"

@@ -1,6 +1,5 @@
 import { CustomAccordion } from "@/components/custom-accordion";
-import { Button } from "@/components/ui/button";
-import { MessageCircleMore } from "lucide-react";
+import { DmOnXButton } from "@/components/landing-ui/dm-on-x-button";
 import React from "react";
 
 type FAQItem = {
@@ -58,7 +57,9 @@ const Faq = () => {
           </div>
           <p className="text-sm text-muted-foreground max-w-sm">
             Can&apos;t find the answer you&apos;re looking for?{" "}
-            <span className="text-foreground font-medium">I&apos;m here to help.</span>
+            <span className="text-foreground font-medium">
+              I&apos;m here to help.
+            </span>
           </p>
         </div>
 
@@ -71,9 +72,7 @@ const Faq = () => {
           />
         </div>
 
-        <Button variant="landingBlue" size="landing">
-          DM me on <MessageCircleMore />
-        </Button>
+        <DmOnXButton />
       </div>
     </div>
   );

@@ -12,7 +12,6 @@ import {
 } from "../ui/navigation-menu";
 import { siteConfig } from "@/lib/site";
 
-
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -81,21 +80,23 @@ const Navbar = () => {
         {/* Desktop buttons */}
         <section className="hidden lg:flex items-center gap-2">
           <div className="relative group/repo flex items-center justify-center">
-            <Link
-              href={siteConfig.githubUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="z-10 relative"
-            >
-              <Button
-                className="min-w-48 justify-center transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_10px_22px_rgba(181,75,0,0.2)]"
-                variant="landing"
-                size="landing"
+            <div className="relative transition-transform duration-200 group-hover/repo:-translate-y-0.5">
+              <Link
+                href={siteConfig.githubUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="relative z-10 block w-fit"
               >
-                Star the repo
-              </Button>
-            </Link>
-            <span className="pointer-events-none absolute -inset-1 rounded-[999px] border border-[#B54B00]/35 opacity-0 group-hover/repo:opacity-100 transition-opacity duration-200" />
+                <Button
+                  className="min-w-48 justify-center transition-all duration-200 hover:shadow-[0_10px_22px_rgba(181,75,0,0.2)]"
+                  variant="landing"
+                  size="landing"
+                >
+                  Star the repo
+                </Button>
+              </Link>
+              <span className="pointer-events-none absolute -inset-1 rounded-[999px] border border-[#B54B00]/35 opacity-0 group-hover/repo:opacity-100 transition-opacity duration-200" />
+            </div>
           </div>
           <Link href={siteConfig.studioPath} className="shrink-0">
             <Button
@@ -153,21 +154,23 @@ const Navbar = () => {
           </Link>
           <div className="flex gap-2 pt-2 border-t border-border mt-1">
             <div className="relative group/repo flex-1 flex items-center justify-center">
-              <Link
-                href={siteConfig.githubUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="z-10 relative w-full"
-              >
-                <Button
-                  className="w-full transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_10px_22px_rgba(181,75,0,0.2)]"
-                  variant="landing"
-                  size="landing"
+              <div className="relative w-full transition-transform duration-200 group-hover/repo:-translate-y-0.5">
+                <Link
+                  href={siteConfig.githubUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="relative z-10 block w-full"
                 >
-                  Star the repo
-                </Button>
-              </Link>
-              <span className="pointer-events-none absolute -inset-1 rounded-[999px] border border-[#B54B00]/35 opacity-0 group-hover/repo:opacity-100 transition-opacity duration-200" />
+                  <Button
+                    className="w-full transition-all duration-200 hover:shadow-[0_10px_22px_rgba(181,75,0,0.2)]"
+                    variant="landing"
+                    size="landing"
+                  >
+                    Star the repo
+                  </Button>
+                </Link>
+                <span className="pointer-events-none absolute -inset-1 rounded-[999px] border border-[#B54B00]/35 opacity-0 group-hover/repo:opacity-100 transition-opacity duration-200" />
+              </div>
             </div>
             <Link href={siteConfig.studioPath} className="flex-1">
               <Button

@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import React from "react";
@@ -61,8 +61,10 @@ const HeroSection = () => {
               rel="noopener noreferrer"
               className=" px-4 flex py-1.5  text-[10px] text-white"
               style={{
-                background: "linear-gradient(137.68deg, #B54B00 22.55%, #C96020 86.49%)",
-                boxShadow: "0px 8px 24px rgba(181,75,0,0.3), inset 0px 1px 4px 2px rgba(255,200,160,0.4)",
+                background:
+                  "linear-gradient(137.68deg, #B54B00 22.55%, #C96020 86.49%)",
+                boxShadow:
+                  "0px 8px 24px rgba(181,75,0,0.3), inset 0px 1px 4px 2px rgba(255,200,160,0.4)",
                 borderRadius: "100px",
               }}
             >
@@ -166,7 +168,8 @@ const HeroSection = () => {
             className="text-base sm:text-xl mt-5 px-4 sm:px-0"
           >
             Each frame is rebuilt from your charset, then played in order
-            <br className="hidden sm:block" /> so the motion reads as one smooth stream.
+            <br className="hidden sm:block" /> so the motion reads as one smooth
+            stream.
           </div>
           <section className="mt-8 flex flex-col items-center gap-2 md:flex-row md:justify-center">
             <Link href={siteConfig.studioPath} className="inline-flex">
@@ -181,21 +184,23 @@ const HeroSection = () => {
             </Link>
 
             <div className="relative group/repo inline-flex">
-              <Link
-                href={siteConfig.githubUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="relative z-10 inline-flex"
-              >
-                <Button
-                  className="min-w-48 justify-center transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_10px_22px_rgba(181,75,0,0.2)]"
-                  variant="landing"
-                  size="landing"
+              <div className="relative transition-transform duration-200 group-hover/repo:-translate-y-0.5">
+                <Link
+                  href={siteConfig.githubUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="relative z-10 block w-fit"
                 >
-                  Star the repo
-                </Button>
-              </Link>
-              <span className="pointer-events-none absolute -inset-1 rounded-[999px] border border-[#B54B00]/35 opacity-0 group-hover/repo:opacity-100 transition-opacity duration-200" />
+                  <Button
+                    className="min-w-48 justify-center transition-all duration-200 hover:shadow-[0_10px_22px_rgba(181,75,0,0.2)]"
+                    variant="landing"
+                    size="landing"
+                  >
+                    Star the repo
+                  </Button>
+                </Link>
+                <span className="pointer-events-none absolute -inset-1 rounded-[999px] border border-[#B54B00]/35 opacity-0 group-hover/repo:opacity-100 transition-opacity duration-200" />
+              </div>
             </div>
           </section>
           <div>
