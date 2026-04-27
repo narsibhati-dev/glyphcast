@@ -46,7 +46,7 @@ const Navbar = () => {
               width={48}
               height={48}
             />
-            <span className="text-base lg:text-xl whitespace-nowrap font-medium tracking-tight">
+            <span className="[font-family:var(--font-ascii-brand)] text-base lg:text-xl whitespace-nowrap font-medium text-[#111] tracking-wide">
               {siteConfig.productName}
             </span>
           </Link>

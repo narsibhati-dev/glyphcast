@@ -8,6 +8,7 @@ import {
   RotateCcw,
   Search,
   Upload,
+  Video,
 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
@@ -21,35 +22,54 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
-import BlueFire from "./blue-fire";
+import { cn } from "@/lib/utils";
+import Fire from "./fire";
+
+/** Visual tokens for hero mock studio — match landing: neutral borders, #F9FAFC surfaces, #B54B00 accents. */
+const PREVIEW = {
+  card: "overflow-hidden rounded-xl border border-[#E5E5E5] bg-white shadow-[0px_1px_2px_rgba(0,0,0,0.04)]",
+  cardHeader:
+    "border-b border-[#E5E5E5] bg-[linear-gradient(180deg,#FFFFFF_0%,#F9FAFC_100%)] px-3 py-2.5",
+  label: "text-[10px] font-medium uppercase tracking-[0.12em] text-[#888]",
+  labelNarrow: "text-[9px] font-medium uppercase tracking-[0.12em] text-[#888]",
+  meta: "text-[10px] text-[#666]",
+  valueMono: "text-[10px] font-mono tabular-nums text-[#666]",
+  field:
+    "h-7 text-[10px] border-[#E5E5E5] bg-white text-[#111] shadow-none focus-visible:border-[#B54B00] focus-visible:ring-[#B54B00]/20",
+  slider:
+    "w-full **:data-[slot=slider-track]:h-[2px] **:data-[slot=slider-track]:rounded-full **:data-[slot=slider-track]:bg-[#D6D6D6] **:data-[slot=slider-range]:bg-[#B54B00] **:data-[slot=slider-thumb]:h-3 **:data-[slot=slider-thumb]:w-3 **:data-[slot=slider-thumb]:rounded-full **:data-[slot=slider-thumb]:border **:data-[slot=slider-thumb]:border-[#B54B00] **:data-[slot=slider-thumb]:bg-white",
+} as const;
+
+const outlineTertiary =
+  "h-7 border border-[#E5E5E5] bg-white text-[#111] hover:bg-[#F9FAFC] text-[10px]";
 
 export default function StudioUiPreview() {
   return (
-    <div
-      className="mt-10 landing-content-width max-w-[1100px] border max-h-[70vh] overflow-y-auto overflow-x-hidden rounded-3xl"
-      style={{
-        background: "#FFFFFF",
-        border: "2px solid #F2F6FF",
-        boxShadow: "0px 0px 0px 5px rgba(255, 255, 255, 0.6)",
-      }}
-    >
+    <div className="mt-10 landing-content-width max-w-[1100px] max-h-[70vh] overflow-y-auto overflow-x-hidden rounded-3xl border border-[#E5E5E5] bg-[linear-gradient(180deg,#FFFFFF_0%,#FCFCFD_100%)] font-satoshi text-[#111] shadow-[0px_4px_24px_rgba(0,0,0,0.06)]">
       <section className="w-full rounded-[32px] bg-white p-3 md:p-4">
-        <div className="grid gap-3 lg:grid-cols-[230px_1fr]">
+        <div className="grid gap-3 lg:grid-cols-[min(320px,38vw)_1fr]">
           <div className="space-y-3">
             <Panel title="Source Media">
               <button
                 type="button"
-                className="flex h-24 w-full items-center justify-center gap-2 rounded-md border border-dashed border-input bg-muted/40 text-xs text-muted-foreground"
+                className={cn(
+                  "flex h-24 w-full items-center justify-center gap-2 rounded-xl border border-dashed border-[#B54B00]/40 bg-[#F9FAFC] text-xs text-[#666] transition-colors hover:border-[#B54B00]/60 hover:bg-[#FFF5ED]/80",
+                )}
               >
-                <Upload className="h-3.5 w-3.5" />
+                <Upload className="h-3.5 w-3.5 text-[#B54B00]/80" />
                 Drag and drop, click to upload
               </button>
-              <div className="rounded-md border px-2 py-1.5 text-[10px] text-muted-foreground">
+              <div
+                className={cn(
+                  "rounded-lg border border-[#E5E5E5] bg-white px-2 py-1.5 text-[10px] text-[#666]",
+                )}
+              >
                 demo-video.mp4 • 17.4 MB
               </div>
               <Button
                 type="button"
-                className="h-7 w-full text-[10px]"
+                variant="landingBlue"
+                className="h-7 w-full min-h-0 rounded-full text-[10px] py-0"
                 size="sm"
               >
                 Convert to ASCII
@@ -58,17 +78,38 @@ export default function StudioUiPreview() {
 
             <Panel title="Conversion">
               <div className="space-y-1">
-                <Label className="text-[10px] uppercase tracking-wider text-muted-foreground">
-                  Quality
-                </Label>
+                <Label className={PREVIEW.label}>Quality</Label>
                 <Select defaultValue="mid">
-                  <SelectTrigger className="h-7 text-xs">
+                  <SelectTrigger
+                    className={cn(
+                      "h-7 rounded-lg text-xs text-[#111]",
+                      PREVIEW.field,
+                    )}
+                  >
                     <SelectValue />
                   </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="low">Low (Performance)</SelectItem>
-                    <SelectItem value="mid">Mid (Balanced)</SelectItem>
-                    <SelectItem value="high">High (Detail)</SelectItem>
+                  <SelectContent
+                    className="rounded-xl border-[#E5E5E5] bg-white text-[#111] shadow-[0px_14px_36px_rgba(0,0,0,0.12)]"
+                    position="popper"
+                  >
+                    <SelectItem
+                      value="low"
+                      className="rounded-lg py-2 text-[11px] font-medium text-[#111] data-[highlighted]:bg-[#FFF5ED] data-[highlighted]:text-[#111] focus:bg-[#FFF5ED] focus:text-[#111] data-[state=checked]:bg-[#FFF5ED] data-[state=checked]:text-[#111]"
+                    >
+                      Low (Performance)
+                    </SelectItem>
+                    <SelectItem
+                      value="mid"
+                      className="rounded-lg py-2 text-[11px] font-medium text-[#111] data-[highlighted]:bg-[#FFF5ED] data-[highlighted]:text-[#111] focus:bg-[#FFF5ED] focus:text-[#111] data-[state=checked]:bg-[#FFF5ED] data-[state=checked]:text-[#111]"
+                    >
+                      Mid (Balanced)
+                    </SelectItem>
+                    <SelectItem
+                      value="high"
+                      className="rounded-lg py-2 text-[11px] font-medium text-[#111] data-[highlighted]:bg-[#FFF5ED] data-[highlighted]:text-[#111] focus:bg-[#FFF5ED] focus:text-[#111] data-[state=checked]:bg-[#FFF5ED] data-[state=checked]:text-[#111]"
+                    >
+                      High (Detail)
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -87,11 +128,9 @@ export default function StudioUiPreview() {
                 step={5}
               />
               <div className="space-y-1">
-                <Label className="text-[10px] uppercase tracking-wider text-muted-foreground">
-                  Charset
-                </Label>
+                <Label className={PREVIEW.label}>Charset</Label>
                 <Input
-                  className="h-7 font-mono text-[10px]"
+                  className={cn("h-7 font-mono", PREVIEW.field)}
                   value=" .,:;i1tfLCG08@"
                   readOnly
                 />
@@ -99,15 +138,15 @@ export default function StudioUiPreview() {
               <div className="flex gap-2">
                 <Button
                   type="button"
-                  className="h-7 flex-1 text-[10px]"
+                  className="h-7 min-h-0 flex-1 rounded-full px-3 text-[10px] py-0"
                   size="sm"
-                  variant="outline"
+                  variant="landing"
                 >
                   Invert
                 </Button>
                 <Button
                   type="button"
-                  className="h-7 text-[10px]"
+                  className="h-7 min-h-0 text-[10px] text-[#111] hover:bg-[#F9FAFC]"
                   size="sm"
                   variant="ghost"
                 >
@@ -119,16 +158,19 @@ export default function StudioUiPreview() {
 
             <Panel title="Appearance">
               <div className="space-y-1">
-                <Label className="text-[10px] uppercase tracking-wider text-muted-foreground">
-                  Font Family
-                </Label>
+                <Label className={PREVIEW.label}>Font Family</Label>
                 <Button
                   type="button"
                   variant="outline"
-                  className="h-7 w-full justify-between px-3 text-xs font-normal"
+                  className={cn(
+                    "h-8 w-full justify-between rounded-full px-3 text-xs font-medium",
+                    outlineTertiary,
+                  )}
                 >
                   JetBrains Mono
-                  <Search className="h-3.5 w-3.5 opacity-50" />
+                  <span className="flex size-5 items-center justify-center rounded-full bg-[#F3F3F3]">
+                    <Search className="h-3.5 w-3.5 text-[#777]" />
+                  </span>
                 </Button>
               </div>
               <div className="flex gap-2">
@@ -136,7 +178,10 @@ export default function StudioUiPreview() {
                   type="button"
                   size="sm"
                   variant="outline"
-                  className="h-7 flex-1 gap-1 text-[10px]"
+                  className={cn(
+                    "h-8 flex-1 gap-1 rounded-full border-[#D8D8D8] bg-white text-[11px] font-medium shadow-[inset_0px_1px_0px_#FFFFFF]",
+                    outlineTertiary,
+                  )}
                 >
                   <Bold className="h-3 w-3" />
                   Bold
@@ -145,7 +190,10 @@ export default function StudioUiPreview() {
                   type="button"
                   size="sm"
                   variant="outline"
-                  className="h-7 flex-1 gap-1 text-[10px]"
+                  className={cn(
+                    "h-8 flex-1 gap-1 rounded-full border-[#D8D8D8] bg-white text-[11px] font-medium shadow-[inset_0px_1px_0px_#FFFFFF]",
+                    outlineTertiary,
+                  )}
                 >
                   <Italic className="h-3 w-3" />
                   Italic
@@ -175,35 +223,35 @@ export default function StudioUiPreview() {
               <div className="grid grid-cols-2 gap-2">
                 <button
                   type="button"
-                  className="flex h-7 items-center gap-2 rounded-md border px-2 text-[10px]"
+                  className="flex h-8 items-center gap-2 rounded-full border border-[#D8D8D8] bg-white px-3 text-[11px] text-[#111] transition-colors hover:bg-[#F9FAFC]"
                 >
-                  <span className="size-3 rounded-sm bg-black" />
-                  #000000
+                  <span className="size-3 rounded-full bg-[#B54B00]" />
+                  #B54B00
                 </button>
                 <button
                   type="button"
-                  className="flex h-7 items-center gap-2 rounded-md border px-2 text-[10px]"
+                  className="flex h-8 items-center gap-2 rounded-full border border-[#D8D8D8] bg-white px-3 text-[11px] text-[#111] transition-colors hover:bg-[#F9FAFC]"
                 >
-                  <span className="size-3 rounded-sm bg-white border" />
+                  <span className="size-3 rounded-full border border-[#CFCFCF] bg-white" />
                   #FFFFFF
                 </button>
               </div>
             </Panel>
 
             <Panel title="Export">
-              <Label className="text-[10px] uppercase tracking-wider text-muted-foreground">
+              <Label className="px-1 text-center text-[9px] font-medium uppercase tracking-[0.1em] text-[#7A7A7A] leading-relaxed">
                 Full React component with in-app text frame exports
               </Label>
               <textarea
                 readOnly
-                className="h-24 w-full rounded-md border bg-muted/20 p-2 font-mono text-[10px]"
+                className="h-24 w-full resize-none rounded-2xl border border-[#DCDCDC] bg-[linear-gradient(180deg,#FDFDFD_0%,#F7F7F9_100%)] p-4 font-mono text-[11px] leading-relaxed text-[#1F1F1F] shadow-[inset_0px_1px_0px_#FFFFFF]"
                 value={'<ASCIIAnimation frames={["..."]} />'}
               />
               <Button
                 type="button"
                 size="sm"
-                variant="outline"
-                className="h-7 w-full gap-1 text-[10px]"
+                variant="landingBlue"
+                className="h-8 w-full min-h-0 gap-1 rounded-full px-3 text-[11px] py-0"
               >
                 <Copy className="h-3.5 w-3.5" />
                 Copy Full React Component
@@ -213,60 +261,88 @@ export default function StudioUiPreview() {
                   type="button"
                   size="sm"
                   variant="outline"
-                  className="h-7 text-[10px]"
+                  className={cn(
+                    outlineTertiary,
+                    "h-8 min-w-0 justify-center gap-1.5 rounded-full border-[#D8D8D8] bg-white px-2 text-[9px] font-medium",
+                  )}
                 >
-                  <ImageIcon className="h-3.5 w-3.5" />
-                  Image
+                  <ImageIcon className="h-3.5 w-3.5 shrink-0" />
+                  <span className="min-w-0 truncate">Image</span>
                 </Button>
                 <Button
                   type="button"
                   size="sm"
                   variant="outline"
-                  className="h-7 text-[10px]"
+                  className={cn(
+                    outlineTertiary,
+                    "h-8 min-w-0 justify-center gap-1.5 rounded-full border-[#D8D8D8] bg-white px-2 text-[9px] font-medium",
+                  )}
                 >
-                  Video
+                  <Video className="h-3.5 w-3.5 shrink-0" />
+                  <span className="min-w-0 truncate">Video</span>
                 </Button>
                 <Button
                   type="button"
                   size="sm"
                   variant="outline"
-                  className="h-7 text-[10px]"
+                  className="h-8 min-w-0 justify-center gap-1.5 rounded-full border border-[#EBC6A5] bg-[#FFF5ED] px-2 text-[9px] font-medium text-[#7A3300] hover:bg-[#FFECDD]"
                 >
-                  <FileCode2 className="h-3.5 w-3.5" />
-                  Component
+                  <FileCode2 className="h-3.5 w-3.5 shrink-0" />
+                  <span className="min-w-0 truncate">Component</span>
                 </Button>
               </div>
             </Panel>
           </div>
 
           <div className="sticky top-3 md:top-4 h-fit">
-            <div className="rounded-lg border">
-              <div className="flex items-center justify-between border-b px-3 py-2">
-                <span className="text-[11px] font-semibold uppercase tracking-wider">
+            <div className={PREVIEW.card}>
+              <div
+                className={cn(
+                  "flex items-center justify-between",
+                  PREVIEW.cardHeader,
+                )}
+              >
+                <span className="text-[11px] font-semibold uppercase tracking-wider text-[#111]">
                   Preview
                 </span>
-                <span className="text-[10px] text-muted-foreground">
+                <span className={cn("font-medium", PREVIEW.meta)}>
                   240f · 130x72 (780x684px)
                 </span>
               </div>
 
-              <div className="overflow-auto p-3 ">
-                <BlueFire />
+              <div className="overflow-auto p-3">
+                <div
+                  className={cn(
+                    "overflow-hidden rounded-lg border border-[#E5E5E5] bg-[#F9FAFC]",
+                  )}
+                >
+                  <Fire />
+                </div>
               </div>
 
-              <div className="border-t px-4 py-2 bg-muted/20">
+              <div
+                className={cn(
+                  "border-t border-[#E5E5E5] bg-[#F9FAFC] px-4 py-2.5",
+                )}
+              >
                 <div className="mb-1.5 flex items-center justify-between">
-                  <Label className="text-[9px] uppercase tracking-wider text-muted-foreground">
+                  <Label className={PREVIEW.labelNarrow}>
                     Timeline Scrubber
                   </Label>
-                  <span className="text-[9px] tabular-nums font-mono text-muted-foreground">
+                  <span className={cn(PREVIEW.valueMono, "text-[#666]")}>
                     00:12.4 / 00:34.8
                   </span>
                 </div>
-                <Slider defaultValue={[12.4]} max={34.8} min={0} step={0.1} />
+                <Slider
+                  className={PREVIEW.slider}
+                  defaultValue={[12.4]}
+                  max={34.8}
+                  min={0}
+                  step={0.1}
+                />
               </div>
 
-              <div className="grid grid-cols-3 border-t">
+              <div className="grid grid-cols-3 border-t border-[#E5E5E5]">
                 <Stat label="Frames" value="240" />
                 <Stat label="Grid" value="130x72" />
                 <Stat label="Resolution" value="780x684px" />
@@ -287,13 +363,13 @@ function Panel({
   title: string;
 }) {
   return (
-    <div className="rounded-lg border">
-      <div className="border-b px-3 py-1">
-        <span className="text-[11px] font-semibold uppercase tracking-wider">
+    <div className={PREVIEW.card}>
+      <div className={PREVIEW.cardHeader}>
+        <span className="text-[11px] font-semibold uppercase tracking-wider text-[#111]">
           {title}
         </span>
       </div>
-      <div className="space-y-2 p-2.5">{children}</div>
+      <div className="space-y-2.5 p-2.5">{children}</div>
     </div>
   );
 }
@@ -312,16 +388,22 @@ function SliderField({
   value: number;
 }) {
   return (
-    <div className="space-y-1">
+    <div className="space-y-1.5">
       <div className="flex items-center justify-between">
-        <Label className="text-[10px] uppercase tracking-wider text-muted-foreground">
-          {label}
-        </Label>
-        <span className="text-[10px] tabular-nums text-muted-foreground">
+        <Label className={PREVIEW.label}>{label}</Label>
+        <span
+          className={cn("text-[10px] tabular-nums font-medium text-[#666]")}
+        >
           {value}
         </span>
       </div>
-      <Slider defaultValue={[value]} max={max} min={min} step={step} />
+      <Slider
+        className={PREVIEW.slider}
+        defaultValue={[value]}
+        max={max}
+        min={min}
+        step={step}
+      />
     </div>
   );
 }
@@ -330,12 +412,12 @@ function Stat({ label, value }: { label: string; value: string }) {
   return (
     <button
       type="button"
-      className="px-2 py-1.5 text-center hover:bg-muted/40 transition-colors"
+      className="border-r border-[#E5E5E5] px-2 py-2.5 text-center last:border-r-0 transition-colors hover:bg-[#F9FAFC]"
     >
-      <div className="text-[9px] uppercase tracking-wider text-muted-foreground">
-        {label}
+      <div className={cn(PREVIEW.labelNarrow, "mb-0.5")}>{label}</div>
+      <div className="text-[12px] font-medium tabular-nums leading-tight text-[#111]">
+        {value}
       </div>
-      <div className="text-[11px] font-medium tabular-nums">{value}</div>
     </button>
   );
 }

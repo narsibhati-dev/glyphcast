@@ -27,7 +27,7 @@ const asciiBrand = Silkscreen({
 });
 
 export const metadata: Metadata = {
-  title: "Glyphcast — ASCII Studio",
+  title: "Glyphcast | ASCII Studio",
   description:
     "Drop in an image or video and tune it into ASCII art, in your browser, in real time.",
 };

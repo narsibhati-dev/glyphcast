@@ -88,7 +88,8 @@ const Bento = () => {
           <span
             style={
               {
-                background: "linear-gradient(55.33deg, #B54B00 1%, #E07030 100%)",
+                background:
+                  "linear-gradient(55.33deg, #B54B00 1%, #E07030 100%)",
                 WebkitBackgroundClip: "text",
                 WebkitTextFillColor: "transparent",
                 backgroundClip: "text",
@@ -116,22 +117,36 @@ const Bento = () => {
             className="relative"
             style={{
               border: "1px solid #E5E5E5",
-              boxShadow: "0px 4px 16px rgba(0,0,0,0.06), 0px 1px 3px rgba(0,0,0,0.04)",
+              boxShadow:
+                "0px 4px 16px rgba(0,0,0,0.06), 0px 1px 3px rgba(0,0,0,0.04)",
               borderRadius: "16px",
             }}
           >
-            <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden rounded-[16px]">
-              <BentoCardCanvasBg />
-            </div>
+            <div
+              className="pointer-events-none absolute inset-0 z-0 rounded-[16px]"
+              style={{
+                background:
+                  "linear-gradient(180deg, rgba(181,75,0,0.12) 0%, rgba(181,75,0,0.04) 46%, rgba(181,75,0,0.1) 100%)",
+              }}
+            />
+            <div
+              className="pointer-events-none absolute inset-x-0 top-[44%] z-0 h-[18%]"
+              style={{
+                background: "rgba(255,255,255,0.14)",
+              }}
+              aria-hidden="true"
+            />
             <div className="relative z-10 flex justify-between flex-col h-full">
               <div className="h-full">
                 <MagnifiedBento />
               </div>
               <div className="flex flex-col text-left items-start w-full">
-                <span className="text-xl font-medium px-6">Dial in the glyph grid</span>
+                <span className="text-xl font-medium px-6">
+                  Dial in the glyph grid
+                </span>
                 <span className="text-xs px-6 pb-6 font-medium text-muted-foreground">
-                  Scrub presets and density under the lens—see exactly how your charset
-                  will read before you pick an export.
+                  Scrub presets and density under the lens—see exactly how your
+                  charset will read before you pick an export.
                 </span>
               </div>
             </div>
@@ -140,7 +155,8 @@ const Bento = () => {
             className="relative p-6"
             style={{
               border: "1px solid #E5E5E5",
-              boxShadow: "0px 4px 16px rgba(0,0,0,0.06), 0px 1px 3px rgba(0,0,0,0.04)",
+              boxShadow:
+                "0px 4px 16px rgba(0,0,0,0.06), 0px 1px 3px rgba(0,0,0,0.04)",
               borderRadius: "16px",
             }}
           >
@@ -152,10 +168,12 @@ const Bento = () => {
                 <ImagesBadgeDemoFour />
               </div>
               <div className="flex flex-col items-start text-left w-full">
-                <span className="text-xl font-medium">Hand off without rework</span>
+                <span className="text-xl font-medium">
+                  Hand off without rework
+                </span>
                 <span className="text-xs font-medium text-muted-foreground">
-                  Download stills, MP4, or a drop-in component—one click from the preview
-                  you already trust.
+                  Download stills, MP4, or a drop-in component—one click from
+                  the preview you already trust.
                 </span>
               </div>
             </div>
@@ -170,18 +188,19 @@ const Bento = () => {
             className="relative"
             style={{
               border: "1px solid #E5E5E5",
-              boxShadow: "0px 4px 16px rgba(0,0,0,0.06), 0px 1px 3px rgba(0,0,0,0.04)",
+              boxShadow:
+                "0px 4px 16px rgba(0,0,0,0.06), 0px 1px 3px rgba(0,0,0,0.04)",
               borderRadius: "16px",
             }}
           >
-            <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden rounded-[16px]">
-              <BentoCardCanvasBg />
-            </div>
             <div className="flex flex-col h-full text-left items-start w-full relative z-20">
-              <span className="text-xl font-medium mt-6 px-6">Motion that stays in sync</span>
+              <span className="text-xl font-medium mt-6 px-6">
+                Motion that stays in sync
+              </span>
               <span className="text-xs font-medium text-muted-foreground px-6">
-                The split preview keeps source and text conversion aligned: hover to scroll
-                the strip and read the final rhythm before you ship the sequence.
+                The split preview keeps source and text conversion aligned:
+                hover to scroll the strip and read the final rhythm before you
+                ship the sequence.
               </span>
               <div className="h-full w-full z-30 flex justify-center items-center min-h-0">
                 <PortalMarqueeTransform className="h-full w-full" />
@@ -206,14 +225,17 @@ const Bento = () => {
             <div className="relative z-10 flex justify-end gap-4">
               <div
                 style={{
-                  background: "radial-gradient(circle at 30% 30%, #E07030 0%, #C96020 60%, #A03800 100%)",
+                  background:
+                    "radial-gradient(circle at 30% 30%, #E07030 0%, #C96020 60%, #A03800 100%)",
                   boxShadow: "inset 0 1px 2px rgba(255,200,150,0.3)",
                 }}
                 className="h-14 aspect-square w-14 rounded-full"
               />
             </div>
             <div className="relative z-10 flex flex-col items-start w-full">
-              <span className="text-3xl text-[#FFF8F2]">Build in the open studio</span>
+              <span className="text-3xl text-[#FFF8F2]">
+                Build in the open studio
+              </span>
               <Link href={"/studio"} className="inline-flex w-fit">
                 <Button
                   className="group mt-2 w-fit justify-center relative overflow-hidden transition-[padding] duration-200 hover:pr-10"

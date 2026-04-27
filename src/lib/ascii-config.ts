@@ -70,7 +70,7 @@ export const DEFAULT_ASCII_APPEARANCE: ASCIIAppearance = {
   letterSpacing: 0,
   lineHeight: 0.78,
   showFrameCounter: true,
-  textColor: "#79A4FF",
+  textColor: "#B54B00",
   textEffect: "none",
   useColors: false,
   textEffectThreshold: 0,
@@ -203,12 +203,14 @@ export const ASCII_FONT_PRESETS: ASCIIFontPreset[] = [
 
 export const ASCII_CHAR_PRESETS: ASCIICharPreset[] = [
   {
-    chars: " .'`^,:;Il!i><~+_-?][}{1)(|/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$",
+    chars:
+      " .'`^,:;Il!i><~+_-?][}{1)(|/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$",
     id: "default",
     label: "Standard",
   },
   {
-    chars: ' .\'`^\",:;Il!i~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$',
+    chars:
+      " .'`^\",:;Il!i~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$",
     id: "cinematic",
     label: "Cinematic",
   },
@@ -221,7 +223,8 @@ export const ASCII_CHAR_PRESETS: ASCIICharPreset[] = [
   { chars: " .:-=|/\\#", id: "scanlines", label: "CRT Scanlines" },
   { chars: " .:-=+*#%&@$!?", id: "glitch", label: "Glitch" },
   {
-    chars: ' .\'`^\",:;Il!i><~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$',
+    chars:
+      " .'`^\",:;Il!i><~+_-?][}{1)(|\\/tfjrxnuvczXYUJCLQ0OZmwqpdbkhao*#MW&8%B@$",
     id: "dense",
     label: "Ultra Dense",
   },
@@ -238,12 +241,14 @@ export const ASCII_CHAR_PRESETS: ASCIICharPreset[] = [
   { chars: " ◦▫◇▹▻•▪◆◈▸►✧✦✷✸", id: "bullets", label: "Fancy Bullets" },
   { chars: " 𓆩𓆪𓂀𓆣𓃠𓁹", id: "aesthetic", label: "Aesthetic" },
   {
-    chars: " ぁあぃいぅうぇえぉおかがきぎくぐけげcoごさざしじすずせぜそぞただちぢっつづてでtoなにぬねのはばぱひびぴふぶぷへべぺほぼぽまみむめもゃやゅゆょよらりるれろゎわゐゑをん",
+    chars:
+      " ぁあぃいぅうぇえぉおかがきぎくぐけげcoごさざしじすずせぜそぞただちぢっつづてでtoなにぬねのはばぱひびぴふぶぷへべぺほぼぽまみむめもゃやゅゆょよらりるれろゎわゐゑをん",
     id: "hiragana",
     label: "Hiragana",
   },
   {
-    chars: " ァアィイゥウェエォオカガキギクグケゲコゴサザシジスズセゼそぞタダチヂッツヅテデトドナニヌネノハバパヒビピフブプヘベペホボポマミムメモャヤュユョヨラリルレロヮワヰヱヲンヴヵヶ",
+    chars:
+      " ァアィイゥウェエォオカガキギクグケゲコゴサザシジスズセゼそぞタダチヂッツヅテデトドナニヌネノハバパヒビピフブプヘベペホボポマミムメモャヤュユョヨラリルレロヮワヰヱヲンヴヵヶ",
     id: "katakana",
     label: "Katakana",
   },
@@ -308,7 +313,10 @@ export function hexToRgba(hexColor: string, alpha: number): string {
   }
   const normalized =
     hex.length === 3
-      ? hex.split("").map((c) => c + c).join("")
+      ? hex
+          .split("")
+          .map((c) => c + c)
+          .join("")
       : hex;
   const r = parseInt(normalized.slice(0, 2), 16);
   const g = parseInt(normalized.slice(2, 4), 16);

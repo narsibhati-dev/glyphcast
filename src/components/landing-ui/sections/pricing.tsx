@@ -132,22 +132,22 @@ const Pricing = () => {
     },
   };
   const monthlyPoints = [
-    "Generate basic ASCII art",
-    "Limited exports (PNG / TXT)",
-    "In sunt proident voluptate.",
-    "Ea nisi in excepteur laboris et proident nostrud qui ad.",
-    "Pariatur nulla esse do qui eiusmod tempor tempor fugiat elit.",
-    "Id velit sit excepteur voluptate veniam.",
-    "Watermarked outputs",
+    "Generate high-quality ASCII art",
+    "Export PNG, TXT, and copyable code snippets",
+    "Access core style presets",
+    "Fast rendering for short-form content",
+    "Watermarked exports",
+    "Standard support",
+    "Great for trying Glyphcast",
   ];
   const yearlyPoints = [
-    "All monthly features",
-    "Unlimited exports (PNG / TXT)",
+    "Everything in Monthly",
+    "Unlimited exports (PNG / TXT / code)",
     "No watermark on outputs",
+    "Access premium style packs",
+    "Priority rendering + queue",
     "Priority support",
-    "Access to premium ASCII styles",
-    "Early access to new features",
-    "Best value (save 20%)",
+    "Save 20% with annual billing",
   ];
 
   return (
@@ -294,8 +294,8 @@ const Pricing = () => {
                     variants={sectionVariants}
                   >
                     {activeTab === "monthly"
-                      ? "Perfect for exploring ASCII Studio, creating your first pieces, and getting a feel for what’s possible with text-based art."
-                      : "Best for power users and creative professionals who want unlimited access, premium features, and the best value for their investment."}
+                      ? "Perfect for creators getting started with Glyphcast. Build and export polished ASCII content with essential tools and flexible output options."
+                      : "Built for teams and power creators who need unlimited output, premium styles, faster turnaround, and the best long-term value."}
                   </motion.div>
                   <motion.div
                     className="mt-6 flex flex-col gap-4"
