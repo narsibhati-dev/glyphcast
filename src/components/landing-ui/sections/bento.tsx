@@ -211,7 +211,7 @@ const Bento = () => {
               <div className="z-20 flex min-h-0 w-full flex-1 items-center justify-center pt-5">
                 <PortalMarqueeTransform
                   splitBarClassName="bg-[#B54B00] shadow-[0_0_20px_rgba(181,75,0,0.35)]"
-                  className="h-full w-full min-h-[190px] max-h-[280px] flex-1 rounded-2xl border border-[#E5E5E5] bg-white shadow-[0_1px_3px_rgba(0,0,0,0.08)]"
+                  className="h-full w-full min-h-[190px] max-h-[280px] flex-1 rounded-2xl border border-transparent bg-transparent shadow-none"
                 />
               </div>
             </div>

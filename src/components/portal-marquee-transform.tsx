@@ -91,9 +91,7 @@ function MarqueeStrip({
           key={`${item.src}-${index}-${transformed ? "transformed" : "source"}`}
           className={cn(
             "relative h-[138px] w-[210px] shrink-0 overflow-hidden rounded-2xl",
-            strongGlow
-              ? "shadow-[0_14px_36px_rgba(2,60,196,0.42)]"
-              : "shadow-[0_12px_26px_rgba(2,60,196,0.24)]",
+            "shadow-none",
           )}
         >
           {item.type === "video" ? (

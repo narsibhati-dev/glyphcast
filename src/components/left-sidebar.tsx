@@ -29,7 +29,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
-import { Toggle } from "@/components/ui/toggle";
 import {
   Select,
   SelectContent,
@@ -64,6 +63,20 @@ import {
 } from "@/lib/ascii-export";
 import { loadGoogleFont } from "@/lib/font-loader";
 import { useStudio } from "@/lib/studio-context";
+import {
+  STUDIO_CARD_OUTLINE,
+  STUDIO_DROPZONE,
+  STUDIO_FIELD_CLASS,
+  STUDIO_FIELD_MONO_CLASS,
+  STUDIO_FIELD_READONLY_MUTED,
+  STUDIO_OUTLINE_TERTIARY,
+  STUDIO_SELECT_CONTENT,
+  STUDIO_SELECT_ITEM,
+  STUDIO_SLIDER_CLASS,
+  STUDIO_SWITCH_CLASS,
+  STUDIO_TEXT_LABEL,
+  STUDIO_TEXT_META,
+} from "@/lib/studio-theme";
 import { cn } from "@/lib/utils";
 
 /* ─────────────────────────────────────────────────────────────────────────── */
@@ -84,19 +97,19 @@ function AccordionSection({
   const [isOpen, setIsOpen] = useState(defaultOpen);
 
   return (
-    <section className="border-b border-zinc-800/50 last:border-0">
+    <section className="border-b border-[#E5E5E5]/70 dark:border-zinc-800/70 last:border-0">
       <header
-        className="flex cursor-pointer items-center justify-between gap-2 px-4 py-3 select-none hover:bg-zinc-800/30 transition-colors"
+        className="flex cursor-pointer items-center justify-between gap-2 px-4 py-3 select-none transition-colors hover:bg-[#F9FAFC] dark:hover:bg-zinc-800/50"
         onClick={() => setIsOpen(!isOpen)}
       >
         <div className="flex items-center gap-2">
           <ChevronDown
             className={cn(
-              "size-3.5 text-zinc-500 transition-transform duration-200",
-              isOpen ? "rotate-0" : "-rotate-90"
+              "size-3.5 text-[#B54B00]/40 transition-transform duration-200",
+              isOpen ? "rotate-0" : "-rotate-90",
             )}
           />
-          <h3 className="font-sans text-xs font-semibold tracking-wide text-white">
+          <h3 className="font-sans text-xs font-semibold tracking-wide text-[#111] dark:text-zinc-100">
             {title}
           </h3>
         </div>
@@ -121,19 +134,21 @@ function AccordionSection({
 
 function ResetChip({ onClick }: { onClick: () => void }) {
   return (
-    <button
+    <Button
       type="button"
       onClick={onClick}
-      className="rounded-sm bg-zinc-800/50 px-2 py-0.5 font-mono text-[9px] font-semibold uppercase tracking-widest text-zinc-500 transition-colors hover:bg-zinc-700 hover:text-white"
+      variant="landing"
+      size="sm"
+      className="h-7 min-h-0 rounded-full px-3 py-0 font-mono text-[9px] font-semibold uppercase tracking-widest text-[#B54B00]"
     >
       Reset
-    </button>
+    </Button>
   );
 }
 
 function FieldLabel({ children }: { children: ReactNode }) {
   return (
-    <span className="font-sans text-xs text-zinc-400">
+    <span className={cn("font-sans text-xs", STUDIO_TEXT_LABEL)}>
       {children}
     </span>
   );
@@ -142,10 +157,15 @@ function FieldLabel({ children }: { children: ReactNode }) {
 function MiniDivider({ label }: { label: string }) {
   return (
     <div className="flex items-center gap-3 pt-2 pb-1">
-      <span className="font-mono text-[9px] font-semibold uppercase tracking-widest text-zinc-600">
+      <span
+        className={cn(
+          "font-mono text-[9px] font-semibold uppercase tracking-widest",
+          STUDIO_TEXT_LABEL,
+        )}
+      >
         {label}
       </span>
-      <div className="h-px flex-1 bg-zinc-800/50" />
+      <div className="h-px flex-1 bg-[#E5E5E5]/80" />
     </div>
   );
 }
@@ -180,11 +200,12 @@ function SliderField({
     <div className="space-y-2 py-1">
       <div className="flex items-center justify-between">
         <FieldLabel>{label}</FieldLabel>
-        <span className="min-w-[3ch] text-right font-mono text-[10px] tabular-nums text-white">
+        <span className="min-w-[3ch] text-right font-mono text-[10px] tabular-nums text-[#111] dark:text-zinc-100">
           {display ?? value}
         </span>
       </div>
       <Slider
+        className={STUDIO_SLIDER_CLASS}
         min={min}
         max={max}
         step={step}
@@ -253,28 +274,32 @@ function SourceSection() {
         suppressHydrationWarning
         {...getRootProps()}
         className={cn(
-          "flex cursor-pointer flex-col items-center justify-center gap-3 rounded-lg border border-dashed border-zinc-700 bg-zinc-900/40 py-6 text-center transition-colors",
-          "hover:border-zinc-500 hover:bg-zinc-800/50",
-          isDragActive && "border-zinc-400 bg-zinc-800",
+          "flex min-h-24 w-full cursor-pointer flex-col items-center justify-center gap-3 px-3 py-5 text-center",
+          STUDIO_DROPZONE,
+          isDragActive && "border-[#B54B00] bg-[#FFF5ED]/90",
         )}
       >
         <input {...getInputProps()} />
-        <div className="flex size-8 items-center justify-center rounded-lg bg-zinc-800 text-zinc-400">
-          <Upload className="size-4" />
-        </div>
+        <Upload className="h-3.5 w-3.5 shrink-0 text-[#B54B00]/80" />
         <div className="space-y-1">
-          <p className="font-sans text-xs font-semibold text-white">
+          <p className="font-sans text-xs font-semibold text-[#111] dark:text-zinc-100">
             {isDragActive ? "Drop to load" : "Drop or browse"}
           </p>
-          <p className="font-sans text-[10px] text-zinc-500">
-            Image or Video up to 100MB
+          <p className="font-sans text-[10px] text-[#666] dark:text-zinc-500">
+            Image or video up to 100MB
           </p>
         </div>
       </div>
 
       {source && (
-        <div className="flex items-center gap-3 rounded-md border border-zinc-800 bg-zinc-900/30 p-2 pl-3">
-          <div className="flex size-7 shrink-0 items-center justify-center rounded-sm bg-zinc-800 text-white">
+        <div
+          className={cn(
+            "flex items-center gap-3 rounded-lg bg-white dark:bg-zinc-800 p-2 pl-3",
+            STUDIO_CARD_OUTLINE,
+            "shadow-[0px_1px_2px_rgba(0,0,0,0.04)]",
+          )}
+        >
+          <div className="flex size-7 shrink-0 items-center justify-center rounded-md border border-[#E5E5E5] dark:border-zinc-700 bg-[#F9FAFC] dark:bg-zinc-700 text-[#B54B00]">
             {source.kind === "image" ? (
               <ImageIcon className="size-3.5" />
             ) : (
@@ -282,10 +307,10 @@ function SourceSection() {
             )}
           </div>
           <div className="min-w-0 flex-1">
-            <p className="truncate font-sans text-xs font-semibold text-white">
+            <p className="truncate font-sans text-xs font-semibold text-[#111] dark:text-zinc-100">
               {source.file?.name ?? "Sample source"}
             </p>
-            <p className="font-mono text-[10px] tabular-nums text-zinc-500">
+            <p className="font-mono text-[10px] tabular-nums text-[#666] dark:text-zinc-500">
               {source.width} × {source.height}
             </p>
           </div>
@@ -295,7 +320,7 @@ function SourceSection() {
               if (source.url) URL.revokeObjectURL(source.url);
               clearSource();
             }}
-            className="flex size-7 shrink-0 items-center justify-center rounded-sm text-zinc-400 transition-colors hover:bg-red-500/10 hover:text-red-400"
+            className="flex size-7 shrink-0 items-center justify-center rounded-sm text-[#888] transition-colors hover:bg-red-500/10 hover:text-red-400"
             aria-label="Remove source"
           >
             <Trash2 className="size-3.5" />
@@ -306,7 +331,9 @@ function SourceSection() {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button
-            className="h-8 w-full gap-2 rounded-md font-sans text-xs font-semibold tracking-wide bg-white text-zinc-950 hover:bg-zinc-200"
+            variant="landingBlue"
+            size="sm"
+            className="h-8 w-full min-h-0 gap-2 rounded-full px-3 py-0 font-sans text-[11px] font-semibold tracking-wide"
             disabled={!source || isExporting}
           >
             <Wand2 className="size-3.5" />
@@ -314,36 +341,39 @@ function SourceSection() {
             <ChevronDown className="ml-1.5 size-3 opacity-50" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="center" className="w-[calc(100%-2rem)] min-w-[200px] border-zinc-800 bg-zinc-950">
+        <DropdownMenuContent
+          align="center"
+          className="w-56 border border-[#E5E5E5] dark:border-zinc-700 bg-white dark:bg-zinc-900 text-[#111] dark:text-zinc-100 shadow-md shadow-black/5 dark:shadow-black/30 ring-0"
+        >
           <DropdownMenuItem
-            className="gap-2 cursor-pointer focus:bg-zinc-800 focus:text-white"
+            className="gap-2 cursor-pointer text-[#333] dark:text-zinc-200 focus:bg-[#FFF5ED] dark:focus:bg-zinc-800 focus:text-[#B54B00]"
             onClick={() => {
               setMode("image");
               setTimeout(requestExport, 50);
             }}
           >
-            <ImageIcon className="size-4 text-zinc-400" />
+            <ImageIcon className="size-4 text-[#B54B00]/60" />
             <span className="font-sans text-xs">Export as Image</span>
           </DropdownMenuItem>
           <DropdownMenuItem
-            className="gap-2 cursor-pointer focus:bg-zinc-800 focus:text-white"
+            className="gap-2 cursor-pointer text-[#333] dark:text-zinc-200 focus:bg-[#FFF5ED] dark:focus:bg-zinc-800 focus:text-[#B54B00]"
             disabled={sourceKind !== "video"}
             onClick={() => {
               setMode("video");
               setTimeout(requestExport, 50);
             }}
           >
-            <Film className="size-4 text-zinc-400" />
+            <Film className="size-4 text-[#B54B00]/60" />
             <span className="font-sans text-xs">Export as Video</span>
           </DropdownMenuItem>
           <DropdownMenuItem
-            className="gap-2 cursor-pointer focus:bg-zinc-800 focus:text-white"
+            className="gap-2 cursor-pointer text-[#333] dark:text-zinc-200 focus:bg-[#FFF5ED] dark:focus:bg-zinc-800 focus:text-[#B54B00]"
             onClick={() => {
               setMode("component");
               setTimeout(requestExport, 50);
             }}
           >
-            <Code2 className="size-4 text-zinc-400" />
+            <Code2 className="size-4 text-[#B54B00]/60" />
             <span className="font-sans text-xs">Export as React Component</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
@@ -394,14 +424,18 @@ function BackgroundCanvasSection({
   return (
     <AccordionSection title="Canvas Settings" defaultOpen={false}>
       <Row label="Auto-Fit Screen">
-        <Switch checked={responsiveFit} onCheckedChange={setResponsiveFit} />
+        <Switch
+          className={STUDIO_SWITCH_CLASS}
+          checked={responsiveFit}
+          onCheckedChange={setResponsiveFit}
+        />
       </Row>
       <div className="grid grid-cols-2 gap-2">
         <div className="space-y-1.5">
           <FieldLabel>Width (Cols)</FieldLabel>
           <Input
             type="number"
-            className="h-8 w-full rounded-sm border-zinc-800 bg-zinc-900/50 font-mono text-xs tabular-nums text-white"
+            className={STUDIO_FIELD_MONO_CLASS}
             value={columns}
             min={40}
             max={300}
@@ -414,7 +448,7 @@ function BackgroundCanvasSection({
           <Input
             type="text"
             readOnly
-            className="h-8 w-full rounded-sm border-transparent bg-zinc-900/30 font-mono text-xs tabular-nums text-zinc-500"
+            className={STUDIO_FIELD_READONLY_MUTED}
             value={approxRows}
           />
         </div>
@@ -427,7 +461,9 @@ function BackgroundCanvasSection({
 /* Conversion                                                                  */
 /* ─────────────────────────────────────────────────────────────────────────── */
 
-const DEFAULT_PRESET = ASCII_CHAR_PRESETS[0];
+const DEFAULT_PRESET =
+  ASCII_CHAR_PRESETS.find((preset) => preset.id === "terminal") ??
+  ASCII_CHAR_PRESETS[0];
 
 function ConversionSection() {
   const columns = useAsciiStore((s) => s.columns);
@@ -443,13 +479,17 @@ function ConversionSection() {
 
   const reset = () => {
     setColumns(130);
-    setThreshold(0);
+    setThreshold(-12);
     setInvert(false);
     setCharsetPreset(DEFAULT_PRESET.id);
   };
 
   return (
-    <AccordionSection title="Conversion" defaultOpen={false} action={<ResetChip onClick={reset} />}>
+    <AccordionSection
+      title="Conversion"
+      defaultOpen={false}
+      action={<ResetChip onClick={reset} />}
+    >
       <SliderField
         label="Density Threshold"
         value={threshold}
@@ -460,27 +500,46 @@ function ConversionSection() {
       />
 
       <div className="space-y-2 pt-2">
-        <FieldLabel>Character Set Mapping</FieldLabel>
+        <div className="space-y-1.5">
+          <FieldLabel>Character Set Mapping</FieldLabel>
+          <p
+            className={cn(
+              "max-w-full text-[10px] leading-relaxed",
+              STUDIO_TEXT_META,
+            )}
+          >
+            There are many built-in brightness ramps and styles, so the menu is
+            long—scroll the list, or type your own sequence in the field below.
+            Muted gray in each row is a sample of the character order (dark →
+            light), not the preview&apos;s ink color (set under Appearance).
+          </p>
+        </div>
         <Select
           value={charsetPresetId ?? "__custom__"}
           onValueChange={(id) => {
             if (id !== "__custom__") setCharsetPreset(id);
           }}
         >
-          <SelectTrigger className="h-8 w-full rounded-sm border-zinc-800 bg-zinc-900/50 text-xs text-white">
+          <SelectTrigger className={cn(STUDIO_FIELD_CLASS, "font-sans")}>
             <SelectValue placeholder="Select preset…" />
           </SelectTrigger>
-          <SelectContent className="max-h-[180px] rounded-md border-zinc-800 bg-zinc-950">
+          <SelectContent
+            className={cn(STUDIO_SELECT_CONTENT, "max-h-[min(50dvh,280px)]")}
+          >
             {ASCII_CHAR_PRESETS.map((p) => (
-              <SelectItem key={p.id} value={p.id} className="rounded-sm text-xs text-white focus:bg-zinc-800">
+              <SelectItem
+                key={p.id}
+                value={p.id}
+                className={STUDIO_SELECT_ITEM}
+              >
                 <span className="font-semibold">{p.label}</span>
-                <span className="ml-2 font-mono text-[10px] text-zinc-500">
+                <span className="ml-2 font-mono text-[10px] text-[#666] dark:text-zinc-500">
                   {p.chars.replace(/^\s+/, "").slice(0, 14)}
                 </span>
               </SelectItem>
             ))}
             {!charsetPresetId && (
-              <SelectItem value="__custom__" className="rounded-sm text-xs text-white focus:bg-zinc-800">
+              <SelectItem value="__custom__" className={STUDIO_SELECT_ITEM}>
                 Custom
               </SelectItem>
             )}
@@ -491,7 +550,7 @@ function ConversionSection() {
           onChange={(e) => setCharset(e.target.value)}
           spellCheck={false}
           autoComplete="off"
-          className="h-8 rounded-sm border-zinc-800 bg-zinc-900/30 font-mono text-xs text-zinc-300"
+          className={STUDIO_FIELD_MONO_CLASS}
           placeholder="darkest → brightest chars"
         />
       </div>
@@ -535,7 +594,9 @@ function AppearanceSection() {
     <AccordionSection
       title="Appearance"
       defaultOpen={false}
-      action={<ResetChip onClick={() => patchAppearance(DEFAULT_ASCII_APPEARANCE)} />}
+      action={
+        <ResetChip onClick={() => patchAppearance(DEFAULT_ASCII_APPEARANCE)} />
+      }
     >
       <MiniDivider label="Typography" />
       <div className="space-y-2">
@@ -550,12 +611,16 @@ function AppearanceSection() {
             }
           }}
         >
-          <SelectTrigger className="h-8 w-full rounded-sm border-zinc-800 bg-zinc-900/50 text-xs text-white">
+          <SelectTrigger className={cn(STUDIO_FIELD_CLASS, "font-sans")}>
             <SelectValue />
           </SelectTrigger>
-          <SelectContent className="max-h-[180px] rounded-md border-zinc-800 bg-zinc-950">
+          <SelectContent className={STUDIO_SELECT_CONTENT}>
             {ASCII_FONT_PRESETS.map((p) => (
-              <SelectItem key={p.id} value={p.id} className="rounded-sm text-xs text-white focus:bg-zinc-800">
+              <SelectItem
+                key={p.id}
+                value={p.id}
+                className={STUDIO_SELECT_ITEM}
+              >
                 <span style={{ fontFamily: p.value }}>{p.label}</span>
               </SelectItem>
             ))}
@@ -564,26 +629,44 @@ function AppearanceSection() {
       </div>
 
       <Row label="Style & Weight">
-        <div className="flex items-center overflow-hidden rounded-sm border border-zinc-800 bg-zinc-900/50">
-          <Toggle
-            pressed={isBold}
-            onPressedChange={(v) =>
-              patchAppearance({ fontWeight: v ? "bold" : "normal" })
+        <div className="flex items-center gap-1.5">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            aria-pressed={isBold}
+            onClick={() =>
+              patchAppearance({ fontWeight: isBold ? "normal" : "bold" })
             }
-            className="h-7 w-8 rounded-none border-0 hover:bg-zinc-700 data-[state=on]:bg-zinc-800 data-[state=on]:text-white"
+            className={cn(
+              STUDIO_OUTLINE_TERTIARY,
+              "h-7 w-8 min-w-8 rounded-full border-[#D8D8D8] p-0",
+              isBold &&
+                "border-[#EBC6A5] bg-[#FFF5ED] text-[#7A3300] shadow-[inset_0_1px_1px_rgba(0,0,0,0.05)]",
+            )}
           >
             <Bold className="size-3.5" />
-          </Toggle>
-          <div className="h-4 w-px bg-zinc-800" />
-          <Toggle
-            pressed={appearance.fontStyle === "italic"}
-            onPressedChange={(v) =>
-              patchAppearance({ fontStyle: v ? "italic" : "normal" })
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            aria-pressed={appearance.fontStyle === "italic"}
+            onClick={() =>
+              patchAppearance({
+                fontStyle:
+                  appearance.fontStyle === "italic" ? "normal" : "italic",
+              })
             }
-            className="h-7 w-8 rounded-none border-0 hover:bg-zinc-700 data-[state=on]:bg-zinc-800 data-[state=on]:text-white"
+            className={cn(
+              STUDIO_OUTLINE_TERTIARY,
+              "h-7 w-8 min-w-8 rounded-full border-[#D8D8D8] p-0",
+              appearance.fontStyle === "italic" &&
+                "border-[#EBC6A5] bg-[#FFF5ED] text-[#7A3300] shadow-[inset_0_1px_1px_rgba(0,0,0,0.05)]",
+            )}
           >
             <Italic className="size-3.5" />
-          </Toggle>
+          </Button>
         </div>
       </Row>
 
@@ -646,12 +729,16 @@ function AppearanceSection() {
             patchAppearance({ textEffect: v as ASCIITextEffect })
           }
         >
-          <SelectTrigger className="h-8 w-full rounded-sm border-zinc-800 bg-zinc-900/50 text-xs text-white">
+          <SelectTrigger className={cn(STUDIO_FIELD_CLASS, "font-sans")}>
             <SelectValue />
           </SelectTrigger>
-          <SelectContent className="max-h-[180px] rounded-md border-zinc-800 bg-zinc-950">
+          <SelectContent className={STUDIO_SELECT_CONTENT}>
             {TEXT_EFFECTS.map((e) => (
-              <SelectItem key={e.value} value={e.value} className="rounded-sm text-xs text-white focus:bg-zinc-800">
+              <SelectItem
+                key={e.value}
+                value={e.value}
+                className={STUDIO_SELECT_ITEM}
+              >
                 {e.label}
               </SelectItem>
             ))}
@@ -696,20 +783,26 @@ function ExportChip({
   onClick: () => void;
   disabled?: boolean;
 }) {
+  const isComponent = label === "React";
   return (
-    <button
+    <Button
       type="button"
+      size="sm"
+      variant="outline"
       onClick={onClick}
       disabled={disabled}
       className={cn(
-        "group flex h-14 flex-col items-center justify-center gap-1.5 rounded-md border border-zinc-800 bg-zinc-900/50 font-mono text-[9px] font-semibold uppercase tracking-widest text-zinc-400 transition-colors",
-        "hover:border-zinc-500 hover:bg-zinc-800 hover:text-white",
-        "disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-zinc-800 disabled:hover:bg-zinc-900/50 disabled:hover:text-zinc-400",
+        STUDIO_OUTLINE_TERTIARY,
+        "h-8 min-w-0 justify-center gap-1.5 rounded-full border-[#D8D8D8] dark:border-zinc-700 bg-white dark:bg-zinc-800 px-2 text-[9px] font-medium",
+        !isComponent &&
+          "hover:border-[#B54B00]/40 hover:bg-[#FFF5ED] dark:hover:bg-zinc-700 hover:text-[#B54B00]",
+        isComponent &&
+          "border-[#EBC6A5] dark:border-zinc-600 bg-[#FFF5ED] dark:bg-zinc-700/60 text-[#7A3300] dark:text-[#B54B00] hover:bg-[#FFECDD] dark:hover:bg-zinc-700",
       )}
     >
-      <Icon className="size-4" />
-      {label}
-    </button>
+      <Icon className="h-3.5 w-3.5 shrink-0" />
+      <span className="min-w-0 truncate">{label}</span>
+    </Button>
   );
 }
 
@@ -728,9 +821,7 @@ function ExportSection() {
 
   const stem = useCallback(
     () =>
-      filename.trim() ||
-      source?.file?.name?.replace(/\.[^.]+$/, "") ||
-      "ascii",
+      filename.trim() || source?.file?.name?.replace(/\.[^.]+$/, "") || "ascii",
     [filename, source],
   );
 
@@ -883,7 +974,7 @@ function ExportSection() {
             placeholder="filename (optional)"
             value={filename}
             onChange={(e) => setFilename(e.target.value)}
-            className="h-8 rounded-sm border-zinc-800 bg-zinc-900/50 font-mono text-xs text-zinc-300"
+            className={STUDIO_FIELD_MONO_CLASS}
           />
         </div>
 
@@ -917,18 +1008,18 @@ function ExportSection() {
         <div className="h-4">
           {isExporting && (
             <div className="flex items-center gap-3">
-              <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-zinc-800">
+              <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-[#E5E5E5] dark:bg-zinc-700">
                 <div
-                  className="h-full rounded-full bg-white transition-all duration-150"
+                  className="h-full rounded-full bg-[#B54B00] transition-all duration-150"
                   style={{ width: `${progress}%` }}
                 />
               </div>
-              <span className="font-mono text-[10px] font-semibold tabular-nums text-white">
+              <span className="font-mono text-[10px] font-semibold tabular-nums text-[#B54B00]">
                 {progress}%
               </span>
               <button
                 type="button"
-                className="font-sans text-[10px] font-bold text-zinc-500 transition-colors hover:text-red-400"
+                className="font-sans text-[10px] font-bold text-[#888] transition-colors hover:text-red-400"
                 onClick={() => abortRef.current?.abort()}
               >
                 Cancel
@@ -1030,5 +1121,7 @@ function toPascalCase(value: string) {
     .filter(Boolean)
     .map((segment) => segment[0].toUpperCase() + segment.slice(1));
   const joined = normalized.join("");
-  return joined && /^[A-Z]/.test(joined) ? joined : `Ascii${joined || "Export"}`;
+  return joined && /^[A-Z]/.test(joined)
+    ? joined
+    : `Ascii${joined || "Export"}`;
 }

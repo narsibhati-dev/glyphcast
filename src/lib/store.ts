@@ -55,14 +55,16 @@ export interface StudioState {
   setTotalFrames: (n: number) => void;
 }
 
-const DEFAULT_PRESET = ASCII_CHAR_PRESETS[0];
+const DEFAULT_PRESET =
+  ASCII_CHAR_PRESETS.find((preset) => preset.id === "terminal") ??
+  ASCII_CHAR_PRESETS[0];
 
 export const useAsciiStore = create<StudioState>((set) => ({
   source: null,
   appearance: DEFAULT_ASCII_APPEARANCE,
 
   columns: 130,
-  threshold: 0,
+  threshold: -12,
   charset: DEFAULT_PRESET.chars,
   charsetPresetId: DEFAULT_PRESET.id,
   invert: false,

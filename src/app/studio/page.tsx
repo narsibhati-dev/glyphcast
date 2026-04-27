@@ -25,10 +25,29 @@ function StudioShell() {
   const previewRef = useRef<HTMLDivElement>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-color-scheme: dark)");
+    const stored = localStorage.getItem("studio-theme");
+    const dark = stored ? stored === "dark" : mq.matches;
+    document.documentElement.classList.toggle("dark", dark);
+
+    const handler = (e: MediaQueryListEvent) => {
+      if (!localStorage.getItem("studio-theme")) {
+        document.documentElement.classList.toggle("dark", e.matches);
+      }
+    };
+    mq.addEventListener("change", handler);
+    return () => {
+      mq.removeEventListener("change", handler);
+      document.documentElement.classList.remove("dark");
+      localStorage.removeItem("studio-theme");
+    };
+  }, []);
+
   return (
     <div
       suppressHydrationWarning
-      className="flex h-dvh flex-col overflow-hidden bg-zinc-950"
+      className="flex h-dvh flex-col overflow-hidden bg-[#F9FAFC] dark:bg-zinc-950 font-satoshi text-[#111] dark:text-zinc-100"
     >
       <TopBar
         sidebarOpen={sidebarOpen}
@@ -41,7 +60,7 @@ function StudioShell() {
         <aside
           suppressHydrationWarning
           className={cn(
-            "w-[320px] shrink-0 overflow-y-auto rounded-3xl border border-zinc-800 bg-zinc-900/50 backdrop-blur-xl shadow-2xl shadow-black/50",
+            "w-[320px] shrink-0 overflow-y-auto rounded-3xl border border-[#E5E5E5] dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-xl shadow-black/6 dark:shadow-black/40",
             "fixed inset-y-4 left-4 z-40 transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]",
             sidebarOpen ? "translate-x-0" : "-translate-x-[120%]",
             "md:relative md:inset-auto md:z-auto md:translate-x-0",
@@ -55,8 +74,10 @@ function StudioShell() {
           aria-hidden
           onClick={() => setSidebarOpen(false)}
           className={cn(
-            "fixed inset-0 z-30 bg-black/60 backdrop-blur-sm md:hidden transition-opacity duration-300",
-            sidebarOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none",
+            "fixed inset-0 z-30 bg-zinc-900/40 backdrop-blur-sm md:hidden transition-opacity duration-300",
+            sidebarOpen
+              ? "opacity-100 pointer-events-auto"
+              : "opacity-0 pointer-events-none",
           )}
         />
 
@@ -64,7 +85,7 @@ function StudioShell() {
         <main
           suppressHydrationWarning
           ref={previewRef}
-          className="flex flex-1 min-w-0 min-h-0 flex-col overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-900/30"
+          className="flex flex-1 min-w-0 min-h-0 flex-col overflow-hidden rounded-3xl border border-[#E5E5E5] dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-[0px_1px_2px_rgba(0,0,0,0.04)]"
         >
           <PreviewStage />
         </main>
@@ -76,26 +97,47 @@ function StudioShell() {
 function useDefaultSample() {
   const source = useAsciiStore((s) => s.source);
   const setSource = useAsciiStore((s) => s.setSource);
+  const setPlaying = useAsciiStore((s) => s.setPlaying);
+  const patchAppearance = useAsciiStore((s) => s.patchAppearance);
+
+  useEffect(() => {
+    const stored = localStorage.getItem("studio-theme");
+    const isDark = stored
+      ? stored === "dark"
+      : window.matchMedia("(prefers-color-scheme: dark)").matches;
+    patchAppearance({ backgroundColor: isDark ? "#0B0B0D" : "#ffffff" });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     if (source) return;
     let cancelled = false;
-    const img = new Image();
-    img.crossOrigin = "anonymous";
-    img.decoding = "async";
-    img.onload = () => {
+    const video = document.createElement("video");
+    video.crossOrigin = "anonymous";
+    video.muted = true;
+    video.loop = true;
+    video.playsInline = true;
+    const onLoadedMetadata = () => {
       if (cancelled) return;
       setSource({
-        kind: "image",
-        el: img,
+        kind: "video",
+        el: video,
         file: null,
-        url: img.src,
-        width: img.naturalWidth || 600,
-        height: img.naturalHeight || 400,
+        url: video.src,
+        width: video.videoWidth || 1280,
+        height: video.videoHeight || 720,
+        durationMs: Number.isFinite(video.duration) ? video.duration * 1000 : 0,
       });
+      setPlaying(true);
     };
-    img.src = "/samples/skyline.svg";
-    return () => { cancelled = true; };
+    video.addEventListener("loadedmetadata", onLoadedMetadata);
+    video.src = "/portal-marquee-video/below-video/fire.mp4";
+    video.load();
+    return () => {
+      cancelled = true;
+      video.removeEventListener("loadedmetadata", onLoadedMetadata);
+      video.pause();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 }

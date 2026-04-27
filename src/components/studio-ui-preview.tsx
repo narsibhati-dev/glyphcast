@@ -22,6 +22,10 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
+import {
+  STUDIO_OUTLINE_TERTIARY,
+  STUDIO_SLIDER_CLASS,
+} from "@/lib/studio-theme";
 import { cn } from "@/lib/utils";
 import Fire from "./fire";
 
@@ -36,12 +40,10 @@ const PREVIEW = {
   valueMono: "text-[10px] font-mono tabular-nums text-[#666]",
   field:
     "h-7 text-[10px] border-[#E5E5E5] bg-white text-[#111] shadow-none focus-visible:border-[#B54B00] focus-visible:ring-[#B54B00]/20",
-  slider:
-    "w-full **:data-[slot=slider-track]:h-[2px] **:data-[slot=slider-track]:rounded-full **:data-[slot=slider-track]:bg-[#D6D6D6] **:data-[slot=slider-range]:bg-[#B54B00] **:data-[slot=slider-thumb]:h-3 **:data-[slot=slider-thumb]:w-3 **:data-[slot=slider-thumb]:rounded-full **:data-[slot=slider-thumb]:border **:data-[slot=slider-thumb]:border-[#B54B00] **:data-[slot=slider-thumb]:bg-white",
+  slider: STUDIO_SLIDER_CLASS,
 } as const;
 
-const outlineTertiary =
-  "h-7 border border-[#E5E5E5] bg-white text-[#111] hover:bg-[#F9FAFC] text-[10px]";
+const outlineTertiary = STUDIO_OUTLINE_TERTIARY;
 
 export default function StudioUiPreview() {
   return (
