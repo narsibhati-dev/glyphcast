@@ -234,6 +234,7 @@ const MAX_BYTES = 100 * 1024 * 1024;
 function SourceSection() {
   const source = useAsciiStore((s) => s.source);
   const setSource = useAsciiStore((s) => s.setSource);
+  const setPlaying = useAsciiStore((s) => s.setPlaying);
   const clearSource = useAsciiStore((s) => s.clearSource);
   const setMode = useAsciiStore((s) => s.setMode);
   const sourceKind = source?.kind;
@@ -254,18 +255,25 @@ function SourceSection() {
       try {
         const built = await loadSourceFromFile(file);
         if (sourceRef.current?.url) URL.revokeObjectURL(sourceRef.current.url);
+        // Remove DOM-mounted GIF img if previous source was a GIF
+        const prevEl = sourceRef.current?.el as
+          | (HTMLImageElement & { _isGifMounted?: boolean })
+          | undefined;
+        if (prevEl?._isGifMounted && prevEl.parentElement)
+          prevEl.parentElement.removeChild(prevEl);
         setSource(built);
+        if (built.kind === "video") setPlaying(true);
         toast.success(`Loaded ${file.name}`);
       } catch (err) {
         toast.error(err instanceof Error ? err.message : "Could not load file");
       }
     },
-    [setSource],
+    [setSource, setPlaying],
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
-    accept: { "image/*": [], "video/*": [] },
+    accept: { "image/*": [], "video/*": [], "image/gif": [] },
     multiple: false,
     maxSize: MAX_BYTES,
   });
@@ -288,7 +296,7 @@ function SourceSection() {
             {isDragActive ? "Drop to load" : "Drop or browse"}
           </p>
           <p className="font-sans text-[10px] text-[#666] dark:text-zinc-500">
-            Image or video up to 100MB
+            Image, GIF, or video · up to 100 MB
           </p>
         </div>
       </div>
@@ -1050,6 +1058,25 @@ export function LeftSidebar({
 
 async function loadSourceFromFile(file: File): Promise<StudioSource> {
   const url = URL.createObjectURL(file);
+
+  if (file.type === "image/gif") {
+    const img = await loadImage(url);
+    // Mount in DOM so browser advances GIF frames
+    img.style.cssText =
+      "position:fixed;opacity:0;pointer-events:none;top:-9999px;left:-9999px;";
+    (img as HTMLImageElement & { _isGifMounted?: boolean })._isGifMounted =
+      true;
+    document.body.appendChild(img);
+    return {
+      kind: "image",
+      el: img,
+      file,
+      url,
+      width: img.naturalWidth,
+      height: img.naturalHeight,
+    };
+  }
+
   if (file.type.startsWith("image/")) {
     const img = await loadImage(url);
     return {
