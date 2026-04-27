@@ -134,9 +134,46 @@ const Footer = () => {
           </div>
 
           {/* Bottom copyright */}
-          <div className="relative z-10 flex items-center justify-between px-5 pb-6 text-[11px] text-[#BBBBBB] sm:px-8">
-            <span>© 2026 {siteConfig.productName}</span>
-            <span>Built with love for the ASCII community</span>
+          <div className="relative z-10 flex items-center justify-between px-5 pb-6 sm:px-8">
+            <span className="text-[11px] text-[#BBBBBB]">
+              © 2026 {siteConfig.productName}
+            </span>
+
+            {/* Powered by AudoraLabs */}
+            <Link
+              href="https://www.audoralabs.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex items-center gap-1.5"
+            >
+              <span className="text-[11px] text-[#BBBBBB]">Powered by</span>
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 14 14"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+              >
+                <rect width="14" height="14" rx="3.5" fill="#B54B00" />
+                <path
+                  d="M4 10L7 4L10 10"
+                  stroke="#FFF8F2"
+                  strokeWidth="1.4"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M5.2 8H8.8"
+                  stroke="#FFF8F2"
+                  strokeWidth="1.2"
+                  strokeLinecap="round"
+                />
+              </svg>
+              <span className="font-mono text-[11px] font-semibold tracking-wide text-[#888] transition-colors group-hover:text-[#B54B00]">
+                AudoraLabs
+              </span>
+            </Link>
           </div>
         </div>
       </div>
