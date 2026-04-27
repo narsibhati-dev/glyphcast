@@ -60,7 +60,7 @@ function StudioShell() {
         <aside
           suppressHydrationWarning
           className={cn(
-            "w-[320px] shrink-0 overflow-y-auto rounded-3xl border border-[#E5E5E5] dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-xl shadow-black/6 dark:shadow-black/40",
+            "w-[320px] shrink-0 overflow-y-auto [&::-webkit-scrollbar]:hidden [scrollbar-width:none] rounded-3xl border border-[#E5E5E5] dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-xl shadow-black/6 dark:shadow-black/40",
             "fixed inset-y-4 left-4 z-40 transition-transform duration-300 ease-[cubic-bezier(0.16,1,0.3,1)]",
             sidebarOpen ? "translate-x-0" : "-translate-x-[120%]",
             "md:relative md:inset-auto md:z-auto md:translate-x-0",

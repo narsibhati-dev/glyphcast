@@ -28,18 +28,15 @@ export function ColorField({ label, value, onChange }: ColorFieldProps) {
             aria-label={`Pick ${label}`}
           >
             <span
-              className="size-4 shrink-0 border border-border/80"
+              className="size-4 shrink-0 rounded border border-border/80"
               style={{ background: value }}
             />
-            <span className="font-mono text-[11px] uppercase tabular-nums tracking-wide text-foreground">
+            <span className="font-mono text-[9px] uppercase tabular-nums tracking-wide text-foreground">
               {value}
             </span>
           </button>
         </PopoverTrigger>
-        <PopoverContent
-          align="end"
-          className="flex w-auto flex-col gap-3 p-3"
-        >
+        <PopoverContent align="end" className="flex w-auto flex-col gap-3 p-3">
           <HexColorPicker color={value} onChange={onChange} />
           <Input
             value={value}

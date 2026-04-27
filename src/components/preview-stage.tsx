@@ -47,6 +47,7 @@ export function PreviewStage() {
   const columns = useAsciiStore((s) => s.columns);
   const mode = useAsciiStore((s) => s.mode);
   const appearance = useAsciiStore((s) => s.appearance);
+  const patchAppearance = useAsciiStore((s) => s.patchAppearance);
 
   const isVideo = source?.kind === "video";
 
@@ -63,6 +64,7 @@ export function PreviewStage() {
     const newDark = !document.documentElement.classList.contains("dark");
     document.documentElement.classList.toggle("dark", newDark);
     localStorage.setItem("studio-theme", newDark ? "dark" : "light");
+    patchAppearance({ backgroundColor: newDark ? "#0B0B0D" : "#ffffff" });
   };
 
   const cellWidth = appearance.fontSize * 0.6 + appearance.letterSpacing;

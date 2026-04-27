@@ -1,6 +1,7 @@
 "use client";
-import React, { useRef, useState } from "react";
-import { motion } from "framer-motion";
+import React, { useState } from "react";
+import Image from "next/image";
+import { AnimatePresence, motion } from "framer-motion";
 
 interface CustomAccordionProps {
   items: { title: string; content: React.ReactNode }[];
@@ -39,14 +40,12 @@ const AccordionItem: React.FC<AccordionItemProps> = ({
   onClick,
   children,
 }) => {
-  const contentRef = useRef<HTMLDivElement>(null);
-
   // Styles for selected (open) FAQ
   const selectedFaqStyle: React.CSSProperties = {
     background:
       "radial-gradient(152.32% 683.53% at 108.86% 152.32%, #FFD9B8 0%, #FFF5ED 100%)",
     boxShadow:
-      "0px 46px 18px rgba(0, 0, 0, 0.01), 0px 26px 15px rgba(0, 0, 0, 0.05), 0px 11px 11px rgba(0, 0, 0, 0.09), 0px 3px 6px rgba(0, 0, 0, 0.1)",
+      "0px 4px 1px rgba(0, 0, 0, 0.01), 0px 2px 1px rgba(0, 0, 0, 0.05), 0px 1px 1px rgba(0, 0, 0, 0.09), 0px 0px 1px rgba(0, 0, 0, 0.1), inset 0px 2px 2.2px #FFFFFF",
     borderRadius: "16px",
     position: "relative",
     zIndex: 1,
@@ -66,11 +65,13 @@ const AccordionItem: React.FC<AccordionItemProps> = ({
       style={isOpen ? selectedFaqStyle : defaultFaqStyle}
     >
       {isOpen && (
-        <img
+        <Image
           className="pointer-events-none absolute inset-0 h-full w-full object-cover transition-opacity duration-250 ease-out"
           src="/textures/box.png"
           alt=""
           aria-hidden="true"
+          fill
+          priority={false}
           style={{
             borderRadius: "24px",
             opacity: 0.2,
@@ -117,16 +118,19 @@ const AccordionItem: React.FC<AccordionItemProps> = ({
           </motion.svg>
         </span>
       </button>
-      <div
-        ref={contentRef}
-        className="overflow-hidden transition-[max-height,opacity] duration-[220ms] ease-out relative z-10"
-        style={{
-          maxHeight: isOpen ? contentRef.current?.scrollHeight : 0,
-          opacity: isOpen ? 1 : 0,
-        }}
-      >
-        <div className="pb-4 pt-0 text-sm">{children}</div>
-      </div>
+      <AnimatePresence initial={false}>
+        {isOpen && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.22, ease: "easeOut" }}
+            className="relative z-10 overflow-hidden"
+          >
+            <div className="pb-4 pt-0 text-sm">{children}</div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

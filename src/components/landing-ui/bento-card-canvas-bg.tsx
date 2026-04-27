@@ -11,14 +11,17 @@ const CELL = 4;
 const DOT = 1;
 const MAX_ALPHA = 0.2;
 
-function paint(canvas: HTMLCanvasElement) {
+function paint(canvas: HTMLCanvasElement, reverse = false) {
   const parent = canvas.parentElement;
   if (!parent) return;
   const cssW = parent.clientWidth;
   const cssH = parent.clientHeight;
   if (cssW < 1 || cssH < 1) return;
 
-  const dpr = Math.min(typeof window !== "undefined" ? window.devicePixelRatio : 1, 2);
+  const dpr = Math.min(
+    typeof window !== "undefined" ? window.devicePixelRatio : 1,
+    2,
+  );
   canvas.width = Math.floor(cssW * dpr);
   canvas.height = Math.floor(cssH * dpr);
   canvas.style.width = `${cssW}px`;
@@ -30,8 +33,8 @@ function paint(canvas: HTMLCanvasElement) {
   ctx.clearRect(0, 0, cssW, cssH);
 
   const g = ctx.createLinearGradient(0, 0, 0, cssH);
-  g.addColorStop(0, GRADIENT_TOP);
-  g.addColorStop(1, GRADIENT_BOTTOM);
+  g.addColorStop(0, reverse ? GRADIENT_BOTTOM : GRADIENT_TOP);
+  g.addColorStop(1, reverse ? GRADIENT_TOP : GRADIENT_BOTTOM);
   ctx.fillStyle = g;
   ctx.fillRect(0, 0, cssW, cssH);
 
@@ -44,7 +47,13 @@ function paint(canvas: HTMLCanvasElement) {
   }
 }
 
-export function BentoCardCanvasBg({ className }: { className?: string }) {
+export function BentoCardCanvasBg({
+  className,
+  reverse,
+}: {
+  className?: string;
+  reverse?: boolean;
+}) {
   const ref = useRef<HTMLCanvasElement>(null);
 
   useLayoutEffect(() => {
@@ -53,12 +62,12 @@ export function BentoCardCanvasBg({ className }: { className?: string }) {
     const parent = canvas.parentElement;
     if (!parent) return;
 
-    const run = () => paint(canvas);
+    const run = () => paint(canvas, reverse ?? false);
     run();
     const ro = new ResizeObserver(run);
     ro.observe(parent);
     return () => ro.disconnect();
-  }, []);
+  }, [reverse]);
 
   return (
     <canvas

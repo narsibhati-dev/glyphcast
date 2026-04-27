@@ -28,7 +28,7 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Slider } from "@/components/ui/slider";
-import { Switch } from "@/components/ui/switch";
+import ToggleButton from "@/components/toggle-button";
 import {
   Select,
   SelectContent,
@@ -42,19 +42,17 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ColorField } from "@/components/color-field";
 import {
   ExportResultDialog,
   type ExportResult,
 } from "@/components/export-result-dialog";
 
-import { useAsciiStore, type StudioSource, type StudioMode } from "@/lib/store";
+import { useAsciiStore, type StudioSource } from "@/lib/store";
 import {
   ASCII_FONT_PRESETS,
   ASCII_CHAR_PRESETS,
   DEFAULT_ASCII_APPEARANCE,
-  type ASCIITextEffect,
 } from "@/lib/ascii-config";
 import {
   buildASCIIAnimationReactComponentSource,
@@ -73,7 +71,6 @@ import {
   STUDIO_SELECT_CONTENT,
   STUDIO_SELECT_ITEM,
   STUDIO_SLIDER_CLASS,
-  STUDIO_SWITCH_CLASS,
   STUDIO_TEXT_LABEL,
   STUDIO_TEXT_META,
 } from "@/lib/studio-theme";
@@ -226,7 +223,6 @@ function SourceSection() {
   const source = useAsciiStore((s) => s.source);
   const setSource = useAsciiStore((s) => s.setSource);
   const clearSource = useAsciiStore((s) => s.clearSource);
-  const mode = useAsciiStore((s) => s.mode);
   const setMode = useAsciiStore((s) => s.setMode);
   const sourceKind = source?.kind;
   const { requestExport, isExporting } = useStudio();
@@ -261,12 +257,6 @@ function SourceSection() {
     multiple: false,
     maxSize: MAX_BYTES,
   });
-
-  const MODES: { value: StudioMode; label: string }[] = [
-    { value: "image", label: "Image" },
-    { value: "video", label: "Video" },
-    { value: "component", label: "React" },
-  ];
 
   return (
     <AccordionSection title="Source Media" defaultOpen={true}>
@@ -424,24 +414,57 @@ function BackgroundCanvasSection({
   return (
     <AccordionSection title="Canvas Settings" defaultOpen={false}>
       <Row label="Auto-Fit Screen">
-        <Switch
-          className={STUDIO_SWITCH_CLASS}
-          checked={responsiveFit}
-          onCheckedChange={setResponsiveFit}
-        />
+        <ToggleButton toggle={responsiveFit} setToggle={setResponsiveFit} />
       </Row>
       <div className="grid grid-cols-2 gap-2">
         <div className="space-y-1.5">
           <FieldLabel>Width (Cols)</FieldLabel>
-          <Input
-            type="number"
-            className={STUDIO_FIELD_MONO_CLASS}
-            value={columns}
-            min={40}
-            max={300}
-            disabled={responsiveFit}
-            onChange={(e) => setColumns(Number(e.target.value))}
-          />
+          <div
+            className={cn(
+              "flex items-center overflow-hidden rounded-md border border-[#E5E5E5] dark:border-zinc-700 bg-white dark:bg-zinc-800",
+              responsiveFit && "opacity-50 pointer-events-none",
+            )}
+          >
+            <button
+              type="button"
+              onClick={() => setColumns(Math.max(40, columns - 1))}
+              disabled={responsiveFit || columns <= 40}
+              className="flex h-8 w-7 shrink-0 items-center justify-center border-r border-[#E5E5E5] dark:border-zinc-700 text-[#888] dark:text-zinc-400 hover:bg-[#F9FAFC] dark:hover:bg-zinc-700 hover:text-[#111] dark:hover:text-zinc-100 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                <path
+                  d="M2 4.5h6"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </button>
+            <input
+              type="number"
+              className="h-8 w-full min-w-0 bg-transparent text-center font-mono text-xs tabular-nums text-[#111] dark:text-zinc-100 outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:hidden [&::-webkit-outer-spin-button]:hidden"
+              value={columns}
+              min={40}
+              max={300}
+              disabled={responsiveFit}
+              onChange={(e) => setColumns(Number(e.target.value))}
+            />
+            <button
+              type="button"
+              onClick={() => setColumns(Math.min(300, columns + 1))}
+              disabled={responsiveFit || columns >= 300}
+              className="flex h-8 w-7 shrink-0 items-center justify-center border-l border-[#E5E5E5] dark:border-zinc-700 text-[#888] dark:text-zinc-400 hover:bg-[#F9FAFC] dark:hover:bg-zinc-700 hover:text-[#111] dark:hover:text-zinc-100 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
+                <path
+                  d="M5 2v6M2 5h6"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                />
+              </svg>
+            </button>
+          </div>
         </div>
         <div className="space-y-1.5">
           <FieldLabel>Height (Rows)</FieldLabel>
@@ -466,7 +489,6 @@ const DEFAULT_PRESET =
   ASCII_CHAR_PRESETS[0];
 
 function ConversionSection() {
-  const columns = useAsciiStore((s) => s.columns);
   const threshold = useAsciiStore((s) => s.threshold);
   const invert = useAsciiStore((s) => s.invert);
   const charset = useAsciiStore((s) => s.charset);
@@ -556,7 +578,7 @@ function ConversionSection() {
       </div>
 
       <Row label="Invert Mapping">
-        <Switch checked={invert} onCheckedChange={setInvert} />
+        <ToggleButton toggle={invert} setToggle={setInvert} />
       </Row>
     </AccordionSection>
   );
@@ -565,17 +587,6 @@ function ConversionSection() {
 /* ─────────────────────────────────────────────────────────────────────────── */
 /* Appearance                                                                  */
 /* ─────────────────────────────────────────────────────────────────────────── */
-
-const TEXT_EFFECTS: { value: ASCIITextEffect; label: string }[] = [
-  { value: "none", label: "None" },
-  { value: "matrix", label: "Matrix" },
-  { value: "glitch", label: "Glitch" },
-  { value: "neon", label: "Neon" },
-  { value: "video", label: "CRT / Video" },
-  { value: "gradient", label: "Gradient" },
-  { value: "burn", label: "Burn" },
-  { value: "neural", label: "Neural" },
-];
 
 function AppearanceSection() {
   const appearance = useAsciiStore((s) => s.appearance);
@@ -714,54 +725,17 @@ function AppearanceSection() {
         />
       </div>
       <Row label="Use Source Colors">
-        <Switch
-          checked={appearance.useColors}
-          onCheckedChange={(v) => patchAppearance({ useColors: v })}
+        <ToggleButton
+          toggle={appearance.useColors}
+          setToggle={(v) => patchAppearance({ useColors: v })}
         />
       </Row>
 
-      <MiniDivider label="Filters & Effects" />
-      <div className="space-y-2">
-        <FieldLabel>Text Effect</FieldLabel>
-        <Select
-          value={appearance.textEffect}
-          onValueChange={(v) =>
-            patchAppearance({ textEffect: v as ASCIITextEffect })
-          }
-        >
-          <SelectTrigger className={cn(STUDIO_FIELD_CLASS, "font-sans")}>
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent className={STUDIO_SELECT_CONTENT}>
-            {TEXT_EFFECTS.map((e) => (
-              <SelectItem
-                key={e.value}
-                value={e.value}
-                className={STUDIO_SELECT_ITEM}
-              >
-                {e.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div>
-      {appearance.textEffect !== "none" && (
-        <SliderField
-          label="Intensity"
-          value={appearance.textEffectThreshold}
-          min={0}
-          max={1}
-          step={0.01}
-          onChange={(v) => patchAppearance({ textEffectThreshold: v })}
-          display={appearance.textEffectThreshold.toFixed(2)}
-        />
-      )}
-
       <MiniDivider label="Meta" />
       <Row label="Show Frame Counter">
-        <Switch
-          checked={appearance.showFrameCounter}
-          onCheckedChange={(v) => patchAppearance({ showFrameCounter: v })}
+        <ToggleButton
+          toggle={appearance.showFrameCounter}
+          setToggle={(v) => patchAppearance({ showFrameCounter: v })}
         />
       </Row>
     </AccordionSection>

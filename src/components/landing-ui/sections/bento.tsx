@@ -189,7 +189,6 @@ const Bento = () => {
           <div
             className="relative flex h-full min-h-0 flex-col p-6"
             style={{
-              background: "#FFF7F2",
               border: "1px solid #FFD0AC",
               boxShadow:
                 "0px 4px 16px rgba(181,75,0,0.08), 0px 1px 3px rgba(181,75,0,0.06)",
@@ -197,7 +196,7 @@ const Bento = () => {
             }}
           >
             <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden rounded-[16px]">
-              <BentoCardCanvasBg />
+              <BentoCardCanvasBg reverse />
             </div>
             <div className="relative z-10 flex h-full min-h-0 w-full flex-col text-left">
               <span className="shrink-0 text-xl font-medium">
@@ -219,7 +218,8 @@ const Bento = () => {
           <div
             className="relative overflow-hidden p-6 flex justify-between flex-col"
             style={{
-              background: "#B54B00",
+              background:
+                "linear-gradient(135deg, #6B2800 0%, #B54B00 55%, #D96020 100%)",
               borderRadius: "16px",
             }}
           >

@@ -90,6 +90,12 @@
   * { @apply border-border outline-ring/50; }
   body { @apply bg-background text-foreground; }
   button, [role="button"] { cursor: pointer; }
+
+  /* Selection color — brand orange tint */
+  ::selection {
+    background: rgba(181, 75, 0, 0.18);
+    color: inherit;
+  }
   html {
     @apply font-sans;
     scroll-behavior: smooth;
