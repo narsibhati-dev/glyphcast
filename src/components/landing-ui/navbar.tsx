@@ -56,7 +56,7 @@ const Navbar = () => {
               <NavigationMenuItem>
                 <NavigationMenuLink className="px-4" asChild>
                   <Link
-                    href="/pricing"
+                    href="/#pricing"
                     className="text-sm hover:text-black text-muted-foreground transition-colors duration-300"
                   >
                     Pricing
@@ -88,7 +88,7 @@ const Navbar = () => {
               className="z-10 relative"
             >
               <Button
-                className="min-w-52 justify-center transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_10px_22px_rgba(181,75,0,0.2)]"
+                className="min-w-48 justify-center transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_10px_22px_rgba(181,75,0,0.2)]"
                 variant="landing"
                 size="landing"
               >
@@ -99,7 +99,7 @@ const Navbar = () => {
           </div>
           <Link href={siteConfig.studioPath} className="shrink-0">
             <Button
-              className="group min-w-52 justify-center relative overflow-hidden transition-[padding] duration-200 hover:pr-10"
+              className="group min-w-48 justify-center relative overflow-hidden transition-[padding] duration-200 hover:pr-10"
               variant="landingBlue"
               size="landing"
             >
@@ -138,7 +138,7 @@ const Navbar = () => {
             FAQs
           </Link>
           <Link
-            href="/pricing"
+            href="/#pricing"
             className="py-2.5 px-3 rounded-xl hover:bg-accent text-sm font-medium transition-colors"
             onClick={() => setMobileMenuOpen(false)}
           >

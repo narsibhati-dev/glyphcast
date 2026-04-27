@@ -28,7 +28,7 @@ const Footer = () => {
             </span>
           </Link>
           <div className="flex items-center gap-6 text-sm text-[#999]">
-            <Link href="/pricing" className="hover:text-[#111] transition-colors">Pricing</Link>
+            <Link href="/#pricing" className="hover:text-[#111] transition-colors">Pricing</Link>
             <Link href={siteConfig.githubUrl} target="_blank" rel="noopener noreferrer" className="hover:text-[#111] transition-colors">GitHub</Link>
           </div>
         </div>
@@ -47,10 +47,10 @@ const Footer = () => {
             </div>
           </div>
 
-          <div className="flex w-full max-w-sm shrink-0 flex-col gap-2 self-center sm:max-w-none sm:self-end">
-            <Link href={siteConfig.studioPath} className="block w-full sm:w-auto sm:min-w-52">
+          <div className="flex w-fit max-w-full shrink-0 flex-col items-end gap-2 self-center sm:self-end">
+            <Link href={siteConfig.studioPath} className="inline-flex">
               <Button
-                className="group relative w-full overflow-hidden transition-[padding] duration-200 hover:pr-10"
+                className="group relative min-w-48 justify-center overflow-hidden transition-[padding] duration-200 hover:pr-10"
                 variant="landingBlue"
                 size="landing"
               >
@@ -58,15 +58,15 @@ const Footer = () => {
                 <ChevronRight className="w-4 absolute right-4 -translate-x-5 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-200" />
               </Button>
             </Link>
-            <div className="relative group/repo block w-full sm:w-auto sm:min-w-52">
+            <div className="relative group/repo inline-flex">
               <Link
                 href={siteConfig.githubUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="relative z-10 block w-full"
+                className="relative z-10 inline-flex"
               >
                 <Button
-                  className="w-full transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_10px_22px_rgba(181,75,0,0.2)]"
+                  className="min-w-48 justify-center transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_10px_22px_rgba(181,75,0,0.2)]"
                   variant="landing"
                   size="landing"
                 >

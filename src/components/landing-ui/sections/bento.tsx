@@ -214,9 +214,9 @@ const Bento = () => {
             </div>
             <div className="relative z-10 flex flex-col items-start w-full">
               <span className="text-3xl text-[#FFF8F2]">Build in the open studio</span>
-              <Link href={"/studio"}>
+              <Link href={"/studio"} className="inline-flex w-fit">
                 <Button
-                  className="group mt-2 relative overflow-hidden transition-[padding] duration-200 hover:pr-10"
+                  className="group mt-2 w-fit justify-center relative overflow-hidden transition-[padding] duration-200 hover:pr-10"
                   variant="landing"
                   size="landing"
                 >

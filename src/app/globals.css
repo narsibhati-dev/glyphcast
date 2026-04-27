@@ -89,7 +89,10 @@
 @layer base {
   * { @apply border-border outline-ring/50; }
   body { @apply bg-background text-foreground; }
-  html { @apply font-sans; }
+  html {
+    @apply font-sans;
+    scroll-behavior: smooth;
+  }
 
   /* Tabular figures + lining numerals across the app */
   .num,
@@ -101,6 +104,12 @@
   ::-webkit-scrollbar       { width: 6px; height: 6px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 0; }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+  }
 }
 
 @theme {
