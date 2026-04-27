@@ -176,6 +176,18 @@ function Row({ label, children }: { label: string; children: ReactNode }) {
   );
 }
 
+function ColorSwatchRow({
+  label,
+  value,
+  onChange,
+}: {
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+}) {
+  return <ColorField label={label} value={value} onChange={onChange} asRow />;
+}
+
 function SliderField({
   label,
   value,
@@ -712,13 +724,14 @@ function AppearanceSection() {
       </div>
 
       <MiniDivider label="Theme Colors" />
-      <div className="grid grid-cols-2 gap-2">
-        <ColorField
+      {/* Color rows */}
+      <div className="space-y-1.5">
+        <ColorSwatchRow
           label="Background"
           value={appearance.backgroundColor}
           onChange={(v) => patchAppearance({ backgroundColor: v })}
         />
-        <ColorField
+        <ColorSwatchRow
           label="Text"
           value={appearance.textColor}
           onChange={(v) => patchAppearance({ textColor: v })}
