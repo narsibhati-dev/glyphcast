@@ -1,0 +1,12 @@
+node_modules
+.next
+out
+build
+coverage
+public
+*.min.*
+bun.lock
+package-lock.json
+next-env.d.ts
+*.tsbuildinfo
+.vercel

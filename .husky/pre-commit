@@ -1,0 +1,15 @@
+#!/usr/bin/env sh
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+YELLOW='\033[0;33m'
+NC='\033[0m' # No Color
+
+echo "${YELLOW} [Husky] starting pre-commit hooks...${NC}"
+echo "${YELLOW} [Husky] running lint-staged...${NC}"
+
+if bun lint-staged; then
+  echo "${GREEN} [Husky] pre-commit hooks passed.${NC}"
+else
+  echo "${RED} [Husky] pre-commit hooks failed.${NC}"
+  exit 1
+fi
