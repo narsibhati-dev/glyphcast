@@ -6,6 +6,10 @@ import { cn } from "@/lib/utils";
 
 interface PortalMarqueeTransformProps {
   className?: string;
+  /** Stronger blue glow on thumbnails (e.g. dark bento card). */
+  bentoShowcase?: boolean;
+  /** Class for the vertical split handle (e.g. brand color on light bento). */
+  splitBarClassName?: string;
 }
 
 interface MarqueeMediaItem {
@@ -31,10 +35,12 @@ function MarqueeStrip({
   media,
   isActive,
   transformed = false,
+  strongGlow = false,
 }: {
   media: MarqueeMediaItem[];
   isActive: boolean;
   transformed?: boolean;
+  strongGlow?: boolean;
 }) {
   const trackRef = React.useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
@@ -85,8 +91,8 @@ function MarqueeStrip({
           key={`${item.src}-${index}-${transformed ? "transformed" : "source"}`}
           className={cn(
             "relative h-[138px] w-[210px] shrink-0 overflow-hidden rounded-2xl",
-            transformed
-              ? "shadow-[0_12px_26px_rgba(2,60,196,0.24)]"
+            strongGlow
+              ? "shadow-[0_14px_36px_rgba(2,60,196,0.42)]"
               : "shadow-[0_12px_26px_rgba(2,60,196,0.24)]",
           )}
         >
@@ -132,6 +138,8 @@ function MarqueeStrip({
 
 export default function PortalMarqueeTransform({
   className,
+  bentoShowcase = false,
+  splitBarClassName = "bg-[#023cc4]",
 }: PortalMarqueeTransformProps) {
   const [isHovered, setIsHovered] = React.useState(false);
 
@@ -145,7 +153,11 @@ export default function PortalMarqueeTransform({
       onMouseLeave={() => setIsHovered(false)}
     >
       <div className="absolute inset-0">
-        <MarqueeStrip media={SOURCE_MEDIA} isActive={isHovered} />
+        <MarqueeStrip
+          media={SOURCE_MEDIA}
+          isActive={isHovered}
+          strongGlow={bentoShowcase}
+        />
       </div>
 
       <div
@@ -156,10 +168,16 @@ export default function PortalMarqueeTransform({
           media={TRANSFORMED_MEDIA}
           isActive={isHovered}
           transformed
+          strongGlow={bentoShowcase}
         />
       </div>
 
-      <div className="pointer-events-none absolute top-1/2 left-1/2 z-20 h-[170px] w-[10px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#023cc4]"></div>
+      <div
+        className={cn(
+          "pointer-events-none absolute top-1/2 left-1/2 z-20 h-[170px] w-[10px] -translate-x-1/2 -translate-y-1/2 rounded-full",
+          splitBarClassName,
+        )}
+      />
     </div>
   );
 }

@@ -15,7 +15,7 @@ const faqItems: FAQItem[] = [
     number: "01",
     question: "What export formats does Glyphcast support?",
     answer:
-      "Glyphcast exports ASCII art as a PNG snapshot, a ZIP of individual frame text files, or a self-contained React (.tsx) component with all frames embedded — ready to drop into any project.",
+      "Glyphcast exports ASCII art as a PNG snapshot, a ZIP of individual frame text files, or a self-contained React (.tsx) component with all frames embedded, ready to drop into any project.",
   },
   {
     id: "item-2",
@@ -29,14 +29,14 @@ const faqItems: FAQItem[] = [
     number: "03",
     question: "How do I customise the look of my ASCII output?",
     answer:
-      "You have full control over font family, font size, line height, letter spacing, foreground/background colors, character sets (40+), and visual effects like Matrix, Glitch, Neon, CRT, and more — all tweaked live in the studio.",
+      "You have full control over font family, font size, line height, letter spacing, foreground/background colors, character sets (40+), and visual effects like Matrix, Glitch, Neon, CRT, and more, all tweaked live in the studio.",
   },
   {
     id: "item-4",
     number: "04",
     question: "Is Glyphcast free to use?",
     answer:
-      "Yes — the core studio is free and open-source. Star the repo on GitHub to stay updated. A paid tier with priority support and early access to new features is planned for the future.",
+      "Yes, the core studio is free and open-source. Star the repo on GitHub to stay updated. A paid tier with priority support and early access to new features is planned for the future.",
   },
   {
     id: "item-5",

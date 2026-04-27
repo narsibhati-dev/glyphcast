@@ -145,7 +145,7 @@ const Bento = () => {
                   Dial in the glyph grid
                 </span>
                 <span className="text-xs px-6 pb-6 font-medium text-muted-foreground">
-                  Scrub presets and density under the lens—see exactly how your
+                  Scrub presets and density under the lens, see exactly how your
                   charset will read before you pick an export.
                 </span>
               </div>
@@ -172,7 +172,7 @@ const Bento = () => {
                   Hand off without rework
                 </span>
                 <span className="text-xs font-medium text-muted-foreground">
-                  Download stills, MP4, or a drop-in component—one click from
+                  Download stills, MP4, or a drop-in component, one click from
                   the preview you already trust.
                 </span>
               </div>
@@ -185,7 +185,7 @@ const Bento = () => {
           variants={bentoRow}
         >
           <div
-            className="relative"
+            className="relative flex h-full min-h-0 flex-col p-6"
             style={{
               border: "1px solid #E5E5E5",
               boxShadow:
@@ -193,17 +193,23 @@ const Bento = () => {
               borderRadius: "16px",
             }}
           >
-            <div className="flex flex-col h-full text-left items-start w-full relative z-20">
-              <span className="text-xl font-medium mt-6 px-6">
+            <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden rounded-[16px]">
+              <BentoCardCanvasBg />
+            </div>
+            <div className="relative z-10 flex h-full min-h-0 w-full flex-col text-left">
+              <span className="shrink-0 text-xl font-medium">
                 Motion that stays in sync
               </span>
-              <span className="text-xs font-medium text-muted-foreground px-6">
+              <span className="mt-1.5 shrink-0 text-xs font-medium text-muted-foreground">
                 The split preview keeps source and text conversion aligned:
                 hover to scroll the strip and read the final rhythm before you
                 ship the sequence.
               </span>
-              <div className="h-full w-full z-30 flex justify-center items-center min-h-0">
-                <PortalMarqueeTransform className="h-full w-full" />
+              <div className="z-20 flex min-h-0 w-full flex-1 items-center justify-center pt-5">
+                <PortalMarqueeTransform
+                  splitBarClassName="bg-[#B54B00] shadow-[0_0_20px_rgba(181,75,0,0.35)]"
+                  className="h-full w-full min-h-[190px] max-h-[280px] flex-1 rounded-2xl border border-[#E5E5E5] bg-white shadow-[0_1px_3px_rgba(0,0,0,0.08)]"
+                />
               </div>
             </div>
           </div>
