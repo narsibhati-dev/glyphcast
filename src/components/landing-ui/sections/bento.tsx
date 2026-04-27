@@ -3,7 +3,9 @@ import { Sparkles, ChevronRight } from "lucide-react";
 import { motion } from "framer-motion";
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
+import { siteConfig } from "@/lib/site";
 import ImagesBadgeDemoFour from "@/components/images-badge-demo-4";
 import PortalMarqueeTransform from "@/components/portal-marquee-transform";
 import MagnifiedBento from "@/components/magnified-bento";
@@ -232,13 +234,12 @@ const Bento = () => {
               aria-hidden="true"
             />
             <div className="relative z-10 flex justify-end gap-4">
-              <div
-                style={{
-                  background:
-                    "radial-gradient(circle at 30% 30%, #E07030 0%, #C96020 60%, #A03800 100%)",
-                  boxShadow: "inset 0 1px 2px rgba(255,200,150,0.3)",
-                }}
-                className="h-14 aspect-square w-14 rounded-full"
+              <Image
+                src={siteConfig.logoPath}
+                alt={`${siteConfig.productName} logo`}
+                width={56}
+                height={56}
+                className="h-14 w-14 rounded-2xl object-contain ring-1 ring-white/25 shadow-md"
               />
             </div>
             <div className="relative z-10 flex flex-col items-start w-full">
