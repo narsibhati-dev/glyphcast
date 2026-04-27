@@ -168,10 +168,10 @@ const HeroSection = () => {
             Each frame is rebuilt from your charset, then played in order
             <br className="hidden sm:block" /> so the motion reads as one smooth stream.
           </div>
-          <section className="flex flex-wrap justify-center gap-2 mt-8">
-            <Link href={siteConfig.studioPath}>
+          <section className="mx-auto mt-8 flex w-full max-w-sm flex-col items-stretch gap-2 self-center sm:max-w-md">
+            <Link href={siteConfig.studioPath} className="block w-full">
               <Button
-                className="group relative overflow-hidden transition-[padding] duration-200 hover:pr-10"
+                className="group relative w-full overflow-hidden transition-[padding] duration-200 hover:pr-10"
                 variant="landingBlue"
                 size="landing"
               >
@@ -180,14 +180,15 @@ const HeroSection = () => {
               </Button>
             </Link>
 
-            <div className="relative group/repo flex items-center justify-center">
+            <div className="relative group/repo block w-full">
               <Link
                 href={siteConfig.githubUrl}
                 target="_blank"
                 rel="noopener noreferrer"
+                className="relative z-10 block w-full"
               >
                 <Button
-                  className="z-10 relative transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_10px_22px_rgba(181,75,0,0.2)]"
+                  className="w-full transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_10px_22px_rgba(181,75,0,0.2)]"
                   variant="landing"
                   size="landing"
                 >

@@ -47,10 +47,10 @@ const Footer = () => {
             </div>
           </div>
 
-          <div className="flex flex-row sm:flex-col flex-wrap gap-2 shrink-0">
-            <Link href={siteConfig.studioPath}>
+          <div className="flex w-full max-w-sm shrink-0 flex-col gap-2 self-center sm:max-w-none sm:self-end">
+            <Link href={siteConfig.studioPath} className="block w-full sm:w-auto sm:min-w-52">
               <Button
-                className="group relative overflow-hidden transition-[padding] duration-200 hover:pr-10"
+                className="group relative w-full overflow-hidden transition-[padding] duration-200 hover:pr-10"
                 variant="landingBlue"
                 size="landing"
               >
@@ -58,10 +58,15 @@ const Footer = () => {
                 <ChevronRight className="w-4 absolute right-4 -translate-x-5 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-200" />
               </Button>
             </Link>
-            <div className="relative group/repo flex items-center">
-              <Link href={siteConfig.githubUrl} target="_blank" rel="noopener noreferrer" className="z-10 relative">
+            <div className="relative group/repo block w-full sm:w-auto sm:min-w-52">
+              <Link
+                href={siteConfig.githubUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="relative z-10 block w-full"
+              >
                 <Button
-                  className="transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_10px_22px_rgba(181,75,0,0.2)]"
+                  className="w-full transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_10px_22px_rgba(181,75,0,0.2)]"
                   variant="landing"
                   size="landing"
                 >

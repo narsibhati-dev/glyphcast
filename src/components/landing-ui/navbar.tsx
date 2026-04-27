@@ -79,7 +79,7 @@ const Navbar = () => {
         </section>
 
         {/* Desktop buttons */}
-        <section className="hidden lg:flex gap-2">
+        <section className="hidden lg:flex items-center gap-2">
           <div className="relative group/repo flex items-center justify-center">
             <Link
               href={siteConfig.githubUrl}
@@ -88,7 +88,7 @@ const Navbar = () => {
               className="z-10 relative"
             >
               <Button
-                className="transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_10px_22px_rgba(181,75,0,0.2)]"
+                className="min-w-52 justify-center transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_10px_22px_rgba(181,75,0,0.2)]"
                 variant="landing"
                 size="landing"
               >
@@ -97,9 +97,9 @@ const Navbar = () => {
             </Link>
             <span className="pointer-events-none absolute -inset-1 rounded-[999px] border border-[#B54B00]/35 opacity-0 group-hover/repo:opacity-100 transition-opacity duration-200" />
           </div>
-          <Link href={siteConfig.studioPath}>
+          <Link href={siteConfig.studioPath} className="shrink-0">
             <Button
-              className="group relative overflow-hidden transition-[padding] duration-200 hover:pr-10"
+              className="group min-w-52 justify-center relative overflow-hidden transition-[padding] duration-200 hover:pr-10"
               variant="landingBlue"
               size="landing"
             >
@@ -171,7 +171,7 @@ const Navbar = () => {
             </div>
             <Link href={siteConfig.studioPath} className="flex-1">
               <Button
-                className="w-full group relative overflow-hidden transition-[padding] duration-200 hover:pr-10"
+                className="group w-full relative overflow-hidden transition-[padding] duration-200 hover:pr-10"
                 variant="landingBlue"
                 size="landing"
               >
