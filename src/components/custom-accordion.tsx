@@ -46,22 +46,24 @@ const AccordionItem: React.FC<AccordionItemProps> = ({
 
   const selectedFaqStyle: React.CSSProperties = {
     background: isDark
-      ? "radial-gradient(152.32% 683.53% at 108.86% 152.32%, #30303A 0%, #1E1E24 100%)"
+      ? "radial-gradient(152.32% 683.53% at 108.86% 152.32%, #1C1C20 0%, #151518 100%)"
       : "radial-gradient(152.32% 683.53% at 108.86% 152.32%, #FFD9B8 0%, #FFF5ED 100%)",
     boxShadow: isDark
       ? "0px 4px 1px rgba(0,0,0,0.08), 0px 2px 1px rgba(0,0,0,0.2), 0px 1px 1px rgba(0,0,0,0.26), 0px 0px 1px rgba(0,0,0,0.3), inset 0px 2px 2.2px rgba(255,255,255,0.04)"
       : "0px 4px 1px rgba(0, 0, 0, 0.01), 0px 2px 1px rgba(0, 0, 0, 0.05), 0px 1px 1px rgba(0, 0, 0, 0.09), 0px 0px 1px rgba(0, 0, 0, 0.1), inset 0px 2px 2.2px #FFFFFF",
     borderRadius: "16px",
+    border: isDark ? "1px solid #2A2A31" : undefined,
     position: "relative",
     zIndex: 1,
   };
 
   const defaultFaqStyle: React.CSSProperties = {
-    background: isDark ? "#26262E" : "#FFFFFF",
+    background: isDark ? "#151518" : "#FFFFFF",
     boxShadow: isDark
       ? "0px 4px 1px rgba(0,0,0,0.04), 0px 2px 1px rgba(0,0,0,0.12), 0px 1px 1px rgba(0,0,0,0.18), 0px 0px 1px rgba(0,0,0,0.2), inset 0px 2px 2.2px rgba(255,255,255,0.04)"
       : "0px 4px 1px rgba(0, 0, 0, 0.01), 0px 2px 1px rgba(0, 0, 0, 0.05), 0px 1px 1px rgba(0, 0, 0, 0.09), 0px 0px 1px rgba(0, 0, 0, 0.1), inset 0px 2px 2.2px #FFFFFF",
     borderRadius: "16px",
+    border: isDark ? "1px solid #2A2A31" : undefined,
   };
 
   return (
@@ -86,7 +88,7 @@ const AccordionItem: React.FC<AccordionItemProps> = ({
       )}
       <button
         className="w-full flex justify-between items-center py-4 text-sm font-medium text-left transition-colors relative z-10 cursor-pointer"
-        style={{ color: isOpen ? (isDark ? "#F4F4F5" : "#111111") : undefined }}
+        style={{ color: isOpen ? (isDark ? "#F5F5F7" : "#111111") : undefined }}
         onClick={onClick}
         aria-expanded={isOpen}
       >
@@ -137,7 +139,7 @@ const AccordionItem: React.FC<AccordionItemProps> = ({
           >
             <div
               className="pb-4 pt-0 text-sm"
-              style={{ color: isDark ? "#D4D4D8" : "#333333" }}
+              style={{ color: isDark ? "#B8B8C2" : "#333333" }}
             >
               {children}
             </div>

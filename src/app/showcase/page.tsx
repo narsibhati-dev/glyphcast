@@ -42,8 +42,8 @@ function ShowcaseCard({
     <div
       className="group relative flex h-full flex-col overflow-hidden rounded-[20px] border transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0px_16px_48px_rgba(0,0,0,0.10)]"
       style={{
-        borderColor: isDark ? "#3A3A44" : "#E5E5E5",
-        background: isDark ? "#18181B" : "#FFFFFF",
+        borderColor: isDark ? "#2A2A31" : "#E5E5E5",
+        background: isDark ? "#151518" : "#FFFFFF",
         boxShadow: isDark
           ? "0px 4px 24px rgba(0,0,0,0.24)"
           : "0px 4px 24px rgba(0,0,0,0.06)",
@@ -63,8 +63,8 @@ function ShowcaseCard({
       <div
         className="relative z-10 m-3 flex h-[320px] items-center justify-center overflow-hidden rounded-xl border"
         style={{
-          borderColor: isDark ? "#3A3A44" : "#EBEBEB",
-          background: isDark ? "#1E1E24" : "#F3F4F6",
+          borderColor: isDark ? "#2A2A31" : "#EBEBEB",
+          background: isDark ? "#1C1C20" : "#F3F4F6",
         }}
       >
         <ASCIIAnimation
@@ -83,13 +83,13 @@ function ShowcaseCard({
         <div className="min-w-0">
           <p
             className="text-sm font-semibold"
-            style={{ color: isDark ? "#E8E8F0" : "#111111" }}
+            style={{ color: isDark ? "#F5F5F7" : "#111111" }}
           >
             {config.title}
           </p>
           <p
             className="h-9 overflow-hidden text-xs leading-relaxed"
-            style={{ color: isDark ? "#B3B3C0" : "#888888" }}
+            style={{ color: isDark ? "#B8B8C2" : "#888888" }}
           >
             {config.description}
           </p>
