@@ -43,7 +43,7 @@ const Footer = () => {
               {siteConfig.productName}
             </span>
           </Link>
-          <div className="flex items-center gap-6 text-sm text-[#999] dark:text-zinc-500">
+          <div className="flex items-center gap-6 text-sm text-[#999] dark:text-zinc-300">
             <Link
               href="/#pricing"
               className="hover:text-[#111] dark:hover:text-zinc-100 transition-colors"
@@ -74,7 +74,7 @@ const Footer = () => {
                 <br />
                 ASCII art.
               </div>
-              <div className="max-w-xs text-sm leading-relaxed text-[#888] dark:text-zinc-400">
+              <div className="max-w-xs text-sm leading-relaxed text-[#888] dark:text-zinc-300">
                 No setup required. Drop in an image or video and convert it to
                 ASCII in seconds.
               </div>
@@ -133,7 +133,7 @@ const Footer = () => {
 
           {/* Bottom copyright */}
           <div className="relative z-10 flex items-center justify-between px-5 pb-6 sm:px-8">
-            <span className="text-[11px] text-[#BBBBBB] dark:text-zinc-600">
+            <span className="text-[11px] text-[#BBBBBB] dark:text-zinc-400">
               © 2026 {siteConfig.productName}
             </span>
 
@@ -144,7 +144,7 @@ const Footer = () => {
               rel="noopener noreferrer"
               className="group flex items-center gap-1.5"
             >
-              <span className="text-[11px] text-[#BBBBBB] dark:text-zinc-600">
+              <span className="text-[11px] text-[#BBBBBB] dark:text-zinc-400">
                 Powered by
               </span>
               <svg
@@ -170,7 +170,7 @@ const Footer = () => {
                   strokeLinecap="round"
                 />
               </svg>
-              <span className="font-mono text-[11px] font-semibold tracking-wide text-[#888] transition-colors group-hover:text-[#B54B00]">
+              <span className="font-mono text-[11px] font-semibold tracking-wide text-[#888] dark:text-zinc-300 transition-colors group-hover:text-[#B54B00]">
                 AudoraLabs
               </span>
             </Link>

@@ -124,7 +124,7 @@ export default function ShowcasePage() {
       style={{
         ...(isDark
           ? {
-              background: "#1E1E24",
+              background: "#09090B",
               color: "#E8E8F0",
               ["--background" as string]: "#1E1E24",
               ["--foreground" as string]: "oklch(0.92 0.004 264)",
@@ -165,7 +165,7 @@ export default function ShowcasePage() {
           <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-[#B54B00]">
             Gallery
           </p>
-          <h1 className="mt-3 text-3xl font-medium tracking-tight text-[#111] sm:text-4xl">
+          <h1 className="mt-3 text-3xl font-medium tracking-tight text-[#111] dark:text-[#E8E8F0] sm:text-4xl">
             Showcase
           </h1>
 

@@ -18,7 +18,7 @@ export function LandingShell() {
       style={
         isDark
           ? {
-              background: "#1E1E24",
+              background: "#09090B",
               color: "#E8E8F0",
               ["--background" as string]: "#1E1E24",
               ["--foreground" as string]: "oklch(0.92 0.004 264)",
