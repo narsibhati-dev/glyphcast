@@ -32,11 +32,15 @@ export function ThemeProvider({
   defaultTheme = "dark",
   storageKey = "glyphcast-theme",
 }: ThemeProviderProps) {
-  const [theme, setTheme] = useState<Theme>(() => {
-    if (typeof window === "undefined") return defaultTheme;
+  const [theme, setTheme] = useState<Theme>(defaultTheme);
+
+  useEffect(() => {
     const saved = window.localStorage.getItem(storageKey);
-    return saved === "light" || saved === "dark" ? saved : defaultTheme;
-  });
+    if (saved === "light" || saved === "dark") {
+      // eslint-disable-next-line react-hooks/set-state-in-effect -- hydrate with server theme first, then sync persisted client preference.
+      setTheme(saved);
+    }
+  }, [storageKey]);
 
   useEffect(() => {
     const root = document.documentElement;
