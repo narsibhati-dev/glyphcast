@@ -49,9 +49,9 @@ export async function exportASCIIAnimationAsVideo({
 
   const exportAppearance = { ...appearance, showFrameCounter: false };
   const metrics = measureFrames(context, frames, exportAppearance);
-  const scale = metrics.width <= 720 ? 2 : 1;
-  canvas.width = Math.ceil(metrics.width * scale);
-  canvas.height = Math.ceil(metrics.height * scale);
+  const scale = 1;
+  canvas.width = Math.ceil(metrics.width);
+  canvas.height = Math.ceil(metrics.height);
 
   const stream = canvas.captureStream(fps);
   const { mimeType, extension } = getSupportedVideoMimeType();
@@ -63,7 +63,7 @@ export async function exportASCIIAnimationAsVideo({
   const chunks: BlobPart[] = [];
   const recorder = new MediaRecorder(stream, {
     mimeType,
-    videoBitsPerSecond: 12_000_000,
+    videoBitsPerSecond: 4_000_000,
   });
 
   const blobPromise = new Promise<Blob>((resolve, reject) => {
@@ -87,6 +87,7 @@ export async function exportASCIIAnimationAsVideo({
   try {
     const frameDuration = 1000 / fps;
     const total = frames.length;
+    const loopStart = performance.now();
 
     for (let frameIndex = 0; frameIndex < total; frameIndex += 1) {
       drawFrame({
@@ -104,7 +105,9 @@ export async function exportASCIIAnimationAsVideo({
       });
 
       onProgress?.(Math.round((frameIndex / total) * 95));
-      await wait(frameDuration);
+      const targetMs = (frameIndex + 1) * frameDuration;
+      const remaining = targetMs - (performance.now() - loopStart);
+      if (remaining > 0) await wait(remaining);
     }
 
     onStage?.("Finalizing");
