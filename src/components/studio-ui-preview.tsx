@@ -47,7 +47,7 @@ const outlineTertiary = STUDIO_OUTLINE_TERTIARY;
 
 export default function StudioUiPreview() {
   return (
-    <div className="mt-10 landing-content-width max-w-[1100px] max-h-[70vh] overflow-y-auto overflow-x-hidden rounded-3xl border border-[#E5E5E5] bg-[linear-gradient(180deg,#FFFFFF_0%,#FCFCFD_100%)] font-satoshi text-[#111] shadow-[0px_4px_24px_rgba(0,0,0,0.06)]">
+    <div className="mt-10 landing-content-width max-w-[1100px] max-h-[70vh] overflow-y-auto overflow-x-hidden [&::-webkit-scrollbar]:hidden [scrollbar-width:none] rounded-3xl border border-[#E5E5E5] bg-[linear-gradient(180deg,#FFFFFF_0%,#FCFCFD_100%)] font-satoshi text-[#111] shadow-[0px_4px_24px_rgba(0,0,0,0.06)]">
       <section className="w-full rounded-[32px] bg-white p-3 md:p-4">
         <div className="grid gap-3 lg:grid-cols-[min(320px,38vw)_1fr]">
           <div className="space-y-3">
@@ -312,10 +312,10 @@ export default function StudioUiPreview() {
                 </span>
               </div>
 
-              <div className="overflow-auto p-3">
+              <div className="overflow-hidden p-3">
                 <div
                   className={cn(
-                    "overflow-hidden rounded-lg border border-[#E5E5E5] bg-[#F9FAFC]",
+                    "relative h-[420px] overflow-hidden rounded-lg border border-[#E5E5E5] bg-[#F9FAFC]",
                   )}
                 >
                   <Fire />

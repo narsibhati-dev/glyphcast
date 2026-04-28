@@ -3,7 +3,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 
-interface TextYAnimation4Props {
+interface TextAnimationProps {
   text: string;
   secondText: string;
   isActive: boolean;
@@ -12,14 +12,14 @@ interface TextYAnimation4Props {
   secondClassName?: string;
 }
 
-export default function TextYAnimation({
+export default function TextAnimation({
   text,
   secondText,
   isActive,
   className,
   firstClassName,
   secondClassName,
-}: TextYAnimation4Props) {
+}: TextAnimationProps) {
   return (
     <span className={cn("relative inline-block overflow-hidden", className)}>
       <AnimatePresence mode="wait" initial={false}>

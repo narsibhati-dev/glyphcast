@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { ChevronRight } from "lucide-react";
 import NumberFlow from "@number-flow/react";
 import StudioUiPreview from "@/components/studio-ui-preview";
-import TextYAnimation4 from "@/components/text-animation";
+import TextAnimation from "@/components/text-animation";
 import Sponsor from "../sponsor";
 import { siteConfig } from "@/lib/site";
 
@@ -112,7 +112,7 @@ const HeroSection = () => {
                   isAsciiHovered ? "text-[#B54B00] " : "text-black"
                 }`}
               >
-                <TextYAnimation4
+                <TextAnimation
                   text="ASCII"
                   secondText="ASCII"
                   isActive={isAsciiHovered}
