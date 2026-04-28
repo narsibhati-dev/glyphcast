@@ -144,10 +144,10 @@ const Bento = () => {
                 <MagnifiedBento />
               </div>
               <div className="flex flex-col text-left items-start w-full">
-                <span className="text-xl font-medium px-6">
+                <span className="text-xl font-medium px-6 text-[#111111]">
                   Dial in the glyph grid
                 </span>
-                <span className="text-xs px-6 pb-6 font-medium text-muted-foreground">
+                <span className="text-xs px-6 pb-6 font-medium text-[#666666]">
                   Scrub presets and density under the lens, see exactly how your
                   charset will read before you pick an export.
                 </span>
@@ -172,10 +172,10 @@ const Bento = () => {
                 <ImagesBadgeDemoFour />
               </div>
               <div className="flex flex-col items-start text-left w-full">
-                <span className="text-xl font-medium">
+                <span className="text-xl font-medium text-[#111111]">
                   Hand off without rework
                 </span>
-                <span className="text-xs font-medium text-muted-foreground">
+                <span className="text-xs font-medium text-[#666666]">
                   Download stills, MP4, or a drop-in component, one click from
                   the preview you already trust.
                 </span>
@@ -201,10 +201,10 @@ const Bento = () => {
               <BentoCardCanvasBg reverse />
             </div>
             <div className="relative z-10 flex h-full min-h-0 w-full flex-col text-left">
-              <span className="shrink-0 text-xl font-medium">
+              <span className="shrink-0 text-xl font-medium text-[#111111]">
                 Motion that stays in sync
               </span>
-              <span className="mt-1.5 shrink-0 text-xs font-medium text-muted-foreground">
+              <span className="mt-1.5 shrink-0 text-xs font-medium text-[#666666]">
                 The split preview keeps source and text conversion aligned:
                 hover to scroll the strip and read the final rhythm before you
                 ship the sequence.

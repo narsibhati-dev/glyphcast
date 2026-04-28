@@ -27,20 +27,16 @@ interface ThemeContextValue {
 
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
-function getInitialTheme(defaultTheme: Theme, storageKey: string): Theme {
-  if (typeof window === "undefined") return defaultTheme;
-  const saved = window.localStorage.getItem(storageKey);
-  return saved === "light" || saved === "dark" ? saved : defaultTheme;
-}
-
 export function ThemeProvider({
   children,
   defaultTheme = "dark",
   storageKey = "glyphcast-theme",
 }: ThemeProviderProps) {
-  const [theme, setTheme] = useState<Theme>(() =>
-    getInitialTheme(defaultTheme, storageKey),
-  );
+  const [theme, setTheme] = useState<Theme>(() => {
+    if (typeof window === "undefined") return defaultTheme;
+    const saved = window.localStorage.getItem(storageKey);
+    return saved === "light" || saved === "dark" ? saved : defaultTheme;
+  });
 
   useEffect(() => {
     const root = document.documentElement;

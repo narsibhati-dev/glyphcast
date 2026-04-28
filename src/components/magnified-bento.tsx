@@ -65,7 +65,7 @@ const MagnifiedBento = () => {
                   {[...row, ...row, ...row].map((item, idx) => (
                     <div
                       key={`${item.id}-${idx}`}
-                      className="inline-flex w-fit bg-background/50 backdrop-blur-sm whitespace-nowrap text-muted-foreground py-1.5 px-3 items-center border border-border/50 rounded-full text-[11px] leading-none"
+                      className="inline-flex w-fit bg-white/55 backdrop-blur-sm whitespace-nowrap text-[#6B7280] py-1.5 px-3 items-center border border-[#9CA3AF]/60 rounded-full text-[11px] leading-none"
                     >
                       <span>{item.label}</span>
                     </div>
@@ -93,10 +93,10 @@ const MagnifiedBento = () => {
                   {[...row, ...row, ...row].map((item, idx) => (
                     <div
                       key={`${item.id}-${idx}-reveal`}
-                      className="inline-flex w-fit whitespace-nowrap text-foreground py-1.5 px-3 items-center border border-primary/20 shadow-sm rounded-full text-[11px] leading-none"
+                      className="inline-flex w-fit whitespace-nowrap text-[#1F2937] py-1.5 px-3 items-center border border-[#B54B00]/20 shadow-sm rounded-full text-[11px] leading-none"
                       title={item.chars}
                     >
-                      <span className="font-mono text-primary tracking-tight">
+                      <span className="font-mono text-[#B54B00] tracking-tight">
                         {toCharsPreview(item.chars)}
                       </span>
                     </div>
