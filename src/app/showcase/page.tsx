@@ -6,6 +6,7 @@ import Navbar from "@/components/landing-ui/navbar";
 import ASCIIAnimation from "@/components/ascii-animation";
 import { buildASCIIAnimationReactComponentSource } from "@/lib/ascii-export";
 import { Button } from "@/components/ui/button";
+import { useTheme } from "@/components/theme-provider";
 import {
   ASCII_SHOWCASE,
   type ASCIIShowcaseEntry,
@@ -15,7 +16,13 @@ const SHOWCASES: ShowcaseConfig[] = ASCII_SHOWCASE;
 
 /* ── Card ────────────────────────────────────────────────────────── */
 
-function ShowcaseCard({ config }: { config: ShowcaseConfig }) {
+function ShowcaseCard({
+  config,
+  isDark,
+}: {
+  config: ShowcaseConfig;
+  isDark: boolean;
+}) {
   const [copied, setCopied] = useState(false);
 
   const handleCopy = async () => {
@@ -33,8 +40,14 @@ function ShowcaseCard({ config }: { config: ShowcaseConfig }) {
 
   return (
     <div
-      className="group relative flex h-full flex-col overflow-hidden rounded-[20px] border border-[#E5E5E5] bg-white transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0px_16px_48px_rgba(0,0,0,0.10)]"
-      style={{ boxShadow: "0px 4px 24px rgba(0,0,0,0.06)" }}
+      className="group relative flex h-full flex-col overflow-hidden rounded-[20px] border transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0px_16px_48px_rgba(0,0,0,0.10)]"
+      style={{
+        borderColor: isDark ? "#3A3A44" : "#E5E5E5",
+        background: isDark ? "#18181B" : "#FFFFFF",
+        boxShadow: isDark
+          ? "0px 4px 24px rgba(0,0,0,0.24)"
+          : "0px 4px 24px rgba(0,0,0,0.06)",
+      }}
     >
       {/* Subtle texture */}
       <div
@@ -47,7 +60,13 @@ function ShowcaseCard({ config }: { config: ShowcaseConfig }) {
       />
 
       {/* Animation — inset gray panel */}
-      <div className="relative z-10 m-3 flex h-[320px] items-center justify-center overflow-hidden rounded-xl border border-[#EBEBEB] bg-[#F3F4F6]">
+      <div
+        className="relative z-10 m-3 flex h-[320px] items-center justify-center overflow-hidden rounded-xl border"
+        style={{
+          borderColor: isDark ? "#3A3A44" : "#EBEBEB",
+          background: isDark ? "#1E1E24" : "#F3F4F6",
+        }}
+      >
         <ASCIIAnimation
           frames={config.frames}
           appearance={config.appearance}
@@ -62,8 +81,16 @@ function ShowcaseCard({ config }: { config: ShowcaseConfig }) {
       {/* Footer row */}
       <div className="relative z-10 mt-auto flex items-center justify-between gap-3 px-4 pb-4 pt-2">
         <div className="min-w-0">
-          <p className="text-sm font-semibold text-[#111]">{config.title}</p>
-          <p className="h-9 overflow-hidden text-xs leading-relaxed text-[#888]">
+          <p
+            className="text-sm font-semibold"
+            style={{ color: isDark ? "#E8E8F0" : "#111111" }}
+          >
+            {config.title}
+          </p>
+          <p
+            className="h-9 overflow-hidden text-xs leading-relaxed"
+            style={{ color: isDark ? "#B3B3C0" : "#888888" }}
+          >
             {config.description}
           </p>
         </div>
@@ -89,24 +116,47 @@ function ShowcaseCard({ config }: { config: ShowcaseConfig }) {
 /* ── Page ────────────────────────────────────────────────────────── */
 
 export default function ShowcasePage() {
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
+
   return (
     <div
       style={{
-        background: "#F9FAFC",
-        color: "#111111",
-        ["--background" as string]: "#F9FAFC",
-        ["--foreground" as string]: "oklch(0.13 0 0)",
-        ["--card" as string]: "#ffffff",
-        ["--card-foreground" as string]: "oklch(0.13 0 0)",
-        ["--muted" as string]: "oklch(0.96 0 0)",
-        ["--muted-foreground" as string]: "oklch(0.42 0 0)",
-        ["--border" as string]: "oklch(0.90 0 0)",
-        ["--primary" as string]: "oklch(0.13 0 0)",
-        ["--primary-foreground" as string]: "oklch(0.98 0 0)",
-        ["--secondary" as string]: "oklch(0.96 0 0)",
-        ["--secondary-foreground" as string]: "oklch(0.13 0 0)",
-        ["--accent" as string]: "oklch(0.96 0 0)",
-        ["--accent-foreground" as string]: "oklch(0.13 0 0)",
+        ...(isDark
+          ? {
+              background: "#1E1E24",
+              color: "#E8E8F0",
+              ["--background" as string]: "#1E1E24",
+              ["--foreground" as string]: "oklch(0.92 0.004 264)",
+              ["--card" as string]: "#26262E",
+              ["--card-foreground" as string]: "oklch(0.92 0.004 264)",
+              ["--muted" as string]: "oklch(0.28 0.006 264)",
+              ["--muted-foreground" as string]: "oklch(0.62 0.008 264)",
+              ["--border" as string]: "oklch(0.32 0.006 264)",
+              ["--primary" as string]: "oklch(0.92 0.004 264)",
+              ["--primary-foreground" as string]: "oklch(0.18 0.006 264)",
+              ["--secondary" as string]: "oklch(0.28 0.006 264)",
+              ["--secondary-foreground" as string]: "oklch(0.92 0.004 264)",
+              ["--accent" as string]: "oklch(0.28 0.006 264)",
+              ["--accent-foreground" as string]: "oklch(0.92 0.004 264)",
+            }
+          : {
+              background: "#F9FAFC",
+              color: "#111111",
+              ["--background" as string]: "#F9FAFC",
+              ["--foreground" as string]: "oklch(0.13 0 0)",
+              ["--card" as string]: "#ffffff",
+              ["--card-foreground" as string]: "oklch(0.13 0 0)",
+              ["--muted" as string]: "oklch(0.96 0 0)",
+              ["--muted-foreground" as string]: "oklch(0.42 0 0)",
+              ["--border" as string]: "oklch(0.90 0 0)",
+              ["--primary" as string]: "oklch(0.13 0 0)",
+              ["--primary-foreground" as string]: "oklch(0.98 0 0)",
+              ["--secondary" as string]: "oklch(0.96 0 0)",
+              ["--secondary-foreground" as string]: "oklch(0.13 0 0)",
+              ["--accent" as string]: "oklch(0.96 0 0)",
+              ["--accent-foreground" as string]: "oklch(0.13 0 0)",
+            }),
       }}
     >
       <div className="flex min-h-dvh w-full flex-col items-center font-satoshi">
@@ -122,7 +172,7 @@ export default function ShowcasePage() {
           <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2">
             {SHOWCASES.map((config) => (
               <div key={config.id} className="h-full">
-                <ShowcaseCard config={config} />
+                <ShowcaseCard config={config} isDark={isDark} />
               </div>
             ))}
           </div>

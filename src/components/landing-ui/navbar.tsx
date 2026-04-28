@@ -61,7 +61,7 @@ const Navbar = () => {
                 <NavigationMenuLink className="px-4" asChild>
                   <Link
                     href="/#pricing"
-                    className="text-sm hover:text-black text-muted-foreground transition-colors duration-300"
+                    className="text-sm text-muted-foreground dark:text-[#B9BAC6] hover:text-black dark:hover:text-[#F2F2F7] transition-colors duration-300"
                   >
                     Pricing
                   </Link>
@@ -72,7 +72,7 @@ const Navbar = () => {
                 <NavigationMenuLink className="px-4" asChild>
                   <Link
                     href="/showcase"
-                    className="text-sm hover:text-black text-muted-foreground transition-colors duration-300"
+                    className="text-sm text-muted-foreground dark:text-[#B9BAC6] hover:text-black dark:hover:text-[#F2F2F7] transition-colors duration-300"
                   >
                     Showcase
                   </Link>
