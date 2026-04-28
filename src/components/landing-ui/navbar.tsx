@@ -97,7 +97,7 @@ const Navbar = () => {
                   variant="landing"
                   size="landing"
                 >
-                  Star the repo
+                  Give us a star
                 </Button>
               </Link>
               <span className="pointer-events-none absolute -inset-1 rounded-[999px] border border-[#B54B00]/35 opacity-0 group-hover/repo:opacity-100 transition-opacity duration-200" />
@@ -173,7 +173,7 @@ const Navbar = () => {
                     variant="landing"
                     size="landing"
                   >
-                    Star the repo
+                    Give us a star
                   </Button>
                 </Link>
                 <span className="pointer-events-none absolute -inset-1 rounded-[999px] border border-[#B54B00]/35 opacity-0 group-hover/repo:opacity-100 transition-opacity duration-200" />
