@@ -59,6 +59,7 @@ interface ASCIIAnimationProps {
   frameCount?: number;
   frameFolder?: string;
   fitToContainer?: boolean;
+  fitWidth?: boolean;
   colorUrl?: string;
   chars?: string;
   isPlaying?: boolean;
@@ -72,14 +73,49 @@ export default function ASCIIAnimation({
   frameCount = 60,
   frameFolder = "frames",
   fitToContainer = false,
+  fitWidth = false,
   colorUrl,
-  chars = "@%#*+=-:. ", // Provide a default if missing
+  chars = "@%#*+=-:. ",
   isPlaying = true,
 }: ASCIIAnimationProps) {
   const [frames, setFrames] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [currentFrame, setCurrentFrame] = useState(0);
+
+  const cropFrames = (rawFrames: string[]): string[] => {
+    let minCol = Infinity,
+      maxCol = -Infinity;
+    let minRow = Infinity,
+      maxRow = -Infinity;
+
+    for (const frame of rawFrames) {
+      const rows = frame.split("\n");
+      for (let r = 0; r < rows.length; r++) {
+        const row = rows[r];
+        for (let c = 0; c < row.length; c++) {
+          if (row[c] !== " ") {
+            if (r < minRow) minRow = r;
+            if (r > maxRow) maxRow = r;
+            if (c < minCol) minCol = c;
+            if (c > maxCol) maxCol = c;
+          }
+        }
+      }
+    }
+
+    if (minCol === Infinity) return rawFrames;
+
+    return rawFrames.map((frame) =>
+      frame
+        .split("\n")
+        .slice(minRow, maxRow + 1)
+        .map((row) => row.slice(minCol, maxCol + 1))
+        .join("\n"),
+    );
+  };
+
   const [scale, setScale] = useState(1);
+  const [scaledHeight, setScaledHeight] = useState<number | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const framesRef = useRef<string[]>([]);
@@ -103,8 +139,9 @@ export default function ASCIIAnimation({
 
       if (providedFrames) {
         if (!isCancelled) {
-          setFrames(providedFrames);
-          framesRef.current = providedFrames;
+          const cropped = cropFrames(providedFrames);
+          setFrames(cropped);
+          framesRef.current = cropped;
           setCurrentFrame(0);
           setIsLoading(false);
         }
@@ -126,10 +163,11 @@ export default function ASCIIAnimation({
         });
 
         const loadedFrames = await Promise.all(framePromises);
-        console.log(`Loaded ${loadedFrames.length} frames`);
+        const croppedFrames = cropFrames(loadedFrames);
+        console.log(`Loaded ${croppedFrames.length} frames`);
         if (!isCancelled) {
-          setFrames(loadedFrames);
-          framesRef.current = loadedFrames;
+          setFrames(croppedFrames);
+          framesRef.current = croppedFrames;
           setCurrentFrame(0);
         }
       } catch (error) {
@@ -190,8 +228,7 @@ export default function ASCIIAnimation({
   }, [animationManager, frames.length, isPlaying]);
 
   useEffect(() => {
-    if (!fitToContainer) {
-      setScale(1);
+    if (!fitToContainer && !fitWidth) {
       return;
     }
 
@@ -199,23 +236,24 @@ export default function ASCIIAnimation({
       const container = containerRef.current;
       const content = contentRef.current;
 
-      if (!container || !content) {
-        return;
-      }
+      if (!container || !content) return;
 
       const availableWidth = container.clientWidth;
-      const availableHeight = container.clientHeight;
       const naturalWidth = content.scrollWidth;
-      const naturalHeight = content.scrollHeight;
 
-      if (
-        availableWidth <= 0 ||
-        availableHeight <= 0 ||
-        naturalWidth <= 0 ||
-        naturalHeight <= 0
-      ) {
+      if (availableWidth <= 0 || naturalWidth <= 0) return;
+
+      if (fitWidth) {
+        const nextScale = availableWidth / naturalWidth;
+        setScale(Number(nextScale.toFixed(4)));
+        setScaledHeight(content.scrollHeight * nextScale);
         return;
       }
+
+      const availableHeight = container.clientHeight;
+      const naturalHeight = content.scrollHeight;
+
+      if (availableHeight <= 0 || naturalHeight <= 0) return;
 
       const nextScale = Math.min(
         availableWidth / naturalWidth,
@@ -227,23 +265,15 @@ export default function ASCIIAnimation({
 
     measure();
 
-    const observer = new ResizeObserver(() => {
-      measure();
-    });
+    const observer = new ResizeObserver(measure);
 
-    if (containerRef.current) {
-      observer.observe(containerRef.current);
-    }
+    if (containerRef.current) observer.observe(containerRef.current);
+    if (contentRef.current) observer.observe(contentRef.current);
 
-    if (contentRef.current) {
-      observer.observe(contentRef.current);
-    }
-
-    return () => {
-      observer.disconnect();
-    };
+    return () => observer.disconnect();
   }, [
     fitToContainer,
+    fitWidth,
     currentFrame,
     frames.length,
     resolvedAppearance.borderRadius,
@@ -295,6 +325,9 @@ export default function ASCIIAnimation({
         fontFamily: resolvedAppearance.fontFamily,
         overflow: "hidden",
         position: "relative",
+        ...(fitWidth && scaledHeight !== null
+          ? { height: `${scaledHeight}px` }
+          : {}),
       }}
     >
       <div
@@ -307,7 +340,9 @@ export default function ASCIIAnimation({
                 justifyContent: "center",
                 overflow: "hidden",
               }
-            : undefined
+            : fitWidth
+              ? { overflow: "hidden" }
+              : undefined
         }
       >
         <div
@@ -319,7 +354,13 @@ export default function ASCIIAnimation({
                   transform: `scale(${scale})`,
                   transformOrigin: "center center",
                 }
-              : undefined
+              : fitWidth
+                ? {
+                    display: "inline-block",
+                    transform: `scale(${scale})`,
+                    transformOrigin: "left top",
+                  }
+                : undefined
           }
         >
           {resolvedAppearance.showFrameCounter ? (

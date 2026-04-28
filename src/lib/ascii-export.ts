@@ -1,11 +1,14 @@
-import { type ASCIIAppearance } from "@/lib/ascii-config";
+import { type ASCIIAppearance, hexToRgba } from "@/lib/ascii-config";
 
 type ASCIIExportParams = {
   appearance: ASCIIAppearance;
   fileName: string;
   fps: number;
   frames: string[];
+  colorFrames?: (string[][] | undefined)[];
   chars: string;
+  onProgress?: (pct: number) => void;
+  onStage?: (label: string) => void;
 };
 
 type ASCIIRenderMetrics = {
@@ -22,7 +25,10 @@ export async function exportASCIIAnimationAsVideo({
   fileName,
   fps,
   frames,
+  colorFrames,
   chars,
+  onProgress,
+  onStage,
 }: ASCIIExportParams) {
   if (frames.length === 0) {
     throw new Error("Convert a video first so there are frames to export.");
@@ -41,67 +47,74 @@ export async function exportASCIIAnimationAsVideo({
     throw new Error("The browser could not create a 2D canvas context.");
   }
 
-  const metrics = measureFrames(context, frames, appearance);
+  const exportAppearance = { ...appearance, showFrameCounter: false };
+  const croppedFrames = cropFrames(frames);
+  const metrics = measureFrames(context, croppedFrames, exportAppearance);
   const scale = metrics.width <= 720 ? 2 : 1;
   canvas.width = Math.ceil(metrics.width * scale);
   canvas.height = Math.ceil(metrics.height * scale);
 
   const stream = canvas.captureStream(fps);
-  const mimeType = getSupportedVideoMimeType();
+  const { mimeType, extension } = getSupportedVideoMimeType();
 
-  if (!mimeType) {
-    throw new Error("This browser cannot record canvas output as WebM.");
+  if (!mimeType || !extension) {
+    throw new Error("This browser cannot encode canvas output as video.");
   }
 
   const chunks: BlobPart[] = [];
   const recorder = new MediaRecorder(stream, {
     mimeType,
-    videoBitsPerSecond: 6_000_000,
+    videoBitsPerSecond: 12_000_000,
   });
 
   const blobPromise = new Promise<Blob>((resolve, reject) => {
     recorder.ondataavailable = (event) => {
-      if (event.data.size > 0) {
-        chunks.push(event.data);
-      }
+      if (event.data.size > 0) chunks.push(event.data);
     };
-
     recorder.onerror = () => {
       reject(
         new Error("Video export failed while recording the canvas stream."),
       );
     };
-
     recorder.onstop = () => {
       resolve(new Blob(chunks, { type: mimeType }));
     };
   });
 
+  onStage?.("Encoding video");
+  onProgress?.(0);
   recorder.start();
 
   try {
     const frameDuration = 1000 / fps;
+    const total = croppedFrames.length;
 
-    for (let frameIndex = 0; frameIndex < frames.length; frameIndex += 1) {
+    for (let frameIndex = 0; frameIndex < total; frameIndex += 1) {
       drawFrame({
-        appearance,
+        appearance: exportAppearance,
         canvas,
         context,
-        frame: frames[frameIndex],
+        frame: croppedFrames[frameIndex],
         frameIndex,
+        fps,
         metrics,
         scale,
-        totalFrames: frames.length,
+        totalFrames: total,
         chars,
+        colors: colorFrames?.[frameIndex],
       });
 
+      onProgress?.(Math.round((frameIndex / total) * 95));
       await wait(frameDuration);
     }
 
+    onStage?.("Finalizing");
+    onProgress?.(97);
     await wait(frameDuration);
     recorder.stop();
     const blob = await blobPromise;
-    downloadBlob(blob, `${sanitizeFileStem(fileName)}.webm`);
+    onProgress?.(100);
+    downloadBlob(blob, `${sanitizeFileStem(fileName)}.${extension}`);
   } finally {
     stream.getTracks().forEach((track) => track.stop());
   }
@@ -121,10 +134,10 @@ export function exportASCIIAnimationAsReactComponent({
   const stem = sanitizeFileStem(fileName);
   const componentName = toPascalCase(stem);
   const source = buildASCIIAnimationReactComponentSource({
-    appearance,
+    appearance: { ...appearance, showFrameCounter: false },
     componentName,
     fps,
-    frames,
+    frames: cropFrames(frames),
     chars,
   });
 
@@ -135,12 +148,14 @@ export async function exportASCIIAsImage({
   appearance,
   fileName,
   frame,
+  colors,
   chars,
   quality = 2,
 }: {
   appearance: ASCIIAppearance;
   fileName: string;
   frame: string;
+  colors?: string[][];
   chars: string;
   quality?: number;
 }) {
@@ -151,22 +166,26 @@ export async function exportASCIIAsImage({
     throw new Error("The browser could not create a 2D canvas context.");
   }
 
-  const metrics = measureFrames(context, [frame], appearance);
+  const exportAppearance = { ...appearance, showFrameCounter: false };
+  const croppedFrame = cropFrames([frame])[0];
+  const metrics = measureFrames(context, [croppedFrame], exportAppearance);
 
   const scale = quality;
   canvas.width = Math.ceil(metrics.width * scale);
   canvas.height = Math.ceil(metrics.height * scale);
 
   drawFrame({
-    appearance,
+    appearance: exportAppearance,
     canvas,
     context,
-    frame,
+    frame: croppedFrame,
     frameIndex: 0,
+    fps: 1,
     metrics,
     scale,
     totalFrames: 1,
     chars,
+    colors,
   });
 
   const blob = await new Promise<Blob | null>((resolve) => {
@@ -201,14 +220,15 @@ export function buildASCIIAnimationReactComponentSource({
     "",
     'import React, { useEffect, useRef, useState } from "react";',
     "",
-    `const FPS = ${fps};`,
-    `const FRAMES = ${framesJson};`,
-    `const APPEARANCE = ${appearanceJson};`,
-    `const CHARS = ${JSON.stringify(chars)};`,
+    `export const FPS = ${fps};`,
+    `export const FRAMES = ${framesJson};`,
+    `export const APPEARANCE = ${appearanceJson};`,
+    `export const CHARS = ${JSON.stringify(chars)};`,
     "",
     `export default function ${componentName}() {`,
     "\tconst [currentFrame, setCurrentFrame] = useState(0);",
     "\tconst [scale, setScale] = useState(1);",
+    "\tconst [contentHeight, setContentHeight] = useState<number | null>(null);",
     "\tconst containerRef = useRef<HTMLDivElement>(null);",
     "\tconst contentRef = useRef<HTMLPreElement>(null);",
     "",
@@ -241,11 +261,15 @@ export function buildASCIIAnimationReactComponentSource({
     "",
     "\t\t\tconst availableWidth = container.clientWidth;",
     "\t\t\tconst naturalWidth = content.scrollWidth;",
+    "\t\t\tconst naturalHeight = content.scrollHeight;",
     "",
     "\t\t\tif (availableWidth > 0 && naturalWidth > 0 && naturalWidth > availableWidth) {",
-    "\t\t\t\tsetScale(availableWidth / naturalWidth);",
+    "\t\t\t\tconst newScale = availableWidth / naturalWidth;",
+    "\t\t\t\tsetScale(newScale);",
+    "\t\t\t\tsetContentHeight(naturalHeight * newScale);",
     "\t\t\t} else {",
     "\t\t\t\tsetScale(1);",
+    "\t\t\t\tsetContentHeight(null);",
     "\t\t\t}",
     "\t\t};",
     "",
@@ -271,6 +295,7 @@ export function buildASCIIAnimationReactComponentSource({
     '\t\t\t\toverflow: "hidden",',
     '\t\t\t\tposition: "relative",',
     '\t\t\t\twidth: "100%",',
+    "\t\t\t\t...(contentHeight !== null ? { height: `${contentHeight}px` } : {}),",
     "\t\t\t}}",
     "\t\t>",
     "\t\t\t{needsStyles && (",
@@ -296,6 +321,9 @@ export function buildASCIIAnimationReactComponentSource({
     "\t\t\t\t\tstyle={{",
     '\t\t\t\t\t\tfontFamily: "inherit",',
     "\t\t\t\t\t\tfontSize: `${APPEARANCE.fontSize}px`,",
+    "\t\t\t\t\t\tfontWeight: APPEARANCE.fontWeight,",
+    "\t\t\t\t\t\tfontStyle: APPEARANCE.fontStyle,",
+    "\t\t\t\t\t\tletterSpacing: `${APPEARANCE.letterSpacing}em`,",
     "\t\t\t\t\t\tlineHeight: APPEARANCE.lineHeight,",
     "\t\t\t\t\t\tmargin: 0,",
     '\t\t\t\t\t\twhiteSpace: "pre",',
@@ -386,10 +414,13 @@ function measureFrames(
     (maxHeight, frame) => Math.max(maxHeight, frame.length),
     0,
   );
-  const font = `${appearance.fontSize}px ${appearance.fontFamily}`;
+  const font = `${appearance.fontStyle} ${appearance.fontWeight} ${appearance.fontSize}px ${appearance.fontFamily}`;
   context.font = font;
 
-  const charWidth = Math.max(1, context.measureText("M").width);
+  const glyphWidth = Math.max(1, context.measureText("M").width);
+  // Match preview's cellWidth formula: fontSize * 0.6 + letterSpacing (em → px)
+  const letterSpacingPx = appearance.fontSize * appearance.letterSpacing;
+  const charWidth = Math.max(1, glyphWidth + letterSpacingPx);
   const lineHeightPx = Math.max(1, appearance.fontSize * appearance.lineHeight);
   const counterHeight = appearance.showFrameCounter
     ? appearance.fontSize * 2
@@ -419,179 +450,181 @@ function drawFrame({
   metrics,
   scale,
   totalFrames,
-  chars,
+  colors,
 }: {
   appearance: ASCIIAppearance;
   canvas: HTMLCanvasElement;
   context: CanvasRenderingContext2D;
   frame: string;
   frameIndex: number;
+  fps: number;
   metrics: ASCIIRenderMetrics;
   scale: number;
   totalFrames: number;
   chars: string;
+  colors?: string[][];
 }) {
+  const { width, height } = metrics;
+  const effect = appearance.textEffect;
+  const useColors = appearance.useColors && !!colors;
+  const threshold = appearance.textEffectThreshold;
+
   context.setTransform(1, 0, 0, 1, 0, 0);
   context.clearRect(0, 0, canvas.width, canvas.height);
   context.scale(scale, scale);
   context.fillStyle = appearance.backgroundColor;
-  context.fillRect(0, 0, metrics.width, metrics.height);
+  context.fillRect(0, 0, width, height);
   context.font = metrics.font;
   context.textBaseline = "top";
+  context.shadowBlur = 0;
+  context.shadowColor = "transparent";
 
-  let renderFillStyle: string | CanvasGradient = appearance.textColor;
-  const isMatrix = appearance.textEffect === "matrix";
-  const isNeon = appearance.textEffect === "neon";
-  const isGlitch = appearance.textEffect === "glitch";
-  const isGradient = appearance.textEffect === "gradient";
-  const isBurn = appearance.textEffect === "burn";
-  const isNeural = appearance.textEffect === "neural";
-  const isVideo = appearance.textEffect === "video";
-
-  if (isMatrix) {
-    renderFillStyle = "#00ff00";
-    context.shadowColor = "#00ff00";
-    context.shadowBlur = 10;
-  } else if (isNeon) {
-    renderFillStyle = "#ff00ff";
-    context.shadowColor = "#ff00ff";
-    context.shadowBlur = 20;
-  } else if (isBurn) {
-    const t = (Math.sin(frameIndex * 0.5) + 1) / 2;
-    renderFillStyle = t > 0.5 ? "#ffffff" : "#ff3300";
-    context.shadowColor = renderFillStyle as string;
-    context.shadowBlur = t > 0.5 ? 10 : 20;
-  } else if (isGradient) {
-    const gradient = context.createLinearGradient(
-      0,
-      0,
-      metrics.width,
-      metrics.height,
-    );
-    gradient.addColorStop(0, "#ff4c4c");
-    gradient.addColorStop(0.2, "#b3ff4c");
-    gradient.addColorStop(0.4, "#4c99ff");
-    gradient.addColorStop(0.6, "#4cc3ff");
-    gradient.addColorStop(0.8, "#b34cff");
-    gradient.addColorStop(1, "#ff4c4c");
-    renderFillStyle = gradient;
-  } else if (isNeural) {
-    const shift = (frameIndex * 10) % metrics.width;
-    const gradient = context.createLinearGradient(
-      -metrics.width + shift,
-      0,
-      metrics.width + shift,
-      0,
-    );
-
-    const colors = [
-      "#ff00cc",
-      "#3333ff",
-      "#00ffcc",
-      "#ffff00",
-      "#ff6600",
-      "#ff00cc",
-      "#3333ff",
-      "#00ffcc",
-      "#ffff00",
-      "#ff6600",
-      "#ff00cc",
-    ];
-    colors.forEach((color, i) => {
-      gradient.addColorStop(i / (colors.length - 1), color);
-    });
-
-    renderFillStyle = gradient;
-
-    const pulse = (Math.sin(frameIndex * 0.2) + 1) / 2;
-    context.shadowBlur = 10 + pulse * 10;
-    context.shadowColor = "rgba(0, 100, 255, 0.4)";
-  } else if (isVideo) {
-    renderFillStyle = "#00ff00";
-  }
-
-  context.fillStyle = renderFillStyle;
-
+  // ── Counter ──────────────────────────────────────────────────────────────
   let y = 0;
-
   if (appearance.showFrameCounter) {
     context.globalAlpha = 0.78;
+    context.fillStyle = appearance.textColor;
     context.fillText(`Frame: ${frameIndex + 1}/${totalFrames}`, 0, y);
     context.globalAlpha = 1;
     y += metrics.counterHeight;
   }
 
-  const rows = normalizeFrame(frame);
-  const { textEffectThreshold } = appearance;
-  const thresholdIndex =
-    textEffectThreshold > 0 && chars
-      ? Math.floor(chars.length * textEffectThreshold)
-      : -1;
+  // ── Pre-compute effect fill (matches paintCells in ascii-canvas.tsx) ─────
+  let effectFill: string | CanvasGradient = appearance.textColor;
 
-  for (let rowIndex = 0; rowIndex < rows.length; rowIndex += 1) {
-    const row = rows[rowIndex];
-
-    if (thresholdIndex > -1) {
-      context.fillStyle = appearance.textColor;
-      context.shadowBlur = 0;
-      context.fillText(row, 0, y);
+  if (!useColors) {
+    if (effect === "matrix") {
+      effectFill = "#39ff14";
+    } else if (effect === "gradient") {
+      const g = context.createLinearGradient(0, 0, width, height);
+      g.addColorStop(0, "#7c3aed");
+      g.addColorStop(0.5, "#06b6d4");
+      g.addColorStop(1, "#22c55e");
+      effectFill = g;
+    } else if (effect === "burn") {
+      const g = context.createLinearGradient(0, 0, 0, height);
+      g.addColorStop(0, "#fde68a");
+      g.addColorStop(0.6, "#f97316");
+      g.addColorStop(1, "#7f1d1d");
+      effectFill = g;
+    } else if (effect === "neural") {
+      const g = context.createLinearGradient(0, 0, width, 0);
+      g.addColorStop(0, "#312e81");
+      g.addColorStop(0.5, "#9333ea");
+      g.addColorStop(1, "#22d3ee");
+      effectFill = g;
     }
-
-    if (isGlitch) {
-      context.fillStyle = "red";
-      context.fillText(row, 2, y);
-      context.fillStyle = "blue";
-      context.fillText(row, -2, y);
-      context.fillStyle = renderFillStyle;
-    }
-
-    context.fillStyle = renderFillStyle;
-    if (isMatrix) {
-      context.shadowColor = "#00ff00";
-      context.shadowBlur = 10;
-    } else if (isNeon) {
-      context.shadowColor = "#ff00ff";
-      context.shadowBlur = 20;
-    } else if (isBurn) {
-      const t = (Math.sin(frameIndex * 0.5) + 1) / 2;
-      context.shadowColor = t > 0.5 ? "#ffffff" : "#ff3300";
-      context.shadowBlur = t > 0.5 ? 10 : 20;
-    } else if (isNeural) {
-      const pulse = (Math.sin(frameIndex * 0.2) + 1) / 2;
-      context.shadowBlur = 10 + pulse * 10;
-      context.shadowColor = "rgba(0, 100, 255, 0.4)";
-    }
-
-    if (thresholdIndex > -1) {
-      for (let charIndex = 0; charIndex < row.length; charIndex += 1) {
-        const char = row[charIndex];
-        if (chars.indexOf(char) >= thresholdIndex) {
-          context.fillText(char, charIndex * metrics.charWidth, y);
-        }
-      }
-    } else {
-      context.fillText(row, 0, y);
-    }
-
-    y += metrics.lineHeightPx;
   }
 
-  context.shadowBlur = 0;
-  context.shadowColor = "transparent";
+  if (effect === "neon" && !useColors) {
+    const glowBase = Math.max(2, metrics.lineHeightPx * 0.6);
+    context.shadowBlur = glowBase * (1 + threshold * 2);
+    context.shadowColor = appearance.textColor;
+  }
+
+  // ── Paint characters cell-by-cell (mirrors paintCells exactly) ───────────
+  const rows = normalizeFrame(frame);
+  for (let rowIdx = 0; rowIdx < rows.length; rowIdx++) {
+    const row = rows[rowIdx];
+    const yPx = y + rowIdx * metrics.lineHeightPx;
+
+    for (let colIdx = 0; colIdx < row.length; colIdx++) {
+      const ch = row[colIdx];
+      if (ch === " ") continue;
+
+      const xPx =
+        colIdx * metrics.charWidth +
+        (effect === "glitch" &&
+        (rowIdx + frameIndex) %
+          Math.max(2, Math.round(11 * (1 - threshold * 0.8))) ===
+          0
+          ? (frameIndex % 7) - 3
+          : 0);
+
+      let fill: string | CanvasGradient;
+      if (useColors && colors) {
+        fill = colors[rowIdx]?.[colIdx] ?? appearance.textColor;
+      } else if (effect === "video") {
+        fill =
+          rowIdx % 2 === 0
+            ? appearance.textColor
+            : hexToRgba(appearance.textColor, 0.7);
+      } else {
+        fill = effectFill;
+      }
+
+      context.fillStyle = fill;
+      context.fillText(ch, xPx, yPx);
+    }
+  }
+
+  if (effect === "neon") {
+    context.shadowBlur = 0;
+    context.shadowColor = "transparent";
+  }
+
+  // ── Overlay passes (mirrors paintEffectOverlay) ───────────────────────────
+  if (effect === "video") {
+    context.save();
+    context.globalAlpha = 0.1 + threshold * 0.2;
+    context.fillStyle = "#000";
+    for (let scanY = 0; scanY < height; scanY += 3) {
+      context.fillRect(0, scanY, width, 1);
+    }
+    context.restore();
+  } else if (effect === "burn") {
+    context.save();
+    const intensity = 0.2 + threshold * 0.3;
+    const grad = context.createRadialGradient(
+      width / 2,
+      height,
+      height * 0.1,
+      width / 2,
+      height,
+      height,
+    );
+    grad.addColorStop(0, hexToRgba("#dc2626", intensity));
+    grad.addColorStop(1, hexToRgba(appearance.backgroundColor, 0));
+    context.fillStyle = grad;
+    context.fillRect(0, 0, width, height);
+    context.restore();
+  } else if (effect === "neural") {
+    context.save();
+    context.globalAlpha = 0.05 + threshold * 0.1;
+    context.strokeStyle = "#22d3ee";
+    context.lineWidth = 1;
+    for (let lineX = 0; lineX < width; lineX += 24) {
+      context.beginPath();
+      context.moveTo(lineX, 0);
+      context.lineTo(lineX, height);
+      context.stroke();
+    }
+    context.restore();
+  }
 }
 
 function normalizeFrame(frame: string) {
   return frame.replace(/\r/g, "").replace(/\n$/, "").split("\n");
 }
 
-function getSupportedVideoMimeType() {
-  const candidates = [
-    "video/webm;codecs=vp9",
-    "video/webm;codecs=vp8",
-    "video/webm",
+function getSupportedVideoMimeType():
+  | { mimeType: string; extension: string }
+  | { mimeType: null; extension: null } {
+  const candidates: Array<{ mimeType: string; extension: string }> = [
+    { mimeType: "video/mp4;codecs=avc1.42E01E", extension: "mp4" }, // H.264 baseline
+    { mimeType: "video/mp4;codecs=avc1", extension: "mp4" }, // H.264
+    { mimeType: "video/mp4;codecs=hvc1", extension: "mp4" }, // H.265
+    { mimeType: "video/mp4", extension: "mp4" }, // MP4 any codec
+    { mimeType: "video/webm;codecs=vp9", extension: "webm" },
+    { mimeType: "video/webm;codecs=vp8", extension: "webm" },
+    { mimeType: "video/webm", extension: "webm" },
   ];
 
-  return candidates.find((mimeType) => MediaRecorder.isTypeSupported(mimeType));
+  return (
+    candidates.find(({ mimeType }) =>
+      MediaRecorder.isTypeSupported(mimeType),
+    ) ?? { mimeType: null, extension: null }
+  );
 }
 
 function downloadBlob(blob: Blob, fileName: string) {
@@ -619,6 +652,38 @@ function sanitizeFileStem(fileName: string) {
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/^-+|-+$/g, "") || "ascii-animation"
+  );
+}
+
+function cropFrames(frames: string[]): string[] {
+  let minCol = Infinity,
+    maxCol = -Infinity;
+  let minRow = Infinity,
+    maxRow = -Infinity;
+
+  for (const frame of frames) {
+    const rows = frame.split("\n");
+    for (let r = 0; r < rows.length; r++) {
+      const row = rows[r];
+      for (let c = 0; c < row.length; c++) {
+        if (row[c] !== " ") {
+          if (r < minRow) minRow = r;
+          if (r > maxRow) maxRow = r;
+          if (c < minCol) minCol = c;
+          if (c > maxCol) maxCol = c;
+        }
+      }
+    }
+  }
+
+  if (minCol === Infinity) return frames;
+
+  return frames.map((frame) =>
+    frame
+      .split("\n")
+      .slice(minRow, maxRow + 1)
+      .map((row) => row.slice(minCol, maxCol + 1))
+      .join("\n"),
   );
 }
 

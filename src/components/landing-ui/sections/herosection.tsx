@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import React from "react";
@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { ChevronRight } from "lucide-react";
 import NumberFlow from "@number-flow/react";
 import StudioUiPreview from "@/components/studio-ui-preview";
-import TextYAnimation4 from "@/components/pixel-perfect/text-y-animation4";
+import TextYAnimation4 from "@/components/text-animation";
 import Sponsor from "../sponsor";
 import { siteConfig } from "@/lib/site";
 
@@ -32,18 +32,6 @@ const HeroSection = () => {
       cancelled = true;
     };
   }, []);
-
-  const imageSpring = {
-    type: "spring",
-    stiffness: 420,
-    damping: 24,
-    mass: 0.55,
-  } as const;
-
-  const getImageTransition = (delay: number) => ({
-    ...imageSpring,
-    delay: isFootageHovered ? delay : 0,
-  });
 
   return (
     <>

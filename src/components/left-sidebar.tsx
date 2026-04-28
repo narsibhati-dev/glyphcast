@@ -811,6 +811,7 @@ function ExportSection() {
 
   const [filename, setFilename] = useState("");
   const [progress, setProgress] = useState(0);
+  const [exportStage, setExportStage] = useState("");
   const [exportResult, setExportResult] = useState<ExportResult>(null);
   const abortRef = useRef<AbortController | null>(null);
 
@@ -821,26 +822,33 @@ function ExportSection() {
   );
 
   const downloadPNG = useCallback(async () => {
-    const frame = canvasRef.current?.getFrameText() ?? "";
+    const result = canvasRef.current?.getFrameResult();
+    const frame = result?.text ?? canvasRef.current?.getFrameText() ?? "";
     if (!frame) {
       toast.error("Nothing to export yet");
       return;
     }
     if (isExporting) return;
     setIsExporting(true);
+    setExportStage("Rendering image");
+    setProgress(30);
     try {
       await exportASCIIAsImage({
         appearance,
         fileName: stem(),
         frame,
+        colors: result?.colors,
         chars: charset,
         quality: 2,
       });
+      setProgress(100);
       setExportResult({ kind: "image", filename: `${stem()}.png` });
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Failed");
     } finally {
       setIsExporting(false);
+      setProgress(0);
+      setExportStage("");
     }
   }, [appearance, canvasRef, charset, isExporting, setIsExporting, stem]);
 
@@ -866,15 +874,16 @@ function ExportSection() {
     if (isExporting) return;
     setIsExporting(true);
     setProgress(0);
+    setExportStage("Capturing frames");
     const ctrl = new AbortController();
     abortRef.current = ctrl;
     try {
-      const frames =
+      const results =
         (await canvasRef.current?.getFrames(
-          (done, total) => setProgress(Math.round((done / total) * 100)),
+          (done, total) => setProgress(Math.round((done / total) * 60)),
           ctrl.signal,
         )) ?? [];
-      if (!frames.length) {
+      if (!results.length) {
         toast.error("No frames captured");
         return;
       }
@@ -882,20 +891,24 @@ function ExportSection() {
         appearance,
         fileName: stem(),
         fps: 24,
-        frames,
+        frames: results.map((r) => r.text),
+        colorFrames: results.map((r) => r.colors),
         chars: charset,
+        onStage: setExportStage,
+        onProgress: (pct) => setProgress(60 + Math.round(pct * 0.4)),
       });
       setExportResult({
         kind: "video",
-        frameCount: frames.length,
-        durationSec: frames.length / 24,
-        filename: `${stem()}.webm`,
+        frameCount: results.length,
+        durationSec: results.length / 24,
+        filename: `${stem()}.mp4`,
       });
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Export failed");
     } finally {
       setIsExporting(false);
       setProgress(0);
+      setExportStage("");
       abortRef.current = null;
     }
   }, [
@@ -916,28 +929,33 @@ function ExportSection() {
     if (isExporting) return;
     setIsExporting(true);
     setProgress(0);
+    setExportStage("Capturing frames");
     try {
-      const frames =
+      const results =
         (await canvasRef.current?.getFrames((done, total) =>
-          setProgress(Math.round((done / total) * 100)),
+          setProgress(Math.round((done / total) * 80)),
         )) ?? [];
-      if (!frames.length) {
+      if (!results.length) {
         toast.error("No frames captured");
         return;
       }
+      setExportStage("Building component");
+      setProgress(85);
       const code = buildASCIIAnimationReactComponentSource({
         appearance,
         componentName: toPascalCase(stem()),
         fps: 24,
-        frames,
+        frames: results.map((r) => r.text),
         chars: charset,
       });
+      setProgress(100);
       setExportResult({ kind: "component", code, filename: `${stem()}.tsx` });
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Failed");
     } finally {
       setIsExporting(false);
       setProgress(0);
+      setExportStage("");
     }
   }, [
     appearance,
@@ -1000,28 +1018,33 @@ function ExportSection() {
           />
         </div>
 
-        <div className="h-4">
-          {isExporting && (
-            <div className="flex items-center gap-3">
-              <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-[#E5E5E5] dark:bg-zinc-700">
-                <div
-                  className="h-full rounded-full bg-[#B54B00] transition-all duration-150"
-                  style={{ width: `${progress}%` }}
-                />
-              </div>
-              <span className="font-mono text-[10px] font-semibold tabular-nums text-[#B54B00]">
-                {progress}%
+        {isExporting && (
+          <div className="space-y-1.5 pt-1">
+            <div className="flex items-center justify-between gap-2">
+              <span className="font-mono text-[10px] text-[#666] dark:text-zinc-400 truncate">
+                {exportStage}
               </span>
-              <button
-                type="button"
-                className="font-sans text-[10px] font-bold text-[#888] transition-colors hover:text-red-400"
-                onClick={() => abortRef.current?.abort()}
-              >
-                Cancel
-              </button>
+              <div className="flex items-center gap-2 shrink-0">
+                <span className="font-mono text-[10px] font-semibold tabular-nums text-[#B54B00]">
+                  {progress}%
+                </span>
+                <button
+                  type="button"
+                  className="font-sans text-[10px] font-bold text-[#888] transition-colors hover:text-red-400"
+                  onClick={() => abortRef.current?.abort()}
+                >
+                  Cancel
+                </button>
+              </div>
             </div>
-          )}
-        </div>
+            <div className="h-1.5 overflow-hidden rounded-full bg-[#E5E5E5] dark:bg-zinc-700">
+              <div
+                className="h-full rounded-full bg-[#B54B00] transition-all duration-200"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+          </div>
+        )}
       </AccordionSection>
 
       <ExportResultDialog

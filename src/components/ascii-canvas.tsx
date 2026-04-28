@@ -10,25 +10,25 @@ import {
   type RefObject,
 } from "react";
 import { useAsciiStore } from "@/lib/store";
-import {
-  imageToAscii,
-  type ImageToAsciiResult,
-} from "@/lib/ascii-converter";
+import { imageToAscii, type ImageToAsciiResult } from "@/lib/ascii-converter";
 import { hexToRgba, type ASCIITextEffect } from "@/lib/ascii-config";
 
 export interface AsciiCanvasHandle {
   /** Returns the most recently rendered ASCII frame as a single string. */
   getFrameText: () => string;
+  /** Returns the full result of the last rendered frame (text + optional colors). */
+  getFrameResult: () => ImageToAsciiResult | null;
   /** Returns a PNG `data:` URL of the current preview canvas. */
   exportPNG: () => string | null;
   /**
-   * Iterates the source video, returning ASCII text for each frame.
+   * Iterates the source video, returning full ImageToAsciiResult for each frame
+   * (includes text and optional per-cell color grid when useColors is enabled).
    * Image sources resolve immediately to a single-element array.
    */
   getFrames: (
     onProgress?: (done: number, total: number) => void,
     signal?: AbortSignal,
-  ) => Promise<string[]>;
+  ) => Promise<ImageToAsciiResult[]>;
 }
 
 interface AsciiCanvasProps {
@@ -275,6 +275,7 @@ export function AsciiCanvas({ ref, className }: AsciiCanvasProps) {
     ref,
     () => ({
       getFrameText: () => lastResultRef.current?.text ?? "",
+      getFrameResult: () => lastResultRef.current,
       exportPNG: () => {
         const canvas = canvasRef.current;
         if (!canvas) return null;
@@ -292,13 +293,13 @@ export function AsciiCanvas({ ref, className }: AsciiCanvasProps) {
             threshold,
           });
           onProgress?.(1, 1);
-          return [result.text];
+          return [result];
         }
         const video = source.el as HTMLVideoElement;
         const wasPlaying = !video.paused;
         video.pause();
         const total = Math.max(1, totalFrames);
-        const frames: string[] = [];
+        const results: ImageToAsciiResult[] = [];
         for (let f = 0; f < total; f++) {
           if (signal?.aborted) break;
           const t = (f / total) * (video.duration || 1);
@@ -311,11 +312,11 @@ export function AsciiCanvas({ ref, className }: AsciiCanvasProps) {
             cellAspect,
             threshold,
           });
-          frames.push(result.text);
+          results.push(result);
           onProgress?.(f + 1, total);
         }
         if (wasPlaying) video.play().catch(() => undefined);
-        return frames;
+        return results;
       },
     }),
     [
