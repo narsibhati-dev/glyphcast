@@ -108,7 +108,7 @@ export default function StudioUiPreview() {
   return (
     <div
       className={cn(
-        "mt-10 landing-content-width max-w-[1100px] max-h-[70vh] overflow-y-auto overflow-x-hidden [&::-webkit-scrollbar]:hidden [scrollbar-width:none] rounded-3xl border font-satoshi shadow-[0px_4px_24px_rgba(0,0,0,0.06)]",
+        "mt-10 landing-content-width max-w-[1100px] overflow-x-hidden rounded-3xl border font-satoshi shadow-[0px_4px_24px_rgba(0,0,0,0.06)]",
         PREVIEW.wrapperBg,
       )}
     >
@@ -116,7 +116,7 @@ export default function StudioUiPreview() {
         className={cn("w-full rounded-[32px] p-3 md:p-4", PREVIEW.sectionBg)}
       >
         <div className="grid gap-3 lg:grid-cols-[min(320px,38vw)_1fr]">
-          <div className="space-y-3">
+          <div className="space-y-3 lg:max-h-[70vh] lg:overflow-y-auto lg:pr-1 lg:[&::-webkit-scrollbar]:hidden lg:[scrollbar-width:none]">
             <Panel title="Source Media" isDark={isDark} PREVIEW={PREVIEW}>
               <button
                 type="button"
@@ -356,8 +356,8 @@ export default function StudioUiPreview() {
             </Panel>
           </div>
 
-          <div className="sticky top-3 md:top-4 h-fit">
-            <div className={PREVIEW.card}>
+          <div className="h-full lg:sticky lg:top-3 xl:top-4 lg:max-h-[70vh]">
+            <div className={cn(PREVIEW.card, "flex h-full flex-col")}>
               <div
                 className={cn(
                   "flex items-center justify-between",
@@ -379,13 +379,13 @@ export default function StudioUiPreview() {
 
               <div
                 className={cn(
-                  "overflow-hidden p-3",
+                  "flex-1 overflow-hidden p-3",
                   isDark ? "bg-zinc-800" : "bg-white",
                 )}
               >
                 <div
                   className={cn(
-                    "relative flex h-[420px] w-full items-center justify-center overflow-hidden rounded-lg border",
+                    "relative flex h-full min-h-[420px] w-full items-center justify-center overflow-hidden rounded-lg border",
                     PREVIEW.previewCanvasBg,
                   )}
                 >
