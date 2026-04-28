@@ -1,14 +1,30 @@
 import { type ASCIIAppearance, hexToRgba } from "@/lib/ascii-config";
 
-type ASCIIExportParams = {
+type ASCIIVideoExportParams = {
+  appearance: ASCIIAppearance;
+  fileName: string;
+  fps: number;
+  chars: string;
+  /** Called for each frame in order; never accumulates all frames in memory. */
+  streamFrames: (
+    onFrame: (
+      text: string,
+      colors: string[][] | undefined,
+      frameIndex: number,
+      total: number,
+    ) => Promise<void>,
+    signal?: AbortSignal,
+  ) => Promise<void>;
+  onProgress?: (pct: number) => void;
+  onStage?: (label: string) => void;
+};
+
+type ASCIIComponentExportParams = {
   appearance: ASCIIAppearance;
   fileName: string;
   fps: number;
   frames: string[];
-  colorFrames?: (string[][] | undefined)[];
   chars: string;
-  onProgress?: (pct: number) => void;
-  onStage?: (label: string) => void;
 };
 
 type ASCIIRenderMetrics = {
@@ -24,16 +40,11 @@ export async function exportASCIIAnimationAsVideo({
   appearance,
   fileName,
   fps,
-  frames,
-  colorFrames,
   chars,
+  streamFrames,
   onProgress,
   onStage,
-}: ASCIIExportParams) {
-  if (frames.length === 0) {
-    throw new Error("Convert a video first so there are frames to export.");
-  }
-
+}: ASCIIVideoExportParams) {
   if (typeof MediaRecorder === "undefined") {
     throw new Error(
       "This browser does not support MediaRecorder video export.",
@@ -48,12 +59,6 @@ export async function exportASCIIAnimationAsVideo({
   }
 
   const exportAppearance = { ...appearance, showFrameCounter: false };
-  const metrics = measureFrames(context, frames, exportAppearance);
-  const scale = 1;
-  canvas.width = Math.ceil(metrics.width);
-  canvas.height = Math.ceil(metrics.height);
-
-  const stream = canvas.captureStream(fps);
   const { mimeType, extension } = getSupportedVideoMimeType();
 
   if (!mimeType || !extension) {
@@ -61,64 +66,90 @@ export async function exportASCIIAnimationAsVideo({
   }
 
   const chunks: BlobPart[] = [];
-  const recorder = new MediaRecorder(stream, {
-    mimeType,
-    videoBitsPerSecond: 4_000_000,
+  let blobResolve!: (b: Blob) => void;
+  let blobReject!: (e: Error) => void;
+  const blobPromise = new Promise<Blob>((res, rej) => {
+    blobResolve = res;
+    blobReject = rej;
   });
 
-  const blobPromise = new Promise<Blob>((resolve, reject) => {
-    recorder.ondataavailable = (event) => {
-      if (event.data.size > 0) chunks.push(event.data);
-    };
-    recorder.onerror = () => {
-      reject(
-        new Error("Video export failed while recording the canvas stream."),
-      );
-    };
-    recorder.onstop = () => {
-      resolve(new Blob(chunks, { type: mimeType }));
-    };
-  });
+  let recorder: MediaRecorder | null = null;
 
-  onStage?.("Encoding video");
+  let captureStream: MediaStream | null = null;
+  let metrics: ASCIIRenderMetrics | null = null;
+  let loopStart = 0;
+  let total = 0;
+
+  onStage?.("Capturing frames");
   onProgress?.(0);
-  recorder.start();
 
   try {
-    const frameDuration = 1000 / fps;
-    const total = frames.length;
-    const loopStart = performance.now();
+    await streamFrames(async (text, colors, frameIndex, frameTotal) => {
+      // Lazy canvas + recorder setup on the very first frame
+      if (frameIndex === 0) {
+        total = frameTotal;
+        metrics = measureFrames(context, [text], exportAppearance);
+        canvas.width = Math.ceil(metrics.width);
+        canvas.height = Math.ceil(metrics.height);
 
-    for (let frameIndex = 0; frameIndex < total; frameIndex += 1) {
+        captureStream = canvas.captureStream(fps);
+        recorder = new MediaRecorder(captureStream, {
+          mimeType,
+          videoBitsPerSecond: 4_000_000,
+        });
+        recorder.ondataavailable = (e) => {
+          if (e.data.size > 0) chunks.push(e.data);
+        };
+        recorder.onerror = () =>
+          blobReject(
+            new Error("Video export failed while recording the canvas stream."),
+          );
+        recorder.onstop = () =>
+          blobResolve(new Blob(chunks, { type: mimeType }));
+        recorder.start();
+        loopStart = performance.now();
+        onStage?.("Encoding video");
+      }
+
+      if (!metrics || !recorder) return;
+
       drawFrame({
         appearance: exportAppearance,
         canvas,
         context,
-        frame: frames[frameIndex],
+        frame: text,
         frameIndex,
         fps,
         metrics,
-        scale,
+        scale: 1,
         totalFrames: total,
         chars,
-        colors: colorFrames?.[frameIndex],
+        colors,
       });
 
       onProgress?.(Math.round((frameIndex / total) * 95));
+      const frameDuration = 1000 / fps;
       const targetMs = (frameIndex + 1) * frameDuration;
       const remaining = targetMs - (performance.now() - loopStart);
       if (remaining > 0) await wait(remaining);
+    });
+
+    if (!recorder) {
+      throw new Error("No frames were captured — load a file first.");
     }
 
+    const finalRecorder = recorder as MediaRecorder;
     onStage?.("Finalizing");
     onProgress?.(97);
-    await wait(frameDuration);
-    recorder.stop();
+    await wait(1000 / fps);
+    finalRecorder.stop();
     const blob = await blobPromise;
     onProgress?.(100);
     downloadBlob(blob, `${sanitizeFileStem(fileName)}.${extension}`);
   } finally {
-    stream.getTracks().forEach((track) => track.stop());
+    (captureStream as MediaStream | null)
+      ?.getTracks()
+      .forEach((track) => track.stop());
   }
 }
 
@@ -128,7 +159,7 @@ export function exportASCIIAnimationAsReactComponent({
   fps,
   frames,
   chars,
-}: ASCIIExportParams) {
+}: ASCIIComponentExportParams) {
   if (frames.length === 0) {
     throw new Error("Convert a video first so there are frames to export.");
   }

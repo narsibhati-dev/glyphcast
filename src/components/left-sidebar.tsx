@@ -8,6 +8,7 @@ import {
   type ComponentType,
   type ReactNode,
 } from "react";
+import { parseGIF, decompressFrames } from "gifuct-js";
 import { useDropzone, type FileRejection } from "react-dropzone";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -229,7 +230,7 @@ function SliderField({
 /* Source                                                                      */
 /* ─────────────────────────────────────────────────────────────────────────── */
 
-const MAX_BYTES = 100 * 1024 * 1024;
+const MAX_BYTES = 30 * 1024 * 1024;
 
 function SourceSection() {
   const source = useAsciiStore((s) => s.source);
@@ -262,7 +263,7 @@ function SourceSection() {
         if (prevEl?._isGifMounted && prevEl.parentElement)
           prevEl.parentElement.removeChild(prevEl);
         setSource(built);
-        if (built.kind === "video") setPlaying(true);
+        if (built.kind === "video" || built.kind === "gif") setPlaying(true);
         toast.success(`Loaded ${file.name}`);
       } catch (err) {
         toast.error(err instanceof Error ? err.message : "Could not load file");
@@ -296,7 +297,7 @@ function SourceSection() {
             {isDragActive ? "Drop to load" : "Drop or browse"}
           </p>
           <p className="font-sans text-[10px] text-[#666] dark:text-zinc-500">
-            Image, GIF, or video · up to 100 MB
+            Image, GIF, or video · up to 30 MB
           </p>
         </div>
       </div>
@@ -867,40 +868,46 @@ function ExportSection() {
   }, [canvasRef]);
 
   const exportVideo = useCallback(async () => {
-    if (!source || source.kind !== "video") {
-      toast.error("Load a video first");
+    if (!source || (source.kind !== "video" && source.kind !== "gif")) {
+      toast.error("Load a video or GIF first");
       return;
     }
     if (isExporting) return;
     setIsExporting(true);
     setProgress(0);
-    setExportStage("Capturing frames");
     const ctrl = new AbortController();
     abortRef.current = ctrl;
+    let frameCount = 0;
     try {
-      const results =
-        (await canvasRef.current?.getFrames(
-          (done, total) => setProgress(Math.round((done / total) * 60)),
-          ctrl.signal,
-        )) ?? [];
-      if (!results.length) {
-        toast.error("No frames captured");
-        return;
-      }
       await exportASCIIAnimationAsVideo({
         appearance,
         fileName: stem(),
-        fps: 24,
-        frames: results.map((r) => r.text),
-        colorFrames: results.map((r) => r.colors),
+        fps:
+          source.kind === "gif" && source.gifFrames?.length
+            ? Math.round(
+                1000 /
+                  (source.gifFrames.reduce((s, f) => s + f.delayMs, 0) /
+                    source.gifFrames.length),
+              )
+            : 24,
         chars: charset,
         onStage: setExportStage,
-        onProgress: (pct) => setProgress(60 + Math.round(pct * 0.4)),
+        onProgress: setProgress,
+        streamFrames: (onFrame, signal) => {
+          if (!canvasRef.current) return Promise.resolve();
+          return canvasRef.current.streamFrames(
+            async (text, colors, idx, total) => {
+              frameCount = total;
+              await onFrame(text, colors, idx, total);
+            },
+            signal ?? ctrl.signal,
+          );
+        },
       });
       setExportResult({
         kind: "video",
-        frameCount: results.length,
-        durationSec: results.length / 24,
+        frameCount,
+        durationSec: frameCount / 24,
         filename: `${stem()}.mp4`,
       });
     } catch (err) {
@@ -1002,7 +1009,11 @@ function ExportSection() {
             icon={Film}
             label="Video"
             onClick={exportVideo}
-            disabled={isExporting || !source || source.kind !== "video"}
+            disabled={
+              isExporting ||
+              !source ||
+              (source.kind !== "video" && source.kind !== "gif")
+            }
           />
           <ExportChip
             icon={ImageDown}
@@ -1083,20 +1094,82 @@ async function loadSourceFromFile(file: File): Promise<StudioSource> {
   const url = URL.createObjectURL(file);
 
   if (file.type === "image/gif") {
-    const img = await loadImage(url);
-    // Mount in DOM so browser advances GIF frames
-    img.style.cssText =
-      "position:fixed;opacity:0;pointer-events:none;top:-9999px;left:-9999px;";
-    (img as HTMLImageElement & { _isGifMounted?: boolean })._isGifMounted =
-      true;
-    document.body.appendChild(img);
+    const buffer = await file.arrayBuffer();
+    const parsed = parseGIF(buffer);
+    const rawFrames = decompressFrames(parsed, true);
+
+    if (rawFrames.length <= 1) {
+      // Static GIF — treat as plain image
+      const img = await loadImage(url);
+      return {
+        kind: "image",
+        el: img,
+        file,
+        url,
+        width: img.naturalWidth,
+        height: img.naturalHeight,
+      };
+    }
+
+    const { width: gifW, height: gifH } = parsed.lsd;
+
+    // Composite frames onto a persistent canvas, respecting disposal methods
+    const compositeCanvas = document.createElement("canvas");
+    compositeCanvas.width = gifW;
+    compositeCanvas.height = gifH;
+    const ctx = compositeCanvas.getContext("2d")!;
+
+    const gifFrames: { canvas: HTMLCanvasElement; delayMs: number }[] = [];
+    let prevState: ImageData | null = null;
+
+    for (const frame of rawFrames) {
+      if (frame.disposalType === 3) {
+        prevState = ctx.getImageData(0, 0, gifW, gifH);
+      }
+
+      const patch = new ImageData(
+        new Uint8ClampedArray(frame.patch),
+        frame.dims.width,
+        frame.dims.height,
+      );
+      ctx.putImageData(patch, frame.dims.left, frame.dims.top);
+
+      const fc = document.createElement("canvas");
+      fc.width = gifW;
+      fc.height = gifH;
+      fc.getContext("2d")!.drawImage(compositeCanvas, 0, 0);
+      gifFrames.push({
+        canvas: fc,
+        delayMs: Math.max(20, (frame.delay ?? 10) * 10),
+      });
+
+      if (frame.disposalType === 2) {
+        ctx.clearRect(
+          frame.dims.left,
+          frame.dims.top,
+          frame.dims.width,
+          frame.dims.height,
+        );
+      } else if (frame.disposalType === 3 && prevState) {
+        ctx.putImageData(prevState, 0, 0);
+        prevState = null;
+      }
+    }
+
+    // el is a canvas we'll paint the current frame into during playback
+    const displayCanvas = document.createElement("canvas");
+    displayCanvas.width = gifW;
+    displayCanvas.height = gifH;
+    displayCanvas.getContext("2d")!.drawImage(gifFrames[0].canvas, 0, 0);
+
     return {
-      kind: "image",
-      el: img,
+      kind: "gif",
+      el: displayCanvas,
       file,
       url,
-      width: img.naturalWidth,
-      height: img.naturalHeight,
+      width: gifW,
+      height: gifH,
+      gifFrames,
     };
   }
 
@@ -1111,6 +1184,7 @@ async function loadSourceFromFile(file: File): Promise<StudioSource> {
       height: img.naturalHeight,
     };
   }
+
   if (file.type.startsWith("video/")) {
     const video = await loadVideo(url);
     return {

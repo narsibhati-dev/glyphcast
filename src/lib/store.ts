@@ -6,12 +6,12 @@ import {
 } from "@/lib/ascii-config";
 
 export type StudioMode = "image" | "video" | "component";
-export type SourceKind = "image" | "video";
+export type SourceKind = "image" | "video" | "gif";
 
 export interface StudioSource {
   kind: SourceKind;
   /** Live element used by the renderer. Not serializable — never sent to RSC. */
-  el: HTMLImageElement | HTMLVideoElement;
+  el: HTMLImageElement | HTMLVideoElement | HTMLCanvasElement;
   file: File | null;
   /** ObjectURL or http(s) URL backing `el`. */
   url: string;
@@ -19,6 +19,8 @@ export interface StudioSource {
   height: number;
   /** Defined only when `kind === "video"`. */
   durationMs?: number;
+  /** Decoded frames for GIF sources. */
+  gifFrames?: { canvas: HTMLCanvasElement; delayMs: number }[];
 }
 
 export interface StudioState {
@@ -82,9 +84,12 @@ export const useAsciiStore = create<StudioState>((set) => ({
       totalFrames:
         source?.kind === "video"
           ? Math.max(1, Math.round(((source.durationMs ?? 0) / 1000) * 24))
-          : 0,
+          : source?.kind === "gif"
+            ? (source.gifFrames?.length ?? 0)
+            : 0,
       isPlaying: false,
-      mode: source?.kind === "video" ? "video" : "image",
+      mode:
+        source?.kind === "video" || source?.kind === "gif" ? "video" : "image",
     })),
 
   clearSource: () =>

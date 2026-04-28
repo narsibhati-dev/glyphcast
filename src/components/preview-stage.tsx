@@ -49,7 +49,7 @@ export function PreviewStage() {
   const appearance = useAsciiStore((s) => s.appearance);
   const patchAppearance = useAsciiStore((s) => s.patchAppearance);
 
-  const isVideo = source?.kind === "video";
+  const isVideo = source?.kind === "video" || source?.kind === "gif";
 
   // Subscribe to the `dark` class on <html> as an external store so we stay in
   // sync with theme changes triggered anywhere in the app, without needing a

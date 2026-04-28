@@ -21,14 +21,26 @@ export interface AsciiCanvasHandle {
   /** Returns a PNG `data:` URL of the current preview canvas. */
   exportPNG: () => string | null;
   /**
-   * Iterates the source video, returning full ImageToAsciiResult for each frame
-   * (includes text and optional per-cell color grid when useColors is enabled).
-   * Image sources resolve immediately to a single-element array.
+   * Collects text-only frames (no color data) for component export.
+   * Avoids accumulating color arrays in memory.
    */
   getFrames: (
     onProgress?: (done: number, total: number) => void,
     signal?: AbortSignal,
   ) => Promise<ImageToAsciiResult[]>;
+  /**
+   * Streams frames one at a time via callback — never holds all frames in memory.
+   * Use this for video export to avoid OOM crashes on long videos.
+   */
+  streamFrames: (
+    onFrame: (
+      text: string,
+      colors: string[][] | undefined,
+      frameIndex: number,
+      total: number,
+    ) => Promise<void>,
+    signal?: AbortSignal,
+  ) => Promise<void>;
 }
 
 interface AsciiCanvasProps {
@@ -110,7 +122,11 @@ export function AsciiCanvas({ ref, className }: AsciiCanvasProps) {
       }
       // CSS owns display sizing now (object-fit: contain against the parent).
       // The buffer above gives the canvas its intrinsic aspect for scaling.
-      setSize({ width: cssWidth, height: cssHeight });
+      setSize((prev) =>
+        prev.width === cssWidth && prev.height === cssHeight
+          ? prev
+          : { width: cssWidth, height: cssHeight },
+      );
 
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       ctx.fillStyle = appearance.backgroundColor;
@@ -270,6 +286,77 @@ export function AsciiCanvas({ ref, className }: AsciiCanvasProps) {
     }
   }, [source, currentFrame, totalFrames, isPlaying]);
 
+  // --- GIF playback loop ---------------------------------------------------
+  useEffect(() => {
+    if (!source || source.kind !== "gif") return;
+    const frames = source.gifFrames;
+    if (!frames?.length) return;
+
+    const displayCanvas = source.el as HTMLCanvasElement;
+    const ctx = displayCanvas.getContext("2d")!;
+
+    const renderFrame = (idx: number) => {
+      ctx.clearRect(0, 0, displayCanvas.width, displayCanvas.height);
+      ctx.drawImage(frames[idx].canvas, 0, 0);
+      const result = convert();
+      lastResultRef.current = result;
+      draw(result);
+    };
+
+    if (!isPlaying) {
+      renderFrame(0);
+      return;
+    }
+
+    // Render frame 0 immediately so the preview isn't blank on start
+    renderFrame(0);
+    setFrame(0);
+
+    let frameIdx = 1 % frames.length;
+    let elapsed = 0;
+    let lastTime = -1;
+    let rafId: number;
+
+    const tick = (time: number) => {
+      if (lastTime < 0) {
+        lastTime = time;
+        rafId = requestAnimationFrame(tick);
+        return;
+      }
+      const delta = time - lastTime;
+      lastTime = time;
+      elapsed += delta;
+
+      const frame = frames[frameIdx];
+      if (elapsed >= frame.delayMs) {
+        elapsed -= frame.delayMs;
+        renderFrame(frameIdx);
+        setFrame(frameIdx);
+        frameIdx = (frameIdx + 1) % frames.length;
+      }
+
+      rafId = requestAnimationFrame(tick);
+    };
+
+    rafId = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(rafId);
+  }, [source, isPlaying, convert, draw, setFrame]);
+
+  // --- GIF scrub when paused -----------------------------------------------
+  useEffect(() => {
+    if (!source || source.kind !== "gif" || isPlaying) return;
+    const frames = source.gifFrames;
+    if (!frames?.length) return;
+    const frame = frames[currentFrame] ?? frames[0];
+    const displayCanvas = source.el as HTMLCanvasElement;
+    const ctx = displayCanvas.getContext("2d")!;
+    ctx.clearRect(0, 0, displayCanvas.width, displayCanvas.height);
+    ctx.drawImage(frame.canvas, 0, 0);
+    const result = convert();
+    lastResultRef.current = result;
+    draw(result);
+  }, [source, currentFrame, isPlaying, convert, draw]);
+
   // --- Imperative handle ---------------------------------------------------
   useImperativeHandle(
     ref,
@@ -283,40 +370,110 @@ export function AsciiCanvas({ ref, className }: AsciiCanvasProps) {
       },
       getFrames: async (onProgress, signal) => {
         if (!source) return [];
+        const opts = {
+          columns,
+          charset,
+          invert,
+          useColors,
+          cellAspect,
+          threshold,
+        };
+
         if (source.kind === "image") {
-          const result = imageToAscii(source.el, {
-            columns,
-            charset,
-            invert,
-            useColors,
-            cellAspect,
-            threshold,
-          });
+          const result = imageToAscii(source.el as HTMLImageElement, opts);
           onProgress?.(1, 1);
-          return [result];
+          return [{ ...result, colors: undefined }];
         }
+
+        if (source.kind === "gif") {
+          const frames = source.gifFrames ?? [];
+          const total = frames.length;
+          // Dedicated canvas — avoids race with the playback RAF loop
+          const exportCanvas = document.createElement("canvas");
+          exportCanvas.width = source.width;
+          exportCanvas.height = source.height;
+          const exportCtx = exportCanvas.getContext("2d")!;
+          const results: ImageToAsciiResult[] = [];
+          for (let f = 0; f < total; f++) {
+            if (signal?.aborted) break;
+            exportCtx.clearRect(0, 0, source.width, source.height);
+            exportCtx.drawImage(frames[f].canvas, 0, 0);
+            const result = imageToAscii(exportCanvas, opts);
+            results.push({ ...result, colors: undefined });
+            onProgress?.(f + 1, total);
+          }
+          return results;
+        }
+
         const video = source.el as HTMLVideoElement;
         const wasPlaying = !video.paused;
         video.pause();
         const total = Math.max(1, totalFrames);
         const results: ImageToAsciiResult[] = [];
-        for (let f = 0; f < total; f++) {
-          if (signal?.aborted) break;
-          const t = (f / total) * (video.duration || 1);
-          await seekVideo(video, t);
-          const result = imageToAscii(video, {
-            columns,
-            charset,
-            invert,
-            useColors,
-            cellAspect,
-            threshold,
-          });
-          results.push(result);
-          onProgress?.(f + 1, total);
+        try {
+          for (let f = 0; f < total; f++) {
+            if (signal?.aborted) break;
+            const t = (f / total) * (video.duration || 1);
+            await seekVideo(video, t);
+            const result = imageToAscii(video, opts);
+            results.push({ ...result, colors: undefined });
+            onProgress?.(f + 1, total);
+          }
+        } finally {
+          if (wasPlaying) video.play().catch(() => undefined);
         }
-        if (wasPlaying) video.play().catch(() => undefined);
         return results;
+      },
+      streamFrames: async (onFrame, signal) => {
+        if (!source) return;
+        const opts = {
+          columns,
+          charset,
+          invert,
+          useColors,
+          cellAspect,
+          threshold,
+        };
+
+        if (source.kind === "image") {
+          const result = imageToAscii(source.el as HTMLImageElement, opts);
+          await onFrame(result.text, result.colors, 0, 1);
+          return;
+        }
+
+        if (source.kind === "gif") {
+          const frames = source.gifFrames ?? [];
+          const total = frames.length;
+          // Dedicated canvas — avoids race with the playback RAF loop
+          const exportCanvas = document.createElement("canvas");
+          exportCanvas.width = source.width;
+          exportCanvas.height = source.height;
+          const exportCtx = exportCanvas.getContext("2d")!;
+          for (let f = 0; f < total; f++) {
+            if (signal?.aborted) break;
+            exportCtx.clearRect(0, 0, source.width, source.height);
+            exportCtx.drawImage(frames[f].canvas, 0, 0);
+            const result = imageToAscii(exportCanvas, opts);
+            await onFrame(result.text, result.colors, f, total);
+          }
+          return;
+        }
+
+        const video = source.el as HTMLVideoElement;
+        const wasPlaying = !video.paused;
+        video.pause();
+        const total = Math.max(1, totalFrames);
+        try {
+          for (let f = 0; f < total; f++) {
+            if (signal?.aborted) break;
+            const t = (f / total) * (video.duration || 1);
+            await seekVideo(video, t);
+            const result = imageToAscii(video, opts);
+            await onFrame(result.text, result.colors, f, total);
+          }
+        } finally {
+          if (wasPlaying) video.play().catch(() => undefined);
+        }
       },
     }),
     [
