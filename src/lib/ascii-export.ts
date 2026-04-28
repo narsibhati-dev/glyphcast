@@ -48,8 +48,7 @@ export async function exportASCIIAnimationAsVideo({
   }
 
   const exportAppearance = { ...appearance, showFrameCounter: false };
-  const croppedFrames = cropFrames(frames);
-  const metrics = measureFrames(context, croppedFrames, exportAppearance);
+  const metrics = measureFrames(context, frames, exportAppearance);
   const scale = metrics.width <= 720 ? 2 : 1;
   canvas.width = Math.ceil(metrics.width * scale);
   canvas.height = Math.ceil(metrics.height * scale);
@@ -87,14 +86,14 @@ export async function exportASCIIAnimationAsVideo({
 
   try {
     const frameDuration = 1000 / fps;
-    const total = croppedFrames.length;
+    const total = frames.length;
 
     for (let frameIndex = 0; frameIndex < total; frameIndex += 1) {
       drawFrame({
         appearance: exportAppearance,
         canvas,
         context,
-        frame: croppedFrames[frameIndex],
+        frame: frames[frameIndex],
         frameIndex,
         fps,
         metrics,
@@ -167,8 +166,7 @@ export async function exportASCIIAsImage({
   }
 
   const exportAppearance = { ...appearance, showFrameCounter: false };
-  const croppedFrame = cropFrames([frame])[0];
-  const metrics = measureFrames(context, [croppedFrame], exportAppearance);
+  const metrics = measureFrames(context, [frame], exportAppearance);
 
   const scale = quality;
   canvas.width = Math.ceil(metrics.width * scale);
@@ -178,7 +176,7 @@ export async function exportASCIIAsImage({
     appearance: exportAppearance,
     canvas,
     context,
-    frame: croppedFrame,
+    frame,
     frameIndex: 0,
     fps: 1,
     metrics,
@@ -417,10 +415,11 @@ function measureFrames(
   const font = `${appearance.fontStyle} ${appearance.fontWeight} ${appearance.fontSize}px ${appearance.fontFamily}`;
   context.font = font;
 
-  const glyphWidth = Math.max(1, context.measureText("M").width);
-  // Match preview's cellWidth formula: fontSize * 0.6 + letterSpacing (em → px)
-  const letterSpacingPx = appearance.fontSize * appearance.letterSpacing;
-  const charWidth = Math.max(1, glyphWidth + letterSpacingPx);
+  // Match preview exactly: ascii-canvas.tsx cellWidth = fontSize * 0.6 + letterSpacing (raw px)
+  const charWidth = Math.max(
+    1,
+    appearance.fontSize * 0.6 + appearance.letterSpacing,
+  );
   const lineHeightPx = Math.max(1, appearance.fontSize * appearance.lineHeight);
   const counterHeight = appearance.showFrameCounter
     ? appearance.fontSize * 2
