@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import React from "react";
 import { motion } from "framer-motion";
+import { useTheme } from "@/components/theme-provider";
 import { ChevronRight } from "lucide-react";
 import NumberFlow from "@number-flow/react";
 import StudioUiPreview from "@/components/studio-ui-preview";
@@ -16,6 +17,8 @@ const HeroSection = () => {
   const [isAsciiHovered, setIsAsciiHovered] = React.useState(false);
   const [isIntoHovered, setIsIntoHovered] = React.useState(false);
   const [isSequencesHovered, setIsSequencesHovered] = React.useState(false);
+  const { theme } = useTheme();
+  const defaultTextColor = theme === "dark" ? "#F9FAFC" : "#111111";
 
   React.useEffect(() => {
     let cancelled = false;
@@ -71,7 +74,9 @@ const HeroSection = () => {
             >
               <span
                 className={`transition-all duration-200 ${
-                  isFootageHovered ? "text-[#B54B00] " : "text-black"
+                  isFootageHovered
+                    ? "text-[#B54B00]"
+                    : "text-black dark:text-white"
                 }`}
               >
                 Videos
@@ -83,7 +88,7 @@ const HeroSection = () => {
                 onHoverStart={() => setIsIntoHovered(true)}
                 onHoverEnd={() => setIsIntoHovered(false)}
                 animate={{
-                  color: isIntoHovered ? "#B54B00" : "#111111",
+                  color: isIntoHovered ? "#B54B00" : defaultTextColor,
                   y: isIntoHovered ? -2 : 0,
                   scale: isIntoHovered ? 1.04 : 1,
                 }}
@@ -109,7 +114,9 @@ const HeroSection = () => {
             >
               <span
                 className={`transition-all duration-200 inline-block ${
-                  isAsciiHovered ? "text-[#B54B00] " : "text-black"
+                  isAsciiHovered
+                    ? "text-[#B54B00]"
+                    : "text-black dark:text-white"
                 }`}
               >
                 <TextAnimation
@@ -130,7 +137,7 @@ const HeroSection = () => {
               <motion.span
                 className="relative z-10 inline-block"
                 animate={{
-                  color: isSequencesHovered ? "#B54B00" : "#111111",
+                  color: isSequencesHovered ? "#B54B00" : defaultTextColor,
                   y: isSequencesHovered ? -2 : 0,
                 }}
                 transition={{ type: "spring", stiffness: 520, damping: 26 }}

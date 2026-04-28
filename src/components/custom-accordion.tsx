@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
+import { useTheme } from "@/components/theme-provider";
 
 interface CustomAccordionProps {
   items: { title: string; content: React.ReactNode }[];
@@ -40,22 +41,26 @@ const AccordionItem: React.FC<AccordionItemProps> = ({
   onClick,
   children,
 }) => {
-  // Styles for selected (open) FAQ
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
+
   const selectedFaqStyle: React.CSSProperties = {
-    background:
-      "radial-gradient(152.32% 683.53% at 108.86% 152.32%, #FFD9B8 0%, #FFF5ED 100%)",
-    boxShadow:
-      "0px 4px 1px rgba(0, 0, 0, 0.01), 0px 2px 1px rgba(0, 0, 0, 0.05), 0px 1px 1px rgba(0, 0, 0, 0.09), 0px 0px 1px rgba(0, 0, 0, 0.1), inset 0px 2px 2.2px #FFFFFF",
+    background: isDark
+      ? "radial-gradient(152.32% 683.53% at 108.86% 152.32%, #30303A 0%, #1E1E24 100%)"
+      : "radial-gradient(152.32% 683.53% at 108.86% 152.32%, #FFD9B8 0%, #FFF5ED 100%)",
+    boxShadow: isDark
+      ? "0px 4px 1px rgba(0,0,0,0.08), 0px 2px 1px rgba(0,0,0,0.2), 0px 1px 1px rgba(0,0,0,0.26), 0px 0px 1px rgba(0,0,0,0.3), inset 0px 2px 2.2px rgba(255,255,255,0.04)"
+      : "0px 4px 1px rgba(0, 0, 0, 0.01), 0px 2px 1px rgba(0, 0, 0, 0.05), 0px 1px 1px rgba(0, 0, 0, 0.09), 0px 0px 1px rgba(0, 0, 0, 0.1), inset 0px 2px 2.2px #FFFFFF",
     borderRadius: "16px",
     position: "relative",
     zIndex: 1,
   };
 
-  // Styles for non-selected (closed) FAQ
   const defaultFaqStyle: React.CSSProperties = {
-    background: "#FFFFFF",
-    boxShadow:
-      "0px 4px 1px rgba(0, 0, 0, 0.01), 0px 2px 1px rgba(0, 0, 0, 0.05), 0px 1px 1px rgba(0, 0, 0, 0.09), 0px 0px 1px rgba(0, 0, 0, 0.1), inset 0px 2px 2.2px #FFFFFF",
+    background: isDark ? "#26262E" : "#FFFFFF",
+    boxShadow: isDark
+      ? "0px 4px 1px rgba(0,0,0,0.04), 0px 2px 1px rgba(0,0,0,0.12), 0px 1px 1px rgba(0,0,0,0.18), 0px 0px 1px rgba(0,0,0,0.2), inset 0px 2px 2.2px rgba(255,255,255,0.04)"
+      : "0px 4px 1px rgba(0, 0, 0, 0.01), 0px 2px 1px rgba(0, 0, 0, 0.05), 0px 1px 1px rgba(0, 0, 0, 0.09), 0px 0px 1px rgba(0, 0, 0, 0.1), inset 0px 2px 2.2px #FFFFFF",
     borderRadius: "16px",
   };
 
@@ -81,6 +86,7 @@ const AccordionItem: React.FC<AccordionItemProps> = ({
       )}
       <button
         className="w-full flex justify-between items-center py-4 text-sm font-medium text-left transition-colors relative z-10 cursor-pointer"
+        style={{ color: isOpen ? (isDark ? "#F4F4F5" : "#111111") : undefined }}
         onClick={onClick}
         aria-expanded={isOpen}
       >
@@ -98,12 +104,14 @@ const AccordionItem: React.FC<AccordionItemProps> = ({
           >
             <path
               d="M0 12C0 5.37258 5.37258 0 12 0C18.6274 0 24 5.37258 24 12C24 18.6274 18.6274 24 12 24C5.37258 24 0 18.6274 0 12Z"
-              fill="#F5F5F5"
+              fill={isDark ? "#3f3f46" : "#F5F5F5"}
             />
             <motion.path
               d="M16.0833 11.416C16.4054 11.416 16.6666 11.6772 16.6666 11.9993C16.6666 12.3215 16.4054 12.5827 16.0833 12.5827H7.91659C7.59442 12.5827 7.33325 12.3215 7.33325 11.9993C7.33325 11.6772 7.59442 11.416 7.91659 11.416H16.0833Z"
               initial={false}
-              animate={{ fill: isOpen ? "#B54B00" : "#000000" }}
+              animate={{
+                fill: isOpen ? "#B54B00" : isDark ? "#e4e4e7" : "#000000",
+              }}
               transition={{ duration: 0.22, ease: "easeInOut" }}
             />
             <motion.path
@@ -111,7 +119,7 @@ const AccordionItem: React.FC<AccordionItemProps> = ({
               initial={false}
               animate={{
                 opacity: isOpen ? 0 : 1,
-                fill: isOpen ? "#B54B00" : "#000000",
+                fill: isOpen ? "#B54B00" : isDark ? "#e4e4e7" : "#000000",
               }}
               transition={{ duration: 0.22, ease: "easeInOut" }}
             />
@@ -127,7 +135,12 @@ const AccordionItem: React.FC<AccordionItemProps> = ({
             transition={{ duration: 0.22, ease: "easeOut" }}
             className="relative z-10 overflow-hidden"
           >
-            <div className="pb-4 pt-0 text-sm">{children}</div>
+            <div
+              className="pb-4 pt-0 text-sm"
+              style={{ color: isDark ? "#D4D4D8" : "#333333" }}
+            >
+              {children}
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

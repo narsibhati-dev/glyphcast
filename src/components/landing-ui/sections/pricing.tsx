@@ -2,6 +2,7 @@
 import { Check } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, type Variants } from "framer-motion";
+import { useTheme } from "@/components/theme-provider";
 import { DmOnXButton } from "@/components/landing-ui/dm-on-x-button";
 
 const ASCII_FREE = [
@@ -65,6 +66,11 @@ const Pricing = () => {
   const sideColumnWidthPx = 260;
   const [isPricingPanelHovered, setIsPricingPanelHovered] = useState(false);
   const [activeTab, setActiveTab] = useState<"monthly" | "yearly">("monthly");
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
+  const cardBg = isDark ? "#26262E" : "#FFFFFF";
+  const innerBg = isDark ? "#2E2E38" : "#F5F5F5";
+  const outerBg = isDark ? "#222228" : "#F3F3F3";
 
   const contentVariants: Variants = {
     hidden: { opacity: 0, y: 16 },
@@ -174,9 +180,9 @@ const Pricing = () => {
               layoutId="pricing-tab-pill"
               className="absolute inset-0"
               style={{
-                background: "#F5F5F5",
+                background: isDark ? "#3f3f46" : "#F5F5F5",
                 boxShadow:
-                  "0px 4px 1px rgba(0, 0, 0, 0.01), 0px 2px 1px rgba(0, 0, 0, 0.05), 0px 1px 1px rgba(0, 0, 0, 0.09), 0px 0px 1px rgba(0, 0, 0, 0.1), inset 0px 2px 2.2px #FFFFFF",
+                  "0px 4px 1px rgba(0, 0, 0, 0.01), 0px 2px 1px rgba(0, 0, 0, 0.05), 0px 1px 1px rgba(0, 0, 0, 0.09), 0px 0px 1px rgba(0, 0, 0, 0.1), inset 0px 2px 2.2px rgba(255,255,255,0.1)",
                 borderRadius: "99px",
                 zIndex: 0,
               }}
@@ -186,7 +192,10 @@ const Pricing = () => {
           )}
           <span
             className="relative z-10"
-            style={{ color: activeTab === "monthly" ? "#222" : "#fff" }}
+            style={{
+              color:
+                activeTab === "monthly" ? (isDark ? "#fff" : "#222") : "#fff",
+            }}
           >
             Monthly
           </span>
@@ -201,9 +210,9 @@ const Pricing = () => {
               layoutId="pricing-tab-pill"
               className="absolute inset-0"
               style={{
-                background: "#F5F5F5",
+                background: isDark ? "#3f3f46" : "#F5F5F5",
                 boxShadow:
-                  "0px 4px 1px rgba(0, 0, 0, 0.01), 0px 2px 1px rgba(0, 0, 0, 0.05), 0px 1px 1px rgba(0, 0, 0, 0.09), 0px 0px 1px rgba(0, 0, 0, 0.1), inset 0px 2px 2.2px #FFFFFF",
+                  "0px 4px 1px rgba(0, 0, 0, 0.01), 0px 2px 1px rgba(0, 0, 0, 0.05), 0px 1px 1px rgba(0, 0, 0, 0.09), 0px 0px 1px rgba(0, 0, 0, 0.1), inset 0px 2px 2.2px rgba(255,255,255,0.1)",
                 borderRadius: "99px",
                 zIndex: 0,
               }}
@@ -213,7 +222,10 @@ const Pricing = () => {
           )}
           <span
             className="relative z-10"
-            style={{ color: activeTab === "yearly" ? "#222" : "#fff" }}
+            style={{
+              color:
+                activeTab === "yearly" ? (isDark ? "#fff" : "#222") : "#fff",
+            }}
           >
             Yearly (Save 20%)
           </span>
@@ -224,7 +236,7 @@ const Pricing = () => {
         onMouseEnter={() => setIsPricingPanelHovered(true)}
         onMouseLeave={() => setIsPricingPanelHovered(false)}
         style={{
-          background: "#F3F3F3",
+          background: outerBg,
           boxShadow:
             "0px 1px 0px rgba(255, 255, 255, 0.25), inset 0px 1px 2px 1px rgba(0, 0, 0, 0.15)",
           borderRadius: "32px",
@@ -256,7 +268,7 @@ const Pricing = () => {
             layout="position"
             className="px-8 py-7"
             style={{
-              background: "#FFFFFF",
+              background: cardBg,
               boxShadow:
                 "0px 15px 6px rgba(0, 0, 0, 0.01), 0px 4px 4px rgba(0, 0, 0, 0.09), 0px 1px 2px rgba(0, 0, 0, 0.1)",
               borderRadius: "16px",
@@ -322,7 +334,7 @@ const Pricing = () => {
           <div
             className="h-full"
             style={{
-              background: "#FFFFFF",
+              background: cardBg,
               boxShadow:
                 "0px 15px 6px rgba(0, 0, 0, 0.01), 0px 4px 4px rgba(0, 0, 0, 0.09), 0px 1px 2px rgba(0, 0, 0, 0.1)",
               borderRadius: "16px",
@@ -332,7 +344,7 @@ const Pricing = () => {
               <div
                 className="h-full flex-1 border rounded-xl"
                 style={{
-                  background: "#F5F5F5",
+                  background: innerBg,
                   boxShadow:
                     "0px 1px 0px rgba(255, 255, 255, 0.25), inset 0px 1px 2px rgba(0, 0, 0, 0.15)",
                 }}
