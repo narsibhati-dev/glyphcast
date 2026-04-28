@@ -7,6 +7,7 @@ import ASCIIAnimation from "@/components/ascii-animation";
 import { buildASCIIAnimationReactComponentSource } from "@/lib/ascii-export";
 import { Button } from "@/components/ui/button";
 import { useTheme } from "@/components/theme-provider";
+import { ThemeDockButton } from "@/components/theme-dock-button";
 import {
   ASCII_SHOWCASE,
   type ASCIIShowcaseEntry,
@@ -177,6 +178,7 @@ export default function ShowcasePage() {
             ))}
           </div>
         </main>
+        <ThemeDockButton />
       </div>
     </div>
   );

@@ -4,7 +4,7 @@ import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { useTheme } from "@/components/theme-provider";
 import { Button } from "../ui/button";
-import { ChevronRight, Menu, Moon, Sun, X } from "lucide-react";
+import { ChevronRight, Menu, X } from "lucide-react";
 import {
   NavigationMenu,
   NavigationMenuItem,
@@ -16,7 +16,7 @@ import { siteConfig } from "@/lib/site";
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { theme, setTheme } = useTheme();
+  const { theme } = useTheme();
   const isDark = theme === "dark";
 
   useEffect(() => {
@@ -84,14 +84,6 @@ const Navbar = () => {
 
         {/* Desktop buttons */}
         <section className="hidden lg:flex items-center gap-2">
-          <button
-            type="button"
-            onClick={() => setTheme(isDark ? "light" : "dark")}
-            aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
-            className="flex size-9 items-center justify-center rounded-full border border-black/[0.08] dark:border-[#36363F] bg-white/60 dark:bg-[#2E2E38]/80 text-[#666] dark:text-[#A0A0B0] transition-colors hover:bg-white dark:hover:bg-[#36363F] hover:text-[#111] dark:hover:text-[#E8E8F0]"
-          >
-            {isDark ? <Sun className="size-4" /> : <Moon className="size-4" />}
-          </button>
           <div className="relative group/repo flex items-center justify-center">
             <div className="relative transition-transform duration-200 group-hover/repo:-translate-y-0.5">
               <Link
@@ -167,14 +159,6 @@ const Navbar = () => {
           >
             Showcase
           </Link>
-          <button
-            type="button"
-            onClick={() => setTheme(isDark ? "light" : "dark")}
-            className="py-2.5 px-3 rounded-xl hover:bg-accent text-sm font-medium transition-colors flex items-center gap-2 text-left dark:text-zinc-100"
-          >
-            {isDark ? <Sun className="size-4" /> : <Moon className="size-4" />}
-            {isDark ? "Light mode" : "Dark mode"}
-          </button>
           <div className="flex gap-2 pt-2 border-t border-border mt-1">
             <div className="relative group/repo flex-1 flex items-center justify-center">
               <div className="relative w-full transition-transform duration-200 group-hover/repo:-translate-y-0.5">

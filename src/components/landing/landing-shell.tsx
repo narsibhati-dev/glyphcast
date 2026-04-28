@@ -7,6 +7,7 @@ import Faq from "@/components/landing-ui/sections/faq";
 import Footer from "@/components/landing-ui/sections/footer";
 import HeroSection from "@/components/landing-ui/sections/herosection";
 import Pricing from "@/components/landing-ui/sections/pricing";
+import { ThemeDockButton } from "@/components/theme-dock-button";
 
 export function LandingShell() {
   const { theme } = useTheme();
@@ -68,6 +69,7 @@ export function LandingShell() {
           <Faq />
           <Footer />
         </div>
+        <ThemeDockButton />
       </div>
     </div>
   );
