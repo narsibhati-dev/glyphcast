@@ -15,6 +15,7 @@ import {
   Bold,
   Code2,
   Copy,
+  FileArchive,
   Film,
   Image as ImageIcon,
   ImageDown,
@@ -59,6 +60,7 @@ import {
   buildASCIIAnimationReactComponentSource,
   exportASCIIAnimationAsVideo,
   exportASCIIAsImage,
+  exportASCIIAsZip,
 } from "@/lib/ascii-export";
 import { loadGoogleFont } from "@/lib/font-loader";
 import { useStudio } from "@/lib/studio-context";
@@ -949,7 +951,7 @@ function ExportSection() {
       setExportStage("Building component");
       setProgress(85);
       const code = buildASCIIAnimationReactComponentSource({
-        appearance,
+        appearance: { ...appearance, showFrameCounter: false },
         componentName: toPascalCase(stem()),
         fps: 24,
         frames: results.map((r) => r.text),
@@ -973,6 +975,45 @@ function ExportSection() {
     source,
     stem,
   ]);
+
+  const exportZip = useCallback(async () => {
+    if (!source) {
+      toast.error("Load a file first");
+      return;
+    }
+    if (isExporting) return;
+    setIsExporting(true);
+    setProgress(0);
+    setExportStage("Capturing frames");
+    try {
+      const results =
+        (await canvasRef.current?.getFrames((done, total) =>
+          setProgress(Math.round((done / total) * 80)),
+        )) ?? [];
+      if (!results.length) {
+        toast.error("No frames captured");
+        return;
+      }
+      setExportStage("Building ZIP");
+      setProgress(90);
+      exportASCIIAsZip({
+        frames: results.map((r) => r.text),
+        fileName: stem(),
+      });
+      setProgress(100);
+      setExportResult({
+        kind: "zip",
+        frameCount: results.length,
+        filename: `${stem()}.zip`,
+      });
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed");
+    } finally {
+      setIsExporting(false);
+      setProgress(0);
+      setExportStage("");
+    }
+  }, [canvasRef, isExporting, setIsExporting, source, stem]);
 
   useEffect(() => {
     const h =
@@ -998,7 +1039,7 @@ function ExportSection() {
           />
         </div>
 
-        <div className="grid grid-cols-4 gap-2">
+        <div className="grid grid-cols-5 gap-2">
           <ExportChip
             icon={Copy}
             label="Copy"
@@ -1025,6 +1066,12 @@ function ExportSection() {
             icon={Code2}
             label="React"
             onClick={exportComponent}
+            disabled={isExporting || !source}
+          />
+          <ExportChip
+            icon={FileArchive}
+            label="ZIP"
+            onClick={exportZip}
             disabled={isExporting || !source}
           />
         </div>

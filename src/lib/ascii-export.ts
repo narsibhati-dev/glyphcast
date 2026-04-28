@@ -252,7 +252,7 @@ export function exportASCIIAsZip({
 
   const zip = zipSync(files);
   downloadBlob(
-    new Blob([zip], { type: "application/zip" }),
+    new Blob([zip.buffer as ArrayBuffer], { type: "application/zip" }),
     `${sanitizeFileStem(fileName)}.zip`,
   );
 }
