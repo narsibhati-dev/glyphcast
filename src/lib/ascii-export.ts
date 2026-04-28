@@ -1,3 +1,4 @@
+import { strToU8, zipSync } from "fflate";
 import { type ASCIIAppearance, hexToRgba } from "@/lib/ascii-config";
 
 type ASCIIVideoExportParams = {
@@ -229,6 +230,31 @@ export async function exportASCIIAsImage({
   }
 
   downloadBlob(blob, `${sanitizeFileStem(fileName)}.png`);
+}
+
+export function exportASCIIAsZip({
+  frames,
+  fileName,
+}: {
+  frames: string[];
+  fileName: string;
+}) {
+  if (frames.length === 0) {
+    throw new Error("No frames to export.");
+  }
+
+  const files: Record<string, Uint8Array> = {};
+  const padLen = String(frames.length).length;
+  frames.forEach((frame, i) => {
+    const name = `frame_${String(i + 1).padStart(padLen, "0")}.txt`;
+    files[name] = strToU8(frame);
+  });
+
+  const zip = zipSync(files);
+  downloadBlob(
+    new Blob([zip], { type: "application/zip" }),
+    `${sanitizeFileStem(fileName)}.zip`,
+  );
 }
 
 export function buildASCIIAnimationReactComponentSource({

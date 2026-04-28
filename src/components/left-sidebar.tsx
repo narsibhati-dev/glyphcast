@@ -1140,7 +1140,7 @@ async function loadSourceFromFile(file: File): Promise<StudioSource> {
       fc.getContext("2d")!.drawImage(compositeCanvas, 0, 0);
       gifFrames.push({
         canvas: fc,
-        delayMs: Math.max(20, (frame.delay ?? 10) * 10),
+        delayMs: Math.max(20, frame.delay ?? 100),
       });
 
       if (frame.disposalType === 2) {

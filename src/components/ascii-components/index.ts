@@ -1,5 +1,11 @@
 import type { ASCIIAppearance } from "@/lib/ascii-config";
 import {
+  APPEARANCE as ThunderAppearance,
+  CHARS as ThunderChars,
+  FPS as ThunderFps,
+  FRAMES as ThunderFrames,
+} from "./thunder";
+import {
   APPEARANCE as FireAppearance,
   CHARS as FireChars,
   FPS as FireFps,
@@ -53,18 +59,37 @@ export interface ASCIIShowcaseEntry {
 
 export const ASCII_SHOWCASE: ASCIIShowcaseEntry[] = [
   {
-    id: "rocket-blast",
-    title: "Rocket Blast",
-    description: "ASCII rocket blasting off with animated flames and smoke.",
+    id: "thunder",
+    title: "Thunder",
+    description: "ASCII thunder/lightning strike animation.",
+    filename: "thunder.tsx",
+    accentColor: "#B54B00",
+    componentName: "Stroke",
+    frames: ThunderFrames,
+    fps: ThunderFps,
+    chars: ThunderChars,
+    appearance: ThunderAppearance as ASCIIAppearance,
+  },
+  {
+    id: "fire",
+    title: "Fire",
+    description: "ASCII fire animation with dynamic flame motion.",
     filename: "fire.tsx",
     accentColor: "#B54B00",
-    componentName: "RocketBlast",
+    componentName: "Ascii",
     frames: FireFrames,
     fps: FireFps,
     chars: FireChars,
     appearance: FireAppearance as ASCIIAppearance,
   },
 ];
+
+export {
+  APPEARANCE as THUNDER_APPEARANCE,
+  CHARS as THUNDER_CHARS,
+  FPS as THUNDER_FPS,
+  FRAMES as THUNDER_FRAMES,
+} from "./thunder";
 
 export {
   APPEARANCE as FIRE_APPEARANCE,

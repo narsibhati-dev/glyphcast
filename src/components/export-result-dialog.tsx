@@ -15,6 +15,7 @@ export type ExportResult =
   | { kind: "image"; filename: string }
   | { kind: "video"; frameCount: number; durationSec: number; filename: string }
   | { kind: "component"; code: string; filename: string }
+  | { kind: "zip"; frameCount: number; filename: string }
   | null;
 
 interface Props {
@@ -26,12 +27,14 @@ const TITLES: Record<string, string> = {
   image: "Image exported",
   video: "Video exported",
   component: "React component",
+  zip: "ZIP exported",
 };
 
 const KICKERS: Record<string, string> = {
   image: "01 / Plate",
   video: "02 / Sequence",
   component: "03 / Module",
+  zip: "04 / Archive",
 };
 
 export function ExportResultDialog({ result, onClose }: Props) {
@@ -144,6 +147,23 @@ export function ExportResultDialog({ result, onClose }: Props) {
                 <code>{result.code}</code>
               </pre>
             </div>
+          </div>
+        )}
+
+        {/* ── ZIP ── */}
+        {result?.kind === "zip" && (
+          <div className="space-y-2">
+            <div className="border border-border bg-secondary/20 py-10 text-center">
+              <p className="font-heading text-5xl font-black tabular-nums leading-none text-foreground">
+                {result.frameCount}
+              </p>
+              <p className="mt-3 font-mono text-[10px] font-medium uppercase tracking-[0.22em] text-muted-foreground">
+                {result.frameCount === 1 ? "Frame" : "Frames"} · TXT Files · ZIP
+              </p>
+            </div>
+            <p className="text-center font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/70">
+              {result.filename}
+            </p>
           </div>
         )}
 
