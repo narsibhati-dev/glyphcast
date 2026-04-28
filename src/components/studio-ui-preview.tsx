@@ -315,10 +315,18 @@ export default function StudioUiPreview() {
               <div className="overflow-hidden p-3">
                 <div
                   className={cn(
-                    "relative h-[420px] overflow-hidden rounded-lg border border-[#E5E5E5] bg-[#F9FAFC]",
+                    "relative flex h-[420px] w-full items-center justify-center overflow-hidden rounded-lg border border-[#E5E5E5] bg-[#F9FAFC]",
                   )}
                 >
-                  <Fire />
+                  <div
+                    className="absolute inset-0"
+                    style={{
+                      transform: "scale(0.6)",
+                      transformOrigin: "center center",
+                    }}
+                  >
+                    <Fire />
+                  </div>
                 </div>
               </div>
 

@@ -83,12 +83,15 @@ export default function ASCIIAnimation({
   const [currentFrame, setCurrentFrame] = useState(0);
 
   const cropFrames = (rawFrames: string[]): string[] => {
+    // Normalize line endings: strip \r so \r\n → \n
+    const normalized = rawFrames.map((f) => f.replace(/\r/g, ""));
+
     let minCol = Infinity,
       maxCol = -Infinity;
     let minRow = Infinity,
       maxRow = -Infinity;
 
-    for (const frame of rawFrames) {
+    for (const frame of normalized) {
       const rows = frame.split("\n");
       for (let r = 0; r < rows.length; r++) {
         const row = rows[r];
@@ -103,9 +106,9 @@ export default function ASCIIAnimation({
       }
     }
 
-    if (minCol === Infinity) return rawFrames;
+    if (minCol === Infinity) return normalized;
 
-    return rawFrames.map((frame) =>
+    return normalized.map((frame) =>
       frame
         .split("\n")
         .slice(minRow, maxRow + 1)
