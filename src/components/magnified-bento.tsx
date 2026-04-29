@@ -16,7 +16,8 @@ ASCII_CHAR_PRESETS.forEach((preset, index) => {
 
 const CONFIG = {
   containerHeight: "h-[170px] sm:h-[220px] md:h-[240px]",
-  lensSize: 92,
+  lensSizeDesktop: 92,
+  lensSizeMobile: 84,
 };
 
 function toCharsPreview(value: string): string {
@@ -27,11 +28,29 @@ function toCharsPreview(value: string): string {
 const MagnifiedBento = () => {
   const containerRef = React.useRef<HTMLDivElement>(null);
   const [isHovered, setIsHovered] = React.useState(false);
+  const [isMobile, setIsMobile] = React.useState(false);
   const lensX = useMotionValue(0);
   const lensY = useMotionValue(0);
+  const lensSize = isMobile ? CONFIG.lensSizeMobile : CONFIG.lensSizeDesktop;
+  const lensRevealRadius = Math.round(lensSize * 0.326);
+  const lensCenterOffset = Math.round(lensSize * 0.109);
+  const lensInnerSize = Math.round(lensSize * 0.652);
+  const lensInnerInset = Math.round(lensSize * 0.065);
 
-  const clipPath = useMotionTemplate`circle(30px at calc(50% + ${lensX}px - 10px) calc(50% + ${lensY}px - 10px))`;
-  const inverseMask = useMotionTemplate`radial-gradient(circle 30px at calc(50% + ${lensX}px - 10px) calc(50% + ${lensY}px - 10px), transparent 100%, black 100%)`;
+  React.useEffect(() => {
+    const mediaQuery = window.matchMedia("(max-width: 639px)");
+    const updateIsMobile = () => setIsMobile(mediaQuery.matches);
+
+    updateIsMobile();
+    mediaQuery.addEventListener("change", updateIsMobile);
+
+    return () => {
+      mediaQuery.removeEventListener("change", updateIsMobile);
+    };
+  }, []);
+
+  const clipPath = useMotionTemplate`circle(${lensRevealRadius}px at calc(50% + ${lensX}px - ${lensCenterOffset}px) calc(50% + ${lensY}px - ${lensCenterOffset}px))`;
+  const inverseMask = useMotionTemplate`radial-gradient(circle ${lensRevealRadius}px at calc(50% + ${lensX}px - ${lensCenterOffset}px) calc(50% + ${lensY}px - ${lensCenterOffset}px), transparent 100%, black 100%)`;
 
   return (
     <div className="flex items-center justify-center w-full h-full not-prose">
@@ -107,15 +126,23 @@ const MagnifiedBento = () => {
 
             {/* lens */}
             <motion.div
-              className="absolute left-1/2 top-1/2 z-40 -translate-x-1/2 -translate-y-1/2 scale-90 cursor-grab drop-shadow-xl active:cursor-grabbing sm:scale-100"
+              className="absolute left-1/2 top-1/2 z-40 -translate-x-1/2 -translate-y-1/2 cursor-grab drop-shadow-xl active:cursor-grabbing"
               drag
               dragMomentum={false}
               dragConstraints={containerRef}
               style={{ x: lensX, y: lensY }}
             >
               <div className="relative">
-                <MagnifyingLens size={CONFIG.lensSize} />
-                <div className="absolute top-[6px] left-[6px] w-[60px] h-[60px] rounded-full bg-white/10 pointer-events-none" />
+                <MagnifyingLens size={lensSize} />
+                <div
+                  className="absolute rounded-full bg-white/10 pointer-events-none"
+                  style={{
+                    top: lensInnerInset,
+                    left: lensInnerInset,
+                    width: lensInnerSize,
+                    height: lensInnerSize,
+                  }}
+                />
               </div>
             </motion.div>
           </div>
