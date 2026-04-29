@@ -72,6 +72,38 @@ export async function exportASCIIAnimationAsVideo({
     throw new Error("This browser cannot encode canvas output as video.");
   }
 
+  // ── Phase 1: Collect all ASCII frames (no recording) ─────────────────────
+  onStage?.("Capturing frames");
+  onProgress?.(0);
+
+  const collectedFrames: { text: string; colors: string[][] | undefined }[] =
+    [];
+  let metrics: ASCIIRenderMetrics | null = null;
+  let yOffset = 0;
+
+  await streamFrames(async (text, colors, frameIndex, frameTotal) => {
+    if (frameIndex === 0) {
+      metrics = measureFrames(context, [text], exportAppearance);
+      const sourceAspect = sourceWidth / sourceHeight;
+      canvas.width = Math.ceil(metrics.width);
+      canvas.height = Math.max(
+        Math.ceil(metrics.height),
+        Math.round(canvas.width / sourceAspect),
+      );
+      yOffset = Math.max(0, (canvas.height - metrics.height) / 2);
+    }
+    collectedFrames.push({ text, colors });
+    onProgress?.(Math.round((frameIndex / frameTotal) * 55));
+  });
+
+  if (collectedFrames.length === 0 || !metrics) {
+    throw new Error("No frames were captured — load a file first.");
+  }
+
+  // ── Phase 2: Record at exact fps (fast canvas-only, no seeking) ───────────
+  onStage?.("Encoding video");
+  onProgress?.(55);
+
   const chunks: BlobPart[] = [];
   let blobResolve!: (b: Blob) => void;
   let blobReject!: (e: Error) => void;
@@ -80,61 +112,36 @@ export async function exportASCIIAnimationAsVideo({
     blobReject = rej;
   });
 
-  let recorder: MediaRecorder | null = null;
+  const captureStream = canvas.captureStream(fps);
+  const recorder = new MediaRecorder(captureStream, {
+    mimeType,
+    videoBitsPerSecond: 4_000_000,
+  });
+  recorder.ondataavailable = (e) => {
+    if (e.data.size > 0) chunks.push(e.data);
+  };
+  recorder.onerror = () =>
+    blobReject(
+      new Error("Video export failed while recording the canvas stream."),
+    );
+  recorder.onstop = () => blobResolve(new Blob(chunks, { type: mimeType }));
+  recorder.start();
 
-  let captureStream: MediaStream | null = null;
-  let metrics: ASCIIRenderMetrics | null = null;
-  let yOffset = 0;
-  let loopStart = 0;
-  let total = 0;
-
-  onStage?.("Capturing frames");
-  onProgress?.(0);
+  const frameDuration = 1000 / fps;
+  const total = collectedFrames.length;
+  const loopStart = performance.now();
 
   try {
-    await streamFrames(async (text, colors, frameIndex, frameTotal) => {
-      // Lazy canvas + recorder setup on the very first frame
-      if (frameIndex === 0) {
-        total = frameTotal;
-        metrics = measureFrames(context, [text], exportAppearance);
-        const sourceAspect = sourceWidth / sourceHeight;
-        canvas.width = Math.ceil(metrics.width);
-        // Snap height to source aspect ratio; letterbox if content is shorter
-        canvas.height = Math.max(
-          Math.ceil(metrics.height),
-          Math.round(canvas.width / sourceAspect),
-        );
-        yOffset = Math.max(0, (canvas.height - metrics.height) / 2);
-
-        captureStream = canvas.captureStream(fps);
-        recorder = new MediaRecorder(captureStream, {
-          mimeType,
-          videoBitsPerSecond: 4_000_000,
-        });
-        recorder.ondataavailable = (e) => {
-          if (e.data.size > 0) chunks.push(e.data);
-        };
-        recorder.onerror = () =>
-          blobReject(
-            new Error("Video export failed while recording the canvas stream."),
-          );
-        recorder.onstop = () =>
-          blobResolve(new Blob(chunks, { type: mimeType }));
-        recorder.start();
-        loopStart = performance.now();
-        onStage?.("Encoding video");
-      }
-
-      if (!metrics || !recorder) return;
-
+    for (let i = 0; i < total; i++) {
+      const { text, colors } = collectedFrames[i];
       drawFrame({
         appearance: exportAppearance,
         canvas,
         context,
         frame: text,
-        frameIndex,
+        frameIndex: i,
         fps,
-        metrics,
+        metrics: metrics!,
         scale: 1,
         totalFrames: total,
         chars,
@@ -142,29 +149,22 @@ export async function exportASCIIAnimationAsVideo({
         yOffset,
       });
 
-      onProgress?.(Math.round((frameIndex / total) * 95));
-      const frameDuration = 1000 / fps;
-      const targetMs = (frameIndex + 1) * frameDuration;
+      const targetMs = (i + 1) * frameDuration;
       const remaining = targetMs - (performance.now() - loopStart);
       if (remaining > 0) await wait(remaining);
-    });
 
-    if (!recorder) {
-      throw new Error("No frames were captured — load a file first.");
+      onProgress?.(55 + Math.round((i / total) * 40));
     }
 
-    const finalRecorder = recorder as MediaRecorder;
     onStage?.("Finalizing");
     onProgress?.(97);
-    await wait(1000 / fps);
-    finalRecorder.stop();
+    await wait(frameDuration);
+    recorder.stop();
     const blob = await blobPromise;
     onProgress?.(100);
     downloadBlob(blob, `${sanitizeFileStem(fileName)}.${extension}`);
   } finally {
-    (captureStream as MediaStream | null)
-      ?.getTracks()
-      .forEach((track) => track.stop());
+    captureStream.getTracks().forEach((track) => track.stop());
   }
 }
 
