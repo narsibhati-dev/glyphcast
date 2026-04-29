@@ -140,6 +140,17 @@ export default function PortalMarqueeTransform({
   splitBarClassName = "bg-[#023cc4]",
 }: PortalMarqueeTransformProps) {
   const [isHovered, setIsHovered] = React.useState(false);
+  const [canHover, setCanHover] = React.useState(false);
+
+  React.useEffect(() => {
+    const mediaQuery = window.matchMedia("(hover: hover) and (pointer: fine)");
+    const updateCanHover = () => setCanHover(mediaQuery.matches);
+    updateCanHover();
+    mediaQuery.addEventListener("change", updateCanHover);
+    return () => mediaQuery.removeEventListener("change", updateCanHover);
+  }, []);
+
+  const isMarqueeActive = canHover ? isHovered : true;
 
   return (
     <div
@@ -153,7 +164,7 @@ export default function PortalMarqueeTransform({
       <div className="absolute inset-0">
         <MarqueeStrip
           media={SOURCE_MEDIA}
-          isActive={isHovered}
+          isActive={isMarqueeActive}
           strongGlow={bentoShowcase}
         />
       </div>
@@ -164,7 +175,7 @@ export default function PortalMarqueeTransform({
       >
         <MarqueeStrip
           media={TRANSFORMED_MEDIA}
-          isActive={isHovered}
+          isActive={isMarqueeActive}
           transformed
           strongGlow={bentoShowcase}
         />
