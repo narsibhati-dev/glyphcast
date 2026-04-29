@@ -6,6 +6,8 @@ type ASCIIVideoExportParams = {
   fileName: string;
   fps: number;
   chars: string;
+  sourceWidth: number;
+  sourceHeight: number;
   /** Called for each frame in order; never accumulates all frames in memory. */
   streamFrames: (
     onFrame: (
@@ -26,6 +28,8 @@ type ASCIIComponentExportParams = {
   fps: number;
   frames: string[];
   chars: string;
+  sourceWidth: number;
+  sourceHeight: number;
 };
 
 type ASCIIRenderMetrics = {
@@ -42,6 +46,8 @@ export async function exportASCIIAnimationAsVideo({
   fileName,
   fps,
   chars,
+  sourceWidth,
+  sourceHeight,
   streamFrames,
   onProgress,
   onStage,
@@ -78,6 +84,7 @@ export async function exportASCIIAnimationAsVideo({
 
   let captureStream: MediaStream | null = null;
   let metrics: ASCIIRenderMetrics | null = null;
+  let yOffset = 0;
   let loopStart = 0;
   let total = 0;
 
@@ -90,8 +97,14 @@ export async function exportASCIIAnimationAsVideo({
       if (frameIndex === 0) {
         total = frameTotal;
         metrics = measureFrames(context, [text], exportAppearance);
+        const sourceAspect = sourceWidth / sourceHeight;
         canvas.width = Math.ceil(metrics.width);
-        canvas.height = Math.ceil(metrics.height);
+        // Snap height to source aspect ratio; letterbox if content is shorter
+        canvas.height = Math.max(
+          Math.ceil(metrics.height),
+          Math.round(canvas.width / sourceAspect),
+        );
+        yOffset = Math.max(0, (canvas.height - metrics.height) / 2);
 
         captureStream = canvas.captureStream(fps);
         recorder = new MediaRecorder(captureStream, {
@@ -126,6 +139,7 @@ export async function exportASCIIAnimationAsVideo({
         totalFrames: total,
         chars,
         colors,
+        yOffset,
       });
 
       onProgress?.(Math.round((frameIndex / total) * 95));
@@ -160,6 +174,8 @@ export function exportASCIIAnimationAsReactComponent({
   fps,
   frames,
   chars,
+  sourceWidth,
+  sourceHeight,
 }: ASCIIComponentExportParams) {
   if (frames.length === 0) {
     throw new Error("Convert a video first so there are frames to export.");
@@ -173,6 +189,8 @@ export function exportASCIIAnimationAsReactComponent({
     fps,
     frames: cropFrames(frames),
     chars,
+    sourceWidth,
+    sourceHeight,
   });
 
   downloadTextFile(source, `${stem}.tsx`);
@@ -263,13 +281,19 @@ export function buildASCIIAnimationReactComponentSource({
   fps,
   frames,
   chars,
+  sourceWidth,
+  sourceHeight,
 }: {
   appearance: ASCIIAppearance;
   componentName: string;
   fps: number;
   frames: string[];
   chars: string;
+  sourceWidth?: number;
+  sourceHeight?: number;
 }) {
+  const aspectRatio =
+    sourceWidth && sourceHeight ? sourceWidth / sourceHeight : null;
   const framesJson = JSON.stringify(frames, null, "\t");
   const appearanceJson = JSON.stringify(appearance, null, "\t");
 
@@ -353,6 +377,9 @@ export function buildASCIIAnimationReactComponentSource({
     '\t\t\t\toverflow: "hidden",',
     '\t\t\t\tposition: "relative",',
     '\t\t\t\twidth: "100%",',
+    ...(aspectRatio !== null
+      ? [`\t\t\t\taspectRatio: "${aspectRatio.toFixed(6)}",`]
+      : []),
     "\t\t\t\t...(contentHeight !== null ? { height: `${contentHeight}px` } : {}),",
     "\t\t\t}}",
     "\t\t>",
@@ -510,6 +537,7 @@ function drawFrame({
   scale,
   totalFrames,
   colors,
+  yOffset = 0,
 }: {
   appearance: ASCIIAppearance;
   canvas: HTMLCanvasElement;
@@ -522,6 +550,7 @@ function drawFrame({
   totalFrames: number;
   chars: string;
   colors?: string[][];
+  yOffset?: number;
 }) {
   const { width, height } = metrics;
   const effect = appearance.textEffect;
@@ -532,14 +561,15 @@ function drawFrame({
   context.clearRect(0, 0, canvas.width, canvas.height);
   context.scale(scale, scale);
   context.fillStyle = appearance.backgroundColor;
-  context.fillRect(0, 0, width, height);
+  // Fill the full canvas (may be taller than content due to aspect-ratio letterboxing)
+  context.fillRect(0, 0, canvas.width / scale, canvas.height / scale);
   context.font = metrics.font;
   context.textBaseline = "top";
   context.shadowBlur = 0;
   context.shadowColor = "transparent";
 
   // ── Counter ──────────────────────────────────────────────────────────────
-  let y = 0;
+  let y = yOffset;
   if (appearance.showFrameCounter) {
     context.globalAlpha = 0.78;
     context.fillStyle = appearance.textColor;

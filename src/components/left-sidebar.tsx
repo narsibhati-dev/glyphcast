@@ -893,6 +893,8 @@ function ExportSection() {
               )
             : 24,
         chars: charset,
+        sourceWidth: source.width,
+        sourceHeight: source.height,
         onStage: setExportStage,
         onProgress: setProgress,
         streamFrames: (onFrame, signal) => {
@@ -956,6 +958,8 @@ function ExportSection() {
         fps: 24,
         frames: results.map((r) => r.text),
         chars: charset,
+        sourceWidth: source.width,
+        sourceHeight: source.height,
       });
       setProgress(100);
       setExportResult({ kind: "component", code, filename: `${stem()}.tsx` });
