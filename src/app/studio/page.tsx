@@ -9,12 +9,15 @@ import { StudioProvider } from "@/lib/studio-context";
 import { useAsciiStore } from "@/lib/store";
 import { useKeyboardShortcuts } from "@/lib/use-keyboard-shortcuts";
 import { cn } from "@/lib/utils";
+import { DesktopOnlyGate } from "@/components/desktop-only-gate";
 
 export default function StudioPage() {
   return (
-    <StudioProvider>
-      <StudioShell />
-    </StudioProvider>
+    <DesktopOnlyGate>
+      <StudioProvider>
+        <StudioShell />
+      </StudioProvider>
+    </DesktopOnlyGate>
   );
 }
 
