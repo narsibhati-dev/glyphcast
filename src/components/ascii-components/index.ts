@@ -12,6 +12,13 @@ import {
   FRAMES as FireFrames,
 } from "./fire";
 
+import {
+  APPEARANCE as CarAppearance,
+  CHARS as CarChars,
+  FPS as CarFps,
+  FRAMES as CarFrames,
+} from "./car";
+
 export interface ASCIIShowcaseEntry {
   id: string;
   title: string;
@@ -58,6 +65,18 @@ export interface ASCIIShowcaseEntry {
 // },
 
 export const ASCII_SHOWCASE: ASCIIShowcaseEntry[] = [
+  {
+    id: "car",
+    title: "car",
+    description: "ASCII car animation.",
+    filename: "car.tsx",
+    accentColor: "#B54B00",
+    componentName: "Car",
+    frames: CarFrames,
+    fps: CarFps,
+    chars: CarChars,
+    appearance: CarAppearance as ASCIIAppearance,
+  },
   {
     id: "thunder",
     title: "Thunder",
