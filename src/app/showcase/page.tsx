@@ -162,7 +162,7 @@ export default function ShowcasePage() {
     >
       <div className="flex min-h-dvh w-full flex-col items-center font-satoshi">
         <Navbar />
-        <main className="landing-content-width w-full flex-1 px-2 pb-10 pt-20 sm:px-6 sm:pb-20 sm:pt-32">
+        <main className="landing-content-width w-full flex-1 px-2 pb-10 pt-20 sm:pb-20 sm:pt-32">
           <p className="font-mono text-[11px] uppercase tracking-[0.25em] text-[#B54B00]">
             Gallery
           </p>

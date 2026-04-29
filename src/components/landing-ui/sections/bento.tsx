@@ -105,14 +105,14 @@ const Bento = () => {
       </motion.header>
 
       <motion.div
-        className="landing-content-width gap-4 mt-10 grid grid-rows-1 md:grid-rows-[8fr_6fr] h-auto md:h-[80vh]"
+        className="landing-content-width mt-8 grid h-auto gap-4 md:mt-10 md:h-[80vh] md:grid-rows-[minmax(0,8fr)_minmax(0,6fr)]"
         variants={bentoStagger}
         initial="hidden"
         whileInView="show"
         viewport={{ once: true, margin: "-5% 0px" }}
       >
         <motion.div
-          className="grid grid-cols-1 sm:grid-cols-2 gap-4 min-h-100 sm:min-h-0"
+          className="grid min-h-0 grid-cols-1 gap-4 sm:grid-cols-2"
           variants={bentoRow}
         >
           <div
@@ -139,15 +139,15 @@ const Bento = () => {
               }}
               aria-hidden="true"
             />
-            <div className="relative z-10 flex justify-between flex-col h-full">
-              <div className="h-full">
+            <div className="relative z-10 flex h-full flex-col justify-between">
+              <div className="h-full min-h-[170px] sm:min-h-[220px]">
                 <MagnifiedBento />
               </div>
-              <div className="flex flex-col text-left items-start w-full">
-                <span className="text-xl font-medium px-6 text-[#111111]">
+              <div className="flex w-full flex-col items-start px-4 pb-4 text-left sm:px-6 sm:pb-6">
+                <span className="text-lg font-medium text-[#111111] sm:text-xl">
                   Dial in the glyph grid
                 </span>
-                <span className="text-xs px-6 pb-6 font-medium text-[#666666]">
+                <span className="text-[11px] font-medium text-[#666666] sm:text-xs">
                   Scrub presets and density under the lens, see exactly how your
                   charset will read before you pick an export.
                 </span>
@@ -155,7 +155,7 @@ const Bento = () => {
             </div>
           </div>
           <div
-            className="relative p-6"
+            className="relative p-4 sm:p-6"
             style={{
               background: "#FFF3EC",
               border: "1px solid #FFD0AC",
@@ -167,15 +167,15 @@ const Bento = () => {
             <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden rounded-[16px]">
               <BentoCardCanvasBg />
             </div>
-            <div className="relative z-10 flex justify-between flex-col h-full">
-              <div className="h-full flex z-30 justify-center items-center">
+            <div className="relative z-10 flex h-full flex-col justify-between">
+              <div className="z-30 flex h-full min-h-[170px] items-center justify-center sm:min-h-[220px]">
                 <ImagesBadgeDemoFour />
               </div>
-              <div className="flex flex-col items-start text-left w-full">
-                <span className="text-xl font-medium text-[#111111]">
+              <div className="flex w-full flex-col items-start text-left">
+                <span className="text-lg font-medium text-[#111111] sm:text-xl">
                   Hand off without rework
                 </span>
-                <span className="text-xs font-medium text-[#666666]">
+                <span className="text-[11px] font-medium text-[#666666] sm:text-xs">
                   Download stills, MP4, or a drop-in component, one click from
                   the preview you already trust.
                 </span>
@@ -185,11 +185,11 @@ const Bento = () => {
         </motion.div>
 
         <motion.div
-          className="grid grid-cols-1 sm:grid-cols-[1.1fr_0.9fr] gap-4 min-h-80 sm:min-h-0"
+          className="grid min-h-0 grid-cols-1 gap-4 sm:grid-cols-[1.1fr_0.9fr]"
           variants={bentoRow}
         >
           <div
-            className="relative flex h-full min-h-0 flex-col p-6"
+            className="relative flex h-full min-h-0 flex-col p-4 sm:p-6"
             style={{
               border: "1px solid #FFD0AC",
               boxShadow:
@@ -201,24 +201,24 @@ const Bento = () => {
               <BentoCardCanvasBg reverse />
             </div>
             <div className="relative z-10 flex h-full min-h-0 w-full flex-col text-left">
-              <span className="shrink-0 text-xl font-medium text-[#111111]">
+              <span className="shrink-0 text-lg font-medium text-[#111111] sm:text-xl">
                 Motion that stays in sync
               </span>
-              <span className="mt-1.5 shrink-0 text-xs font-medium text-[#666666]">
+              <span className="mt-1.5 shrink-0 text-[11px] font-medium text-[#666666] sm:text-xs">
                 The split preview keeps source and text conversion aligned:
                 hover to scroll the strip and read the final rhythm before you
                 ship the sequence.
               </span>
-              <div className="z-20 flex min-h-0 w-full flex-1 items-center justify-center pt-5">
+              <div className="z-20 flex min-h-0 w-full flex-1 items-center justify-center pt-4 sm:pt-5">
                 <PortalMarqueeTransform
                   splitBarClassName="bg-[#B54B00] shadow-[0_0_20px_rgba(181,75,0,0.35)]"
-                  className="h-full w-full min-h-[190px] max-h-[280px] flex-1 rounded-2xl border border-transparent bg-transparent shadow-none"
+                  className="h-full w-full min-h-[160px] max-h-[240px] flex-1 rounded-2xl border border-transparent bg-transparent shadow-none sm:min-h-[190px] sm:max-h-[280px]"
                 />
               </div>
             </div>
           </div>
           <div
-            className="relative overflow-hidden p-6 flex justify-between flex-col"
+            className="relative flex flex-col justify-between overflow-hidden p-4 sm:p-6"
             style={{
               background:
                 "linear-gradient(135deg, #6B2800 0%, #B54B00 55%, #D96020 100%)",
@@ -239,11 +239,11 @@ const Bento = () => {
                 alt={`${siteConfig.productName} logo`}
                 width={56}
                 height={56}
-                className="h-14 w-14 rounded-2xl object-contain ring-1 ring-white/25 shadow-md"
+                className="h-12 w-12 rounded-2xl object-contain ring-1 ring-white/25 shadow-md sm:h-14 sm:w-14"
               />
             </div>
-            <div className="relative z-10 flex flex-col items-start w-full">
-              <span className="text-3xl text-[#FFF8F2]">
+            <div className="relative z-10 flex w-full flex-col items-start">
+              <span className="text-2xl text-[#FFF8F2] sm:text-3xl">
                 Build in the open studio
               </span>
               <Link href={"/studio"} className="inline-flex w-fit">

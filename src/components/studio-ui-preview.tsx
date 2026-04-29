@@ -116,7 +116,7 @@ export default function StudioUiPreview() {
         className={cn("w-full rounded-[32px] p-3 md:p-4", PREVIEW.sectionBg)}
       >
         <div className="grid gap-3 lg:grid-cols-[min(320px,38vw)_1fr]">
-          <div className="space-y-3 lg:max-h-[70vh] lg:overflow-y-auto lg:pr-1 lg:[&::-webkit-scrollbar]:hidden lg:[scrollbar-width:none]">
+          <div className="order-2 space-y-3 lg:order-1 lg:max-h-[70vh] lg:overflow-y-auto lg:pr-1 lg:[&::-webkit-scrollbar]:hidden lg:[scrollbar-width:none]">
             <Panel title="Source Media" isDark={isDark} PREVIEW={PREVIEW}>
               <button
                 type="button"
@@ -356,8 +356,8 @@ export default function StudioUiPreview() {
             </Panel>
           </div>
 
-          <div className="h-full lg:sticky lg:top-3 xl:top-4 lg:max-h-[70vh]">
-            <div className={cn(PREVIEW.card, "flex h-full flex-col")}>
+          <div className="order-1 h-auto lg:order-2 lg:h-full lg:sticky lg:top-3 xl:top-4 lg:max-h-[70vh]">
+            <div className={cn(PREVIEW.card, "flex h-auto flex-col lg:h-full")}>
               <div
                 className={cn(
                   "flex items-center justify-between",
@@ -379,13 +379,13 @@ export default function StudioUiPreview() {
 
               <div
                 className={cn(
-                  "flex-1 overflow-hidden p-3",
+                  "overflow-hidden p-3 lg:flex-1",
                   isDark ? "bg-zinc-800" : "bg-white",
                 )}
               >
                 <div
                   className={cn(
-                    "relative flex h-full min-h-[420px] w-full items-center justify-center overflow-hidden rounded-lg border",
+                    "relative flex h-[420px] w-full items-center justify-center overflow-hidden rounded-lg border lg:h-full lg:min-h-[420px]",
                     PREVIEW.previewCanvasBg,
                   )}
                 >

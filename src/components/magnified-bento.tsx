@@ -15,7 +15,7 @@ ASCII_CHAR_PRESETS.forEach((preset, index) => {
 });
 
 const CONFIG = {
-  containerHeight: "h-[200px] sm:h-[240px]",
+  containerHeight: "h-[170px] sm:h-[220px] md:h-[240px]",
   lensSize: 92,
 };
 
@@ -51,12 +51,12 @@ const MagnifiedBento = () => {
             {/* base layer */}
             <motion.div
               style={{ WebkitMaskImage: inverseMask, maskImage: inverseMask }}
-              className="flex flex-col gap-4 w-full h-full justify-center"
+              className="flex h-full w-full flex-col justify-center gap-3 sm:gap-4"
             >
               {TAG_ROWS.map((row, rowIndex) => (
                 <motion.div
                   key={`row-${rowIndex}`}
-                  className="flex gap-3 w-max"
+                  className="flex w-max gap-2.5 sm:gap-3"
                   style={{
                     animation: `${rowIndex % 2 === 0 ? "marqueeLeft" : "marqueeRight"} 45s linear infinite`,
                     animationPlayState: isHovered ? "running" : "paused",
@@ -65,7 +65,7 @@ const MagnifiedBento = () => {
                   {[...row, ...row, ...row].map((item, idx) => (
                     <div
                       key={`${item.id}-${idx}`}
-                      className="inline-flex w-fit bg-white/55 backdrop-blur-sm whitespace-nowrap text-[#6B7280] py-1.5 px-3 items-center border border-[#9CA3AF]/60 rounded-full text-[11px] leading-none"
+                      className="inline-flex w-fit items-center whitespace-nowrap rounded-full border border-[#9CA3AF]/60 bg-white/55 px-2.5 py-1.5 text-[10px] leading-none text-[#6B7280] backdrop-blur-sm sm:px-3 sm:text-[11px]"
                     >
                       <span>{item.label}</span>
                     </div>
@@ -76,7 +76,7 @@ const MagnifiedBento = () => {
 
             {/* reveal layer */}
             <motion.div
-              className="absolute inset-0 flex flex-col gap-4 justify-center pointer-events-none select-none z-10"
+              className="pointer-events-none absolute inset-0 z-10 flex select-none flex-col justify-center gap-3 sm:gap-4"
               style={{
                 clipPath,
               }}
@@ -84,7 +84,7 @@ const MagnifiedBento = () => {
               {TAG_ROWS.map((row, rowIndex) => (
                 <motion.div
                   key={`row-reveal-${rowIndex}`}
-                  className="flex gap-3 w-max"
+                  className="flex w-max gap-2.5 sm:gap-3"
                   style={{
                     animation: `${rowIndex % 2 === 0 ? "marqueeLeft" : "marqueeRight"} 45s linear infinite`,
                     animationPlayState: isHovered ? "running" : "paused",
@@ -93,7 +93,7 @@ const MagnifiedBento = () => {
                   {[...row, ...row, ...row].map((item, idx) => (
                     <div
                       key={`${item.id}-${idx}-reveal`}
-                      className="inline-flex w-fit whitespace-nowrap text-[#1F2937] py-1.5 px-3 items-center border border-[#B54B00]/20 shadow-sm rounded-full text-[11px] leading-none"
+                      className="inline-flex w-fit items-center whitespace-nowrap rounded-full border border-[#B54B00]/20 px-2.5 py-1.5 text-[10px] leading-none text-[#1F2937] shadow-sm sm:px-3 sm:text-[11px]"
                       title={item.chars}
                     >
                       <span className="font-mono text-[#B54B00] tracking-tight">
@@ -107,7 +107,7 @@ const MagnifiedBento = () => {
 
             {/* lens */}
             <motion.div
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-40 cursor-grab active:cursor-grabbing drop-shadow-xl"
+              className="absolute left-1/2 top-1/2 z-40 -translate-x-1/2 -translate-y-1/2 scale-90 cursor-grab drop-shadow-xl active:cursor-grabbing sm:scale-100"
               drag
               dragMomentum={false}
               dragConstraints={containerRef}

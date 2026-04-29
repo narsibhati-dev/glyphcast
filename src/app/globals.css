@@ -137,7 +137,7 @@
 
 @layer base {
   :root {
-    --landing-content-width: 98vw;
+    --landing-content-width: calc(100vw - 1rem);
     --landing-section-gap: 3rem;
     --color-1: #b54b00;
     --color-2: hsl(30 100% 45%);
