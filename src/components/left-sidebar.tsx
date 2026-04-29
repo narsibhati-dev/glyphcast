@@ -237,7 +237,7 @@ function SourceSection() {
   const clearSource = useAsciiStore((s) => s.clearSource);
   const setMode = useAsciiStore((s) => s.setMode);
   const sourceKind = source?.kind;
-  const { requestExport, isExporting } = useStudio();
+  const { requestExportAction, isExporting } = useStudio();
   const sourceRef = useRef(source);
   useEffect(() => {
     sourceRef.current = source;
@@ -346,7 +346,7 @@ function SourceSection() {
             disabled={!source || isExporting}
           >
             <Wand2 className="size-3.5" />
-            {isExporting ? "Generating…" : "Generate Output"}
+            {isExporting ? "Exporting…" : "Export ASCII"}
             <ChevronDown className="ml-1.5 size-3 opacity-50" />
           </Button>
         </DropdownMenuTrigger>
@@ -358,7 +358,7 @@ function SourceSection() {
             className="gap-2 cursor-pointer text-[#333] dark:text-zinc-200 focus:bg-[#FFF5ED] dark:focus:bg-zinc-800 focus:text-[#B54B00]"
             onClick={() => {
               setMode("image");
-              setTimeout(requestExport, 50);
+              setTimeout(() => requestExportAction("image"), 50);
             }}
           >
             <ImageIcon className="size-4 text-[#B54B00]/60" />
@@ -366,10 +366,10 @@ function SourceSection() {
           </DropdownMenuItem>
           <DropdownMenuItem
             className="gap-2 cursor-pointer text-[#333] dark:text-zinc-200 focus:bg-[#FFF5ED] dark:focus:bg-zinc-800 focus:text-[#B54B00]"
-            disabled={sourceKind !== "video"}
+            disabled={sourceKind !== "video" && sourceKind !== "gif"}
             onClick={() => {
               setMode("video");
-              setTimeout(requestExport, 50);
+              setTimeout(() => requestExportAction("video"), 50);
             }}
           >
             <Film className="size-4 text-[#B54B00]/60" />
@@ -379,11 +379,29 @@ function SourceSection() {
             className="gap-2 cursor-pointer text-[#333] dark:text-zinc-200 focus:bg-[#FFF5ED] dark:focus:bg-zinc-800 focus:text-[#B54B00]"
             onClick={() => {
               setMode("component");
-              setTimeout(requestExport, 50);
+              setTimeout(() => requestExportAction("component"), 50);
             }}
           >
             <Code2 className="size-4 text-[#B54B00]/60" />
             <span className="font-sans text-xs">Export as React Component</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            className="gap-2 cursor-pointer text-[#333] dark:text-zinc-200 focus:bg-[#FFF5ED] dark:focus:bg-zinc-800 focus:text-[#B54B00]"
+            onClick={() => {
+              setTimeout(() => requestExportAction("zip"), 50);
+            }}
+          >
+            <FileArchive className="size-4 text-[#B54B00]/60" />
+            <span className="font-sans text-xs">Export as ZIP</span>
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            className="gap-2 cursor-pointer text-[#333] dark:text-zinc-200 focus:bg-[#FFF5ED] dark:focus:bg-zinc-800 focus:text-[#B54B00]"
+            onClick={() => {
+              setTimeout(() => requestExportAction("copy"), 50);
+            }}
+          >
+            <Copy className="size-4 text-[#B54B00]/60" />
+            <span className="font-sans text-xs">Copy Code</span>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
@@ -802,8 +820,13 @@ function ExportChip({
 
 function ExportSection() {
   const PROGRESS_TOAST_ID = "studio-export-progress";
-  const { canvasRef, registerExportHandler, isExporting, setIsExporting } =
-    useStudio();
+  const {
+    canvasRef,
+    registerExportHandler,
+    registerExportActions,
+    isExporting,
+    setIsExporting,
+  } = useStudio();
   const source = useAsciiStore((s) => s.source);
   const appearance = useAsciiStore((s) => s.appearance);
   const charset = useAsciiStore((s) => s.charset);
@@ -1074,6 +1097,24 @@ function ExportSection() {
     registerExportHandler(h);
     return () => registerExportHandler(null);
   }, [mode, downloadPNG, exportVideo, exportComponent, registerExportHandler]);
+
+  useEffect(() => {
+    registerExportActions({
+      image: downloadPNG,
+      video: exportVideo,
+      component: exportComponent,
+      zip: exportZip,
+      copy: copyText,
+    });
+    return () => registerExportActions(null);
+  }, [
+    copyText,
+    downloadPNG,
+    exportComponent,
+    exportVideo,
+    exportZip,
+    registerExportActions,
+  ]);
 
   return (
     <>

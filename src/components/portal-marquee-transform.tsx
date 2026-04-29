@@ -18,17 +18,17 @@ interface MarqueeMediaItem {
 }
 
 const SOURCE_MEDIA: MarqueeMediaItem[] = [
-  { src: "/portal-marquee-video/fire-sparkle.mp4", type: "video" },
-  { src: "/portal-marquee-video/skull-stroke.mp4", type: "video" },
-  { src: "/portal-marquee-video/hand.mp4", type: "video" },
-  { src: "/portal-marquee-video/fire-cd.mp4", type: "video" },
+  { src: "/portal-marquee-video/stroke-ascii.mp4", type: "video" },
+  { src: "/portal-marquee-video/fire-ascii.mp4", type: "video" },
+  { src: "/portal-marquee-video/skull-ascii.mp4", type: "video" },
+  { src: "/portal-marquee-video/car-drifting-ascii.mp4", type: "video" },
 ];
 
 const TRANSFORMED_MEDIA: MarqueeMediaItem[] = [
   { src: "/portal-marquee-video/below-video/stroke.gif", type: "image" },
   { src: "/portal-marquee-video/below-video/fire.mp4", type: "video" },
-  { src: "/portal-marquee-video/below-video/cd.mp4", type: "video" },
   { src: "/portal-marquee-video/below-video/skull.gif", type: "image" },
+  { src: "/portal-marquee-video/below-video/car.gif", type: "image" },
 ];
 
 function MarqueeStrip({
@@ -90,7 +90,7 @@ function MarqueeStrip({
         <div
           key={`${item.src}-${index}-${transformed ? "transformed" : "source"}`}
           className={cn(
-            "relative h-[138px] w-[210px] shrink-0 overflow-hidden rounded-2xl",
+            "relative h-[154px] w-[234px] shrink-0 overflow-hidden rounded-2xl sm:h-[172px] sm:w-[262px]",
             "shadow-none",
           )}
         >
@@ -144,7 +144,7 @@ export default function PortalMarqueeTransform({
   return (
     <div
       className={cn(
-        "relative h-full w-full min-h-[190px] overflow-hidden rounded-xl",
+        "relative h-full w-full min-h-[220px] overflow-hidden rounded-xl sm:min-h-[250px]",
         className,
       )}
       onMouseEnter={() => setIsHovered(true)}
@@ -172,7 +172,7 @@ export default function PortalMarqueeTransform({
 
       <div
         className={cn(
-          "pointer-events-none absolute top-1/2 left-1/2 z-20 h-[170px] w-[10px] -translate-x-1/2 -translate-y-1/2 rounded-full",
+          "pointer-events-none absolute top-1/2 left-1/2 z-20 h-[188px] w-[10px] -translate-x-1/2 -translate-y-1/2 rounded-full sm:h-[212px]",
           splitBarClassName,
         )}
       />
