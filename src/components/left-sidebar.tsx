@@ -45,10 +45,6 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ColorField } from "@/components/color-field";
-import {
-  ExportResultDialog,
-  type ExportResult,
-} from "@/components/export-result-dialog";
 
 import { useAsciiStore, type StudioSource } from "@/lib/store";
 import {
@@ -805,6 +801,7 @@ function ExportChip({
 }
 
 function ExportSection() {
+  const PROGRESS_TOAST_ID = "studio-export-progress";
   const { canvasRef, registerExportHandler, isExporting, setIsExporting } =
     useStudio();
   const source = useAsciiStore((s) => s.source);
@@ -815,14 +812,57 @@ function ExportSection() {
   const [filename, setFilename] = useState("");
   const [progress, setProgress] = useState(0);
   const [exportStage, setExportStage] = useState("");
-  const [exportResult, setExportResult] = useState<ExportResult>(null);
   const abortRef = useRef<AbortController | null>(null);
+
+  const dismissProgressToast = useCallback(() => {
+    toast.dismiss(PROGRESS_TOAST_ID);
+  }, []);
+
+  useEffect(() => {
+    if (!isExporting) return;
+    const clampedProgress = Math.max(0, Math.min(100, progress));
+    toast.loading("Exporting…", {
+      id: PROGRESS_TOAST_ID,
+      description: (
+        <div className="flex flex-col gap-1.5 pt-0.5">
+          <div className="flex items-center justify-between text-xs text-zinc-400">
+            <span>{exportStage || "Preparing export"}</span>
+            <span className="tabular-nums">{clampedProgress}%</span>
+          </div>
+          <div className="h-1 w-full overflow-hidden rounded-full bg-zinc-800">
+            <div
+              className="h-full rounded-full bg-[#B54B00] transition-all duration-300"
+              style={{ width: `${clampedProgress}%` }}
+            />
+          </div>
+        </div>
+      ),
+      position: "bottom-center",
+      duration: Number.POSITIVE_INFINITY,
+      action: {
+        label: "Cancel",
+        onClick: () => abortRef.current?.abort(),
+      },
+    });
+  }, [exportStage, isExporting, progress]);
 
   const stem = useCallback(
     () =>
       filename.trim() || source?.file?.name?.replace(/\.[^.]+$/, "") || "ascii",
     [filename, source],
   );
+
+  const downloadTextFile = useCallback((content: string, fileName: string) => {
+    const blob = new Blob([content], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = fileName;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }, []);
 
   const downloadPNG = useCallback(async () => {
     const result = canvasRef.current?.getFrameResult();
@@ -845,8 +885,10 @@ function ExportSection() {
         quality: 2,
       });
       setProgress(100);
-      setExportResult({ kind: "image", filename: `${stem()}.png` });
+      dismissProgressToast();
+      toast.success("Image exported", { position: "bottom-center" });
     } catch (err) {
+      dismissProgressToast();
       toast.error(err instanceof Error ? err.message : "Failed");
     } finally {
       setIsExporting(false);
@@ -908,14 +950,15 @@ function ExportSection() {
           );
         },
       });
-      setExportResult({
-        kind: "video",
-        frameCount,
-        durationSec: frameCount / 24,
-        filename: `${stem()}.mp4`,
-      });
+      dismissProgressToast();
+      toast.success("Video exported", { position: "bottom-center" });
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Export failed");
+      dismissProgressToast();
+      if (err instanceof DOMException && err.name === "AbortError") {
+        toast.message("Export cancelled", { position: "bottom-center" });
+      } else {
+        toast.error(err instanceof Error ? err.message : "Export failed");
+      }
     } finally {
       setIsExporting(false);
       setProgress(0);
@@ -962,8 +1005,11 @@ function ExportSection() {
         sourceHeight: source.height,
       });
       setProgress(100);
-      setExportResult({ kind: "component", code, filename: `${stem()}.tsx` });
+      dismissProgressToast();
+      downloadTextFile(code, `${stem()}.tsx`);
+      toast.success("React component exported", { position: "bottom-center" });
     } catch (err) {
+      dismissProgressToast();
       toast.error(err instanceof Error ? err.message : "Failed");
     } finally {
       setIsExporting(false);
@@ -974,6 +1020,7 @@ function ExportSection() {
     appearance,
     canvasRef,
     charset,
+    downloadTextFile,
     isExporting,
     setIsExporting,
     source,
@@ -1005,12 +1052,10 @@ function ExportSection() {
         fileName: stem(),
       });
       setProgress(100);
-      setExportResult({
-        kind: "zip",
-        frameCount: results.length,
-        filename: `${stem()}.zip`,
-      });
+      dismissProgressToast();
+      toast.success("ZIP exported", { position: "bottom-center" });
     } catch (err) {
+      dismissProgressToast();
       toast.error(err instanceof Error ? err.message : "Failed");
     } finally {
       setIsExporting(false);
@@ -1079,40 +1124,7 @@ function ExportSection() {
             disabled={isExporting || !source}
           />
         </div>
-
-        {isExporting && (
-          <div className="space-y-1.5 pt-1">
-            <div className="flex items-center justify-between gap-2">
-              <span className="font-mono text-[10px] text-[#666] dark:text-zinc-400 truncate">
-                {exportStage}
-              </span>
-              <div className="flex items-center gap-2 shrink-0">
-                <span className="font-mono text-[10px] font-semibold tabular-nums text-[#B54B00]">
-                  {progress}%
-                </span>
-                <button
-                  type="button"
-                  className="font-sans text-[10px] font-bold text-[#888] transition-colors hover:text-red-400"
-                  onClick={() => abortRef.current?.abort()}
-                >
-                  Cancel
-                </button>
-              </div>
-            </div>
-            <div className="h-1.5 overflow-hidden rounded-full bg-[#E5E5E5] dark:bg-zinc-700">
-              <div
-                className="h-full rounded-full bg-[#B54B00] transition-all duration-200"
-                style={{ width: `${progress}%` }}
-              />
-            </div>
-          </div>
-        )}
       </AccordionSection>
-
-      <ExportResultDialog
-        result={exportResult}
-        onClose={() => setExportResult(null)}
-      />
     </>
   );
 }
