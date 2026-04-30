@@ -180,7 +180,7 @@ const Pricing = () => {
               layoutId="pricing-tab-pill"
               className="absolute inset-0"
               style={{
-                background: isDark ? "#3f3f46" : "#F5F5F5",
+                background: "#F5F5F5",
                 boxShadow:
                   "0px 4px 1px rgba(0, 0, 0, 0.01), 0px 2px 1px rgba(0, 0, 0, 0.05), 0px 1px 1px rgba(0, 0, 0, 0.09), 0px 0px 1px rgba(0, 0, 0, 0.1), inset 0px 2px 2.2px rgba(255,255,255,0.1)",
                 borderRadius: "99px",
@@ -193,8 +193,7 @@ const Pricing = () => {
           <span
             className="relative z-10"
             style={{
-              color:
-                activeTab === "monthly" ? (isDark ? "#fff" : "#222") : "#fff",
+              color: activeTab === "monthly" ? "#222" : "#fff",
             }}
           >
             Monthly
@@ -210,7 +209,7 @@ const Pricing = () => {
               layoutId="pricing-tab-pill"
               className="absolute inset-0"
               style={{
-                background: isDark ? "#3f3f46" : "#F5F5F5",
+                background: "#F5F5F5",
                 boxShadow:
                   "0px 4px 1px rgba(0, 0, 0, 0.01), 0px 2px 1px rgba(0, 0, 0, 0.05), 0px 1px 1px rgba(0, 0, 0, 0.09), 0px 0px 1px rgba(0, 0, 0, 0.1), inset 0px 2px 2.2px rgba(255,255,255,0.1)",
                 borderRadius: "99px",
@@ -223,8 +222,7 @@ const Pricing = () => {
           <span
             className="relative z-10"
             style={{
-              color:
-                activeTab === "yearly" ? (isDark ? "#fff" : "#222") : "#fff",
+              color: activeTab === "yearly" ? "#222" : "#fff",
             }}
           >
             Yearly (Save 20%)
