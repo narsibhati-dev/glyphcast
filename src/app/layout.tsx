@@ -4,6 +4,7 @@ import { Archivo, JetBrains_Mono, Silkscreen } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/theme-provider";
+import { SITE_CONFIG } from "@/config/site";
 
 const archivo = Archivo({
   variable: "--font-sans",
@@ -30,6 +31,30 @@ export const metadata: Metadata = {
   title: "Glyphcast | ASCII Studio",
   description:
     "Drop in an image or video and tune it into ASCII art, in your browser, in real time.",
+  metadataBase: new URL(SITE_CONFIG.url),
+  openGraph: {
+    title: "Glyphcast | ASCII Studio",
+    description:
+      "Drop in an image or video and tune it into ASCII art, in your browser, in real time.",
+    url: SITE_CONFIG.url,
+    siteName: SITE_CONFIG.name,
+    type: "website",
+    images: [
+      {
+        url: "/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Glyphcast ASCII Studio preview",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Glyphcast | ASCII Studio",
+    description:
+      "Drop in an image or video and tune it into ASCII art, in your browser, in real time.",
+    images: ["/og-image.jpg"],
+  },
 };
 
 export default function RootLayout({

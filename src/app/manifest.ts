@@ -23,7 +23,7 @@ export default function manifest(): MetadataRoute.Manifest {
       {
         src: "/screenshot-desktop.webp",
         type: "image/webp",
-        sizes: "1920x1080",
+        sizes: "3264x1914",
         form_factor: "wide",
       },
     ],
