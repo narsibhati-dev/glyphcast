@@ -243,6 +243,8 @@ function SourceSection() {
     sourceRef.current = source;
   });
 
+  const { setIsExporting } = useStudio();
+
   const onDrop = useCallback(
     async (accepted: File[], rejected: FileRejection[]) => {
       if (rejected.length > 0) {
@@ -260,6 +262,9 @@ function SourceSection() {
           | undefined;
         if (prevEl?._isGifMounted && prevEl.parentElement)
           prevEl.parentElement.removeChild(prevEl);
+        // Reset any stuck export state when swapping sources
+        setIsExporting(false);
+        toast.dismiss("studio-export-progress");
         setSource(built);
         if (built.kind === "video" || built.kind === "gif") setPlaying(true);
         toast.success(`Loaded ${file.name}`);
@@ -267,7 +272,7 @@ function SourceSection() {
         toast.error(err instanceof Error ? err.message : "Could not load file");
       }
     },
-    [setSource, setPlaying],
+    [setSource, setPlaying, setIsExporting],
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({

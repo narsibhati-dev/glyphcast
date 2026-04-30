@@ -382,7 +382,7 @@ export function AsciiCanvas({ ref, className }: AsciiCanvasProps) {
         if (source.kind === "image") {
           const result = imageToAscii(source.el as HTMLImageElement, opts);
           onProgress?.(1, 1);
-          return [{ ...result, colors: undefined }];
+          return [useColors ? result : { ...result, colors: undefined }];
         }
 
         if (source.kind === "gif") {
@@ -399,8 +399,9 @@ export function AsciiCanvas({ ref, className }: AsciiCanvasProps) {
             exportCtx.clearRect(0, 0, source.width, source.height);
             exportCtx.drawImage(frames[f].canvas, 0, 0);
             const result = imageToAscii(exportCanvas, opts);
-            results.push({ ...result, colors: undefined });
+            results.push(useColors ? result : { ...result, colors: undefined });
             onProgress?.(f + 1, total);
+            await yieldToMain();
           }
           return results;
         }
@@ -416,8 +417,9 @@ export function AsciiCanvas({ ref, className }: AsciiCanvasProps) {
             const t = (f / total) * (video.duration || 1);
             await seekVideo(video, t);
             const result = imageToAscii(video, opts);
-            results.push({ ...result, colors: undefined });
+            results.push(useColors ? result : { ...result, colors: undefined });
             onProgress?.(f + 1, total);
+            await yieldToMain();
           }
         } finally {
           if (wasPlaying) video.play().catch(() => undefined);
@@ -508,21 +510,34 @@ export function AsciiCanvas({ ref, className }: AsciiCanvasProps) {
 
 function seekVideo(video: HTMLVideoElement, time: number): Promise<void> {
   return new Promise((resolve) => {
-    const onSeek = () => {
-      video.removeEventListener("seeked", onSeek);
+    const done = () => {
+      clearTimeout(timer);
+      video.removeEventListener("seeked", done);
       resolve();
     };
-    video.addEventListener("seeked", onSeek, { once: true });
+    // Safety net: if "seeked" never fires (e.g. video in error/stale state after
+    // a source swap), resolve after 2 s so the export can still complete.
+    const timer = window.setTimeout(done, 2000);
+    video.addEventListener("seeked", done, { once: true });
     try {
       video.currentTime = Math.max(
         0,
         Math.min(time, Math.max(0, (video.duration || time) - 1e-3)),
       );
     } catch {
-      video.removeEventListener("seeked", onSeek);
-      resolve();
+      done();
     }
   });
+}
+
+function yieldToMain(): Promise<void> {
+  const s =
+    typeof window !== "undefined" &&
+    (window as unknown as Record<string, unknown>)["scheduler"];
+  if (s && typeof (s as Record<string, unknown>)["yield"] === "function") {
+    return (s as { yield: () => Promise<void> }).yield();
+  }
+  return new Promise<void>((resolve) => setTimeout(resolve, 0));
 }
 
 interface PaintCellsArgs {
