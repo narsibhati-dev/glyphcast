@@ -26,9 +26,12 @@ The studio supports:
 
 <table>
   <tr>
-    <td><img src="./assets/site/car-drifting-ascii.gif" alt="Glyphcast sample GIF 3" width="300" height="170" style="object-fit: cover;" /></td>
-    <td><img src="./assets/site/skull-ascii.gif" alt="Glyphcast sample GIF 1" width="300" height="170" style="object-fit: cover;" /></td>
-    <td><img src="./assets/site/fire-ascii.gif" alt="Glyphcast sample GIF 2" width="300" height="170" style="object-fit: cover;" /></td>
+    <td><img src="./assets/site/car-drifting-ascii.gif" alt="Glyphcast sample GIF 1" width="300" height="170" style="object-fit: cover;" /></td>
+    <td><img src="./assets/site/skull-ascii.gif" alt="Glyphcast sample GIF 2" width="300" height="170" style="object-fit: cover;" /></td>
+  </tr>
+  <tr>
+    <td><img src="./assets/site/fire-ascii.gif" alt="Glyphcast sample GIF 3" width="300" height="170" style="object-fit: cover;" /></td>
+    <td><img src="./assets/site/stroke-ascii.gif" alt="Glyphcast sample GIF 4" width="300" height="170" style="object-fit: cover;" /></td>
   </tr>
 </table>
 
