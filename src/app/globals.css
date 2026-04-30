@@ -173,19 +173,6 @@
     100% { background-position: 200%; }
   }
 
-  body::after {
-    content: "";
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-image: url("https://grainy-gradients.vercel.app/noise.svg");
-    opacity: 0.05;
-    pointer-events: none;
-    z-index: 9999;
-    filter: contrast(120%) brightness(120%);
-  }
 }
 
 @media (min-width: 768px) {
