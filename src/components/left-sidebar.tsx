@@ -5,7 +5,6 @@ import {
   useEffect,
   useRef,
   useState,
-  type ComponentType,
   type ReactNode,
 } from "react";
 import { parseGIF, decompressFrames } from "gifuct-js";
@@ -13,6 +12,8 @@ import { useDropzone, type FileRejection } from "react-dropzone";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Bold,
+  Check,
+  ChevronDown,
   Code2,
   Copy,
   FileArchive,
@@ -20,10 +21,9 @@ import {
   Image as ImageIcon,
   ImageDown,
   Italic,
+  ArrowDownToLine,
   Trash2,
   Upload,
-  Wand2,
-  ChevronDown,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -60,6 +60,7 @@ import {
 } from "@/lib/ascii-export";
 import { loadGoogleFont } from "@/lib/font-loader";
 import { useStudio } from "@/lib/studio-context";
+import { ExportModal } from "@/components/export-modal";
 import {
   STUDIO_CARD_OUTLINE,
   STUDIO_DROPZONE,
@@ -235,10 +236,9 @@ function SourceSection() {
   const setSource = useAsciiStore((s) => s.setSource);
   const setPlaying = useAsciiStore((s) => s.setPlaying);
   const clearSource = useAsciiStore((s) => s.clearSource);
-  const setMode = useAsciiStore((s) => s.setMode);
-  const sourceKind = source?.kind;
-  const { requestExportAction, isExporting } = useStudio();
+  const { isExporting } = useStudio();
   const sourceRef = useRef(source);
+  const [exportModalOpen, setExportModalOpen] = useState(false);
   useEffect(() => {
     sourceRef.current = source;
   });
@@ -342,74 +342,21 @@ function SourceSection() {
         </div>
       )}
 
-      <DropdownMenu>
-        <DropdownMenuTrigger asChild>
-          <Button
-            variant="landingBlue"
-            size="sm"
-            className="h-8 w-full min-h-0 gap-2 rounded-full px-3 py-0 font-sans text-[11px] font-semibold tracking-wide"
-            disabled={!source || isExporting}
-          >
-            <Wand2 className="size-3.5" />
-            {isExporting ? "Exporting…" : "Export ASCII"}
-            <ChevronDown className="ml-1.5 size-3 opacity-50" />
-          </Button>
-        </DropdownMenuTrigger>
-        <DropdownMenuContent
-          align="center"
-          className="w-56 border border-[#E5E5E5] dark:border-zinc-700 bg-white dark:bg-zinc-900 text-[#111] dark:text-zinc-100 shadow-md shadow-black/5 dark:shadow-black/30 ring-0"
-        >
-          <DropdownMenuItem
-            className="gap-2 cursor-pointer text-[#333] dark:text-zinc-200 focus:bg-[#FFF5ED] dark:focus:bg-zinc-800 focus:text-[#B54B00]"
-            onClick={() => {
-              setMode("image");
-              setTimeout(() => requestExportAction("image"), 50);
-            }}
-          >
-            <ImageIcon className="size-4 text-[#B54B00]/60" />
-            <span className="font-sans text-xs">Export as Image</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            className="gap-2 cursor-pointer text-[#333] dark:text-zinc-200 focus:bg-[#FFF5ED] dark:focus:bg-zinc-800 focus:text-[#B54B00]"
-            disabled={sourceKind !== "video" && sourceKind !== "gif"}
-            onClick={() => {
-              setMode("video");
-              setTimeout(() => requestExportAction("video"), 50);
-            }}
-          >
-            <Film className="size-4 text-[#B54B00]/60" />
-            <span className="font-sans text-xs">Export as Video</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            className="gap-2 cursor-pointer text-[#333] dark:text-zinc-200 focus:bg-[#FFF5ED] dark:focus:bg-zinc-800 focus:text-[#B54B00]"
-            onClick={() => {
-              setMode("component");
-              setTimeout(() => requestExportAction("component"), 50);
-            }}
-          >
-            <Code2 className="size-4 text-[#B54B00]/60" />
-            <span className="font-sans text-xs">Export as React Component</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            className="gap-2 cursor-pointer text-[#333] dark:text-zinc-200 focus:bg-[#FFF5ED] dark:focus:bg-zinc-800 focus:text-[#B54B00]"
-            onClick={() => {
-              setTimeout(() => requestExportAction("zip"), 50);
-            }}
-          >
-            <FileArchive className="size-4 text-[#B54B00]/60" />
-            <span className="font-sans text-xs">Export as ZIP</span>
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            className="gap-2 cursor-pointer text-[#333] dark:text-zinc-200 focus:bg-[#FFF5ED] dark:focus:bg-zinc-800 focus:text-[#B54B00]"
-            onClick={() => {
-              setTimeout(() => requestExportAction("copy"), 50);
-            }}
-          >
-            <Copy className="size-4 text-[#B54B00]/60" />
-            <span className="font-sans text-xs">Copy Code</span>
-          </DropdownMenuItem>
-        </DropdownMenuContent>
-      </DropdownMenu>
+      <Button
+        variant="landingBlue"
+        size="sm"
+        className="h-8 w-full min-h-0 gap-2 rounded-full px-3 py-0 font-sans text-[11px] font-semibold tracking-wide"
+        disabled={!source || isExporting}
+        onClick={() => setExportModalOpen(true)}
+      >
+        <ArrowDownToLine className="size-3.5" />
+        {isExporting ? "Exporting…" : "Export ASCII"}
+      </Button>
+
+      <ExportModal
+        open={exportModalOpen}
+        onClose={() => setExportModalOpen(false)}
+      />
     </AccordionSection>
   );
 }
@@ -789,41 +736,15 @@ function AppearanceSection() {
 /* Export                                                                      */
 /* ─────────────────────────────────────────────────────────────────────────── */
 
-function ExportChip({
-  icon: Icon,
-  label,
-  onClick,
-  disabled,
-}: {
-  icon: ComponentType<{ className?: string }>;
-  label: string;
-  onClick: () => void;
-  disabled?: boolean;
-}) {
-  const isComponent = label === "React";
-  return (
-    <Button
-      type="button"
-      size="sm"
-      variant="outline"
-      onClick={onClick}
-      disabled={disabled}
-      className={cn(
-        STUDIO_OUTLINE_TERTIARY,
-        "h-8 min-w-0 justify-center gap-1.5 rounded-full border-[#D8D8D8] dark:border-zinc-700 bg-white dark:bg-zinc-800 px-2 text-[9px] font-medium",
-        !isComponent &&
-          "hover:border-[#B54B00]/40 hover:bg-[#FFF5ED] dark:hover:bg-zinc-700 hover:text-[#B54B00]",
-        isComponent &&
-          "border-[#EBC6A5] dark:border-zinc-600 bg-[#FFF5ED] dark:bg-zinc-700/60 text-[#7A3300] dark:text-[#B54B00] hover:bg-[#FFECDD] dark:hover:bg-zinc-700",
-      )}
-    >
-      <Icon className="h-3.5 w-3.5 shrink-0" />
-      <span className="min-w-0 truncate">{label}</span>
-    </Button>
-  );
-}
+const EXPORT_FORMATS = [
+  { id: "image" as const, label: "Image", icon: ImageDown },
+  { id: "video" as const, label: "Video", icon: Film },
+  { id: "react" as const, label: "React Component", icon: Code2 },
+  { id: "zip" as const, label: "ZIP Archive", icon: FileArchive },
+];
+type ExportFormat = (typeof EXPORT_FORMATS)[number]["id"];
 
-function ExportSection() {
+export function ExportSection() {
   const PROGRESS_TOAST_ID = "studio-export-progress";
   const {
     canvasRef,
@@ -837,9 +758,11 @@ function ExportSection() {
   const charset = useAsciiStore((s) => s.charset);
   const mode = useAsciiStore((s) => s.mode);
 
-  const [filename, setFilename] = useState("");
+  const filename = useAsciiStore((s) => s.exportFilename);
+  const setFilename = useAsciiStore((s) => s.setExportFilename);
   const [progress, setProgress] = useState(0);
   const [exportStage, setExportStage] = useState("");
+  const [selectedFormat, setSelectedFormat] = useState<ExportFormat>("image");
   const abortRef = useRef<AbortController | null>(null);
 
   const dismissProgressToast = useCallback(() => {
@@ -1121,65 +1044,37 @@ function ExportSection() {
     registerExportActions,
   ]);
 
-  return (
-    <>
-      <AccordionSection title="Export Actions" defaultOpen={false}>
-        <div className="space-y-2">
-          <FieldLabel>File Name</FieldLabel>
-          <Input
-            placeholder="filename (optional)"
-            value={filename}
-            onChange={(e) => setFilename(e.target.value)}
-            className={STUDIO_FIELD_MONO_CLASS}
-          />
-        </div>
+  const handleExport = useCallback(() => {
+    switch (selectedFormat) {
+      case "image":
+        return downloadPNG();
+      case "video":
+        return exportVideo();
+      case "react":
+        return exportComponent();
+      case "zip":
+        return exportZip();
+    }
+  }, [selectedFormat, downloadPNG, exportVideo, exportComponent, exportZip]);
 
-        <div className="grid grid-cols-3 gap-2">
-          <ExportChip
-            icon={Copy}
-            label="Copy"
-            onClick={copyText}
-            disabled={isExporting}
-          />
-          <ExportChip
-            icon={Film}
-            label="Video"
-            onClick={exportVideo}
-            disabled={
-              isExporting ||
-              !source ||
-              (source.kind !== "video" && source.kind !== "gif")
-            }
-          />
-          <ExportChip
-            icon={ImageDown}
-            label="Image"
-            onClick={downloadPNG}
-            disabled={isExporting || !source}
-          />
-          <ExportChip
-            icon={Code2}
-            label="React"
-            onClick={exportComponent}
-            disabled={isExporting || !source}
-          />
-          <ExportChip
-            icon={FileArchive}
-            label="ZIP"
-            onClick={exportZip}
-            disabled={isExporting || !source}
-          />
-        </div>
-      </AccordionSection>
-    </>
-  );
+  const isVideoFormat = selectedFormat === "video";
+  const isVideoDisabled =
+    !source || (source.kind !== "video" && source.kind !== "gif");
+  const isExportDisabled =
+    isExporting || !source || (isVideoFormat && isVideoDisabled);
+
+  const currentFormat =
+    EXPORT_FORMATS.find((f) => f.id === selectedFormat) ?? EXPORT_FORMATS[0];
+  const CurrentIcon = currentFormat.icon;
+
+  return null;
 }
 
 /* ─────────────────────────────────────────────────────────────────────────── */
 /* Root                                                                        */
 /* ─────────────────────────────────────────────────────────────────────────── */
 
-export function LeftSidebar({
+export function Studio({
   previewRef,
 }: {
   previewRef: React.RefObject<HTMLDivElement | null>;

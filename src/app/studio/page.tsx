@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 
 import { TopBar } from "@/components/top-bar";
-import { LeftSidebar } from "@/components/left-sidebar";
+import { Studio } from "@/components/left-sidebar";
 import { PreviewStage } from "@/components/preview-stage";
 import { StudioProvider } from "@/lib/studio-context";
 import { useAsciiStore } from "@/lib/store";
@@ -69,7 +69,7 @@ function StudioShell() {
             "md:relative md:inset-auto md:z-auto md:translate-x-0",
           )}
         >
-          <LeftSidebar previewRef={previewRef} />
+          <Studio previewRef={previewRef} />
         </aside>
 
         {/* Mobile Backdrop */}

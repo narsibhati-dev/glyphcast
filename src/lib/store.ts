@@ -55,6 +55,9 @@ export interface StudioState {
   setFrame: (frame: number) => void;
   stepFrame: (delta: number) => void;
   setTotalFrames: (n: number) => void;
+
+  exportFilename: string;
+  setExportFilename: (name: string) => void;
 }
 
 const DEFAULT_PRESET =
@@ -146,6 +149,9 @@ export const useAsciiStore = create<StudioState>((set) => ({
       totalFrames: Math.max(0, Math.floor(n)),
       currentFrame: Math.min(s.currentFrame, Math.max(0, Math.floor(n) - 1)),
     })),
+
+  exportFilename: "",
+  setExportFilename: (name) => set(() => ({ exportFilename: name })),
 }));
 
 function clamp(n: number, min: number, max: number): number {
