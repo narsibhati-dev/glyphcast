@@ -10,6 +10,7 @@ interface PortalMarqueeTransformProps {
   bentoShowcase?: boolean;
   /** Class for the vertical split handle (e.g. brand color on light bento). */
   splitBarClassName?: string;
+  direction?: "rtl" | "ltr";
 }
 
 interface MarqueeMediaItem {
@@ -36,11 +37,13 @@ function MarqueeStrip({
   isActive,
   transformed = false,
   strongGlow = false,
+  direction = "rtl",
 }: {
   media: MarqueeMediaItem[];
   isActive: boolean;
   transformed?: boolean;
   strongGlow?: boolean;
+  direction?: "rtl" | "ltr";
 }) {
   const trackRef = React.useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
@@ -70,13 +73,23 @@ function MarqueeStrip({
     }
 
     const speed = 26; // pixels per second
-    const nextX = x.get() - (delta / 1000) * speed;
+    const step = (delta / 1000) * speed;
 
+    if (direction === "ltr") {
+      const nextX = x.get() + step;
+      if (nextX >= 0) {
+        x.set(nextX - loopWidth);
+        return;
+      }
+      x.set(nextX);
+      return;
+    }
+
+    const nextX = x.get() - step;
     if (nextX <= -loopWidth) {
       x.set(nextX + loopWidth);
       return;
     }
-
     x.set(nextX);
   });
 
@@ -138,6 +151,7 @@ export default function PortalMarqueeTransform({
   className,
   bentoShowcase = false,
   splitBarClassName = "bg-[#023cc4]",
+  direction = "rtl",
 }: PortalMarqueeTransformProps) {
   const [isHovered, setIsHovered] = React.useState(false);
   const [canHover, setCanHover] = React.useState(false);
@@ -163,9 +177,10 @@ export default function PortalMarqueeTransform({
     >
       <div className="absolute inset-0">
         <MarqueeStrip
-          media={SOURCE_MEDIA}
+          media={TRANSFORMED_MEDIA}
           isActive={isMarqueeActive}
           strongGlow={bentoShowcase}
+          direction={direction}
         />
       </div>
 
@@ -174,10 +189,11 @@ export default function PortalMarqueeTransform({
         style={{ clipPath: "inset(0 0 0 50%)" }}
       >
         <MarqueeStrip
-          media={TRANSFORMED_MEDIA}
+          media={SOURCE_MEDIA}
           isActive={isMarqueeActive}
           transformed
           strongGlow={bentoShowcase}
+          direction={direction}
         />
       </div>
 
