@@ -131,6 +131,8 @@ function MarqueeStrip({
               src={item.src}
               alt="Moving preview"
               className="h-full w-full object-cover"
+              loading="lazy"
+              decoding="async"
               style={
                 transformed
                   ? {

@@ -237,6 +237,7 @@ const Bento = () => {
               alt={`${siteConfig.productName} logo`}
               width={56}
               height={56}
+              loading="lazy"
               className="h-12 w-12 rounded-2xl object-contain ring-1 ring-white/25 shadow-md sm:h-14 sm:w-14"
             />
           </div>

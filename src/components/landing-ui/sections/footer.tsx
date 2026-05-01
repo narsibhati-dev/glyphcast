@@ -38,6 +38,7 @@ const Footer = () => {
               className="h-8 w-8 rounded-lg object-contain"
               width={32}
               height={32}
+              loading="lazy"
             />
             <span className="[font-family:var(--font-ascii-brand)] text-base sm:text-lg font-medium text-[#111] dark:text-[#F5F5F7] tracking-wide">
               {siteConfig.productName}

@@ -115,6 +115,8 @@ export function ImagesBadge({
               key={index}
               src={image}
               alt={`Preview ${index + 1}`}
+              loading="lazy"
+              decoding="async"
               className="absolute top-0.5 left-1/2 origin-bottom object-contain rounded-[12px] ring-1 ring-black/10"
               animate={{
                 x: `calc(-50% + ${isHovered ? hoverX : 0}px)`,
