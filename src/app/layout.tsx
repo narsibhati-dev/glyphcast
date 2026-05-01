@@ -37,6 +37,15 @@ export const metadata: Metadata = {
   description:
     "Drop in an image or video and tune it into ASCII art, in your browser, in real time.",
   metadataBase: new URL(SITE_CONFIG.url),
+  icons: {
+    icon: [
+      { url: "/favicon/icon0.svg", type: "image/svg+xml" },
+      { url: "/favicon/icon1.png", type: "image/png" },
+      { url: "/favicon/favicon.ico", type: "image/x-icon" },
+    ],
+    apple: [{ url: "/favicon/apple-icon.png" }],
+    shortcut: ["/favicon/favicon.ico"],
+  },
   openGraph: {
     title: "Glyphcast | ASCII Studio",
     description:

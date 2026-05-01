@@ -9,10 +9,14 @@ export default function manifest(): MetadataRoute.Manifest {
     description: SITE_CONFIG.description,
     icons: [
       {
-        src: "/icon.svg",
+        src: "/favicon/icon0.svg",
         type: "image/svg+xml",
         sizes: "any",
         purpose: "any",
+      },
+      {
+        src: "/favicon/icon1.png",
+        type: "image/png",
       },
     ],
     id: "/?utm_source=pwa",
