@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { useTheme } from "@/components/theme-provider";
@@ -44,12 +45,14 @@ const Navbar = () => {
             href="/"
             className="shrink-0 flex items-center gap-2 transition-all duration-300 hover:opacity-80"
           >
-            <img
+            <Image
               src={siteConfig.logoPath}
               alt="Logo"
-              className="object-contain w-10 h-10 aspect-square rounded-xl lg:h-12 lg:w-12"
               width={48}
               height={48}
+              priority
+              unoptimized
+              className="object-contain w-10 h-10 aspect-square rounded-xl lg:h-12 lg:w-12"
             />
             <span className="[font-family:var(--font-ascii-brand)] text-base lg:text-xl whitespace-nowrap font-medium text-[#111] dark:text-zinc-100 tracking-wide">
               {siteConfig.productName}

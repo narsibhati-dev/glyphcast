@@ -11,6 +11,9 @@ const archivo = Archivo({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700", "900"],
   display: "swap",
+  // Landing/studio use `font-satoshi` for most UI; preloading every Archivo
+  // weight triggers Chrome "preloaded but not used" while Satoshi paints first.
+  preload: false,
 });
 
 const jetbrainsMono = JetBrains_Mono({

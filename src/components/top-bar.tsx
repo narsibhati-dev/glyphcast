@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { Menu, X } from "lucide-react";
 import { siteConfig } from "@/lib/site";
@@ -32,12 +33,14 @@ export function TopBar({ sidebarOpen, onToggleSidebar }: TopBarProps) {
           aria-label="Glyphcast home"
           className="group flex shrink-0 items-center gap-2 transition-all duration-300 hover:opacity-80 md:gap-3"
         >
-          <img
+          <Image
             src={siteConfig.logoPath}
             alt="Logo"
-            className="h-8 w-8 object-contain rounded-lg md:h-9 md:w-9"
             width={36}
             height={36}
+            priority
+            unoptimized
+            className="h-8 w-8 object-contain rounded-lg md:h-9 md:w-9"
           />
           <div className="flex min-w-0 items-baseline gap-1.5 sm:gap-2">
             <span className="[font-family:var(--font-ascii-brand)] text-base font-medium tracking-wide whitespace-nowrap text-[#111] dark:text-zinc-100 md:text-lg">
