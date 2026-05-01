@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import { useTheme } from "@/components/theme-provider";
 
@@ -72,13 +71,9 @@ const AccordionItem: React.FC<AccordionItemProps> = ({
       style={isOpen ? selectedFaqStyle : defaultFaqStyle}
     >
       {isOpen && (
-        <Image
-          className="pointer-events-none absolute inset-0 h-full w-full object-cover transition-opacity duration-250 ease-out"
-          src="/textures/box.png"
-          alt=""
+        <div
+          className="pointer-events-none absolute inset-0 texture-crosshair transition-opacity duration-250 ease-out"
           aria-hidden="true"
-          fill
-          priority={false}
           style={{
             borderRadius: "24px",
             opacity: 0.2,

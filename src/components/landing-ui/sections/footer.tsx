@@ -18,11 +18,7 @@ const Footer = () => {
       >
         {/* Subtle texture overlay */}
         <div
-          className="pointer-events-none absolute inset-0 opacity-[0.04]"
-          style={{
-            backgroundImage: "url('/textures/bento-pattern.png')",
-            backgroundSize: "40px auto",
-          }}
+          className="pointer-events-none absolute inset-0 opacity-[0.04] texture-bento-grid"
           aria-hidden="true"
         />
 

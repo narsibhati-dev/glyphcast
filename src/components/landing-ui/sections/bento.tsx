@@ -224,11 +224,7 @@ const Bento = () => {
           }}
         >
           <div
-            className="pointer-events-none opacity-[0.1] z-0 absolute inset-0 bg-repeat"
-            style={{
-              backgroundImage: "url('/textures/bento-pattern.png')",
-              backgroundSize: "40px auto",
-            }}
+            className="pointer-events-none opacity-[0.1] z-0 absolute inset-0 texture-bento-grid"
             aria-hidden="true"
           />
           <div className="relative z-10 flex justify-end gap-4">

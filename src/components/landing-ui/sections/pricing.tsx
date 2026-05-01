@@ -73,38 +73,35 @@ const Pricing = () => {
   const outerBg = isDark ? "#222228" : "#F3F3F3";
 
   const contentVariants: Variants = {
-    hidden: { opacity: 0, y: 16 },
+    hidden: { opacity: 0 },
     show: {
       opacity: 1,
-      y: 0,
       transition: {
-        duration: 0.25,
+        duration: 0.22,
         ease: "easeOut",
         when: "beforeChildren",
-        staggerChildren: 0.08,
+        staggerChildren: 0.07,
       },
     },
     exit: {
       opacity: 0,
-      y: -16,
-      transition: {
-        duration: 0.18,
-        ease: "easeIn",
-      },
+      transition: { duration: 0.15, ease: "easeIn" },
     },
   };
 
   const sectionVariants: Variants = {
-    hidden: { opacity: 0, y: 10 },
+    hidden: { opacity: 0, scale: 0.97, filter: "blur(4px)" },
     show: {
       opacity: 1,
-      y: 0,
-      transition: { duration: 0.22, ease: "easeOut" },
+      scale: 1,
+      filter: "blur(0px)",
+      transition: { duration: 0.28, ease: [0.22, 1, 0.36, 1] },
     },
     exit: {
       opacity: 0,
-      y: -10,
-      transition: { duration: 0.14, ease: "easeIn" },
+      scale: 1.02,
+      filter: "blur(4px)",
+      transition: { duration: 0.16, ease: "easeIn" },
     },
   };
 
@@ -112,7 +109,7 @@ const Pricing = () => {
     hidden: {},
     show: {
       transition: {
-        staggerChildren: 0.05,
+        staggerChildren: 0.055,
         delayChildren: 0.04,
       },
     },
@@ -125,15 +122,17 @@ const Pricing = () => {
   };
 
   const pointVariants: Variants = {
-    hidden: { opacity: 0, y: 8 },
+    hidden: { opacity: 0, scale: 0.96, filter: "blur(3px)" },
     show: {
       opacity: 1,
-      y: 0,
-      transition: { duration: 0.18, ease: "easeOut" },
+      scale: 1,
+      filter: "blur(0px)",
+      transition: { duration: 0.22, ease: [0.22, 1, 0.36, 1] },
     },
     exit: {
       opacity: 0,
-      y: -8,
+      scale: 1.02,
+      filter: "blur(3px)",
       transition: { duration: 0.12, ease: "easeIn" },
     },
   };
@@ -196,7 +195,7 @@ const Pricing = () => {
               color: activeTab === "monthly" ? "#222" : "#fff",
             }}
           >
-            Monthly
+            Basic
           </span>
         </button>
         <button
@@ -225,7 +224,7 @@ const Pricing = () => {
               color: activeTab === "yearly" ? "#222" : "#fff",
             }}
           >
-            Yearly (Save 20%)
+            Premium
           </span>
         </button>
       </div>

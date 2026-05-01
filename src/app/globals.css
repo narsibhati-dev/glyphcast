@@ -270,6 +270,37 @@
   .font-satoshi {
     font-family: var(--font-satoshi);
   }
+
+  .texture-bento-grid {
+    background-image: radial-gradient(
+      circle,
+      rgba(255, 255, 255, 0.85) 1.2px,
+      transparent 1.3px
+    );
+    background-size: 10px 10px;
+    background-position: center;
+  }
+
+  .texture-crosshair {
+    background-image:
+      linear-gradient(
+        to right,
+        transparent calc(50% - 2px),
+        rgba(255, 255, 255, 0.8) calc(50% - 2px),
+        rgba(255, 255, 255, 0.8) calc(50% + 2px),
+        transparent calc(50% + 2px)
+      ),
+      linear-gradient(
+        to bottom,
+        transparent calc(50% - 2px),
+        rgba(255, 255, 255, 0.8) calc(50% - 2px),
+        rgba(255, 255, 255, 0.8) calc(50% + 2px),
+        transparent calc(50% + 2px)
+      );
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 100% 100%;
+  }
 }
 
 /* ── Light theme overrides ──────────────────────────────────────────────────
