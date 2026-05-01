@@ -10,7 +10,7 @@ const Footer = () => {
   return (
     <div className="flex justify-center items-center pb-10 sm:pb-20">
       <div
-        className="landing-content-width overflow-hidden relative bg-white dark:bg-[#151518] border border-[#E5E5E5] dark:border-[#2A2A31]"
+        className="landing-content-width overflow-hidden relative bg-white dark:bg-[#151518] border border-[#E5E5E5] dark:border-[#26262E]"
         style={{
           boxShadow: "0px 4px 24px rgba(0,0,0,0.06)",
           borderRadius: "24px",
@@ -18,7 +18,7 @@ const Footer = () => {
       >
         {/* Subtle texture overlay */}
         <div
-          className="pointer-events-none absolute inset-0 opacity-[0.04] texture-bento-grid"
+          className="pointer-events-none absolute inset-0 opacity-[0.04] dark:opacity-0 texture-bento-grid"
           aria-hidden="true"
         />
 
@@ -59,7 +59,7 @@ const Footer = () => {
         </div>
 
         {/* Inset gray card: CTA + divider + wordmark + copyright */}
-        <div className="relative z-10 mx-4 mt-4 mb-4 overflow-hidden rounded-xl border border-[#E8E8E8] dark:border-[#2A2A31] bg-[#F3F4F6] dark:bg-[#1C1C20] shadow-[0_2px_16px_rgba(0,0,0,0.06)] sm:mx-6 sm:mt-6 sm:mb-6 sm:rounded-2xl md:mx-8">
+        <div className="relative z-10 mx-4 mt-4 mb-4 overflow-hidden rounded-xl border border-[#E8E8E8] dark:border-[#26262E] bg-[#F3F4F6] dark:bg-[#1C1C20] shadow-[0_2px_16px_rgba(0,0,0,0.06)] sm:mx-6 sm:mt-6 sm:mb-6 sm:rounded-2xl md:mx-8">
           {/* CTA section */}
           <div className="relative z-10 flex flex-col gap-8 px-5 pt-8 pb-8 sm:flex-row sm:items-end sm:justify-between sm:px-8 sm:pt-10 sm:pb-10">
             <div className="flex max-w-lg flex-col gap-4">
@@ -111,7 +111,7 @@ const Footer = () => {
           </div>
 
           <div
-            className="h-px w-full shrink-0 bg-[#E0E0E0] dark:bg-[#2A2A31]"
+            className="h-px w-full shrink-0 bg-[#E0E0E0] dark:bg-[#26262E]"
             aria-hidden="true"
           />
 

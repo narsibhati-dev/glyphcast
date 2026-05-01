@@ -63,14 +63,19 @@ const AsciiVisual = ({ tier }: { tier: "monthly" | "yearly" }) => {
 };
 
 const Pricing = () => {
+  const DARK_CARD_BASE = "#151518";
+  const DARK_CARD_LEVEL_2 = "#222228";
+  const DARK_CARD_LEVEL_3 = "#26262E";
+  const DARK_CARD_DEEP_INSET = "#2E2E38";
+
   const sideColumnWidthPx = 260;
   const [isPricingPanelHovered, setIsPricingPanelHovered] = useState(false);
   const [activeTab, setActiveTab] = useState<"monthly" | "yearly">("monthly");
   const { theme } = useTheme();
   const isDark = theme === "dark";
-  const cardBg = isDark ? "#26262E" : "#FFFFFF";
-  const innerBg = isDark ? "#2E2E38" : "#F5F5F5";
-  const outerBg = isDark ? "#222228" : "#F3F3F3";
+  const cardBg = isDark ? DARK_CARD_LEVEL_3 : "#FFFFFF";
+  const innerBg = isDark ? DARK_CARD_DEEP_INSET : "#F5F5F5";
+  const outerBg = isDark ? DARK_CARD_BASE : "#F3F3F3";
 
   const contentVariants: Variants = {
     hidden: { opacity: 0 },

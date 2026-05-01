@@ -14,6 +14,9 @@ import {
 } from "@/components/ascii-components";
 type ShowcaseConfig = ASCIIShowcaseEntry;
 const SHOWCASES: ShowcaseConfig[] = ASCII_SHOWCASE;
+const DARK_CARD_BASE = "#151518";
+const DARK_CARD_INSET = "#1C1C20";
+const DARK_CARD_RAISED = "#222228";
 
 /* ── Card ────────────────────────────────────────────────────────── */
 
@@ -43,25 +46,27 @@ function ShowcaseCard({
     <div
       className="group relative flex h-full flex-col overflow-hidden rounded-[20px] border transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0px_16px_48px_rgba(0,0,0,0.10)]"
       style={{
-        borderColor: isDark ? "#2A2A31" : "#E5E5E5",
-        background: isDark ? "#151518" : "#FFFFFF",
+        borderColor: isDark ? "#26262E" : "#E5E5E5",
+        background: isDark ? DARK_CARD_BASE : "#FFFFFF",
         boxShadow: isDark
           ? "0px 4px 24px rgba(0,0,0,0.24)"
           : "0px 4px 24px rgba(0,0,0,0.06)",
       }}
     >
       {/* Subtle texture */}
-      <div
-        className="pointer-events-none absolute inset-0 z-0 opacity-[0.03] texture-bento-grid"
-        aria-hidden
-      />
+      {!isDark ? (
+        <div
+          className="pointer-events-none absolute inset-0 z-0 opacity-[0.03] texture-bento-grid"
+          aria-hidden
+        />
+      ) : null}
 
       {/* Animation — inset gray panel */}
       <div
         className="relative z-10 m-3 flex h-[320px] items-center justify-center overflow-hidden rounded-xl border"
         style={{
-          borderColor: isDark ? "#2A2A31" : "#EBEBEB",
-          background: isDark ? "#1C1C20" : "#F3F4F6",
+          borderColor: isDark ? "#26262E" : "#EBEBEB",
+          background: isDark ? DARK_CARD_BASE : "#F3F4F6",
         }}
       >
         <ASCIIAnimation
@@ -125,16 +130,16 @@ export default function ShowcasePage() {
               color: "#E8E8F0",
               ["--background" as string]: "#1E1E24",
               ["--foreground" as string]: "oklch(0.92 0.004 264)",
-              ["--card" as string]: "#26262E",
+              ["--card" as string]: DARK_CARD_BASE,
               ["--card-foreground" as string]: "oklch(0.92 0.004 264)",
-              ["--muted" as string]: "oklch(0.28 0.006 264)",
+              ["--muted" as string]: DARK_CARD_INSET,
               ["--muted-foreground" as string]: "oklch(0.62 0.008 264)",
-              ["--border" as string]: "oklch(0.32 0.006 264)",
+              ["--border" as string]: DARK_CARD_RAISED,
               ["--primary" as string]: "oklch(0.92 0.004 264)",
               ["--primary-foreground" as string]: "oklch(0.18 0.006 264)",
-              ["--secondary" as string]: "oklch(0.28 0.006 264)",
+              ["--secondary" as string]: DARK_CARD_INSET,
               ["--secondary-foreground" as string]: "oklch(0.92 0.004 264)",
-              ["--accent" as string]: "oklch(0.28 0.006 264)",
+              ["--accent" as string]: DARK_CARD_INSET,
               ["--accent-foreground" as string]: "oklch(0.92 0.004 264)",
             }
           : {

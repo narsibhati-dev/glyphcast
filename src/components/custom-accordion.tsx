@@ -70,7 +70,7 @@ const AccordionItem: React.FC<AccordionItemProps> = ({
       className=" relative overflow-hidden px-5 py-1 transition-all duration-200 ease-out"
       style={isOpen ? selectedFaqStyle : defaultFaqStyle}
     >
-      {isOpen && (
+      {isOpen && !isDark && (
         <div
           className="pointer-events-none absolute inset-0 texture-crosshair transition-opacity duration-250 ease-out"
           aria-hidden="true"
@@ -82,7 +82,7 @@ const AccordionItem: React.FC<AccordionItemProps> = ({
         />
       )}
       <button
-        className="w-full flex justify-between items-center py-4 text-sm font-medium text-left transition-colors relative z-10 cursor-pointer"
+        className="w-full flex justify-between items-center py-4 text-base sm:text-lg font-semibold text-left transition-colors relative z-10 cursor-pointer"
         style={{ color: isOpen ? (isDark ? "#F5F5F7" : "#111111") : undefined }}
         onClick={onClick}
         aria-expanded={isOpen}
@@ -133,8 +133,8 @@ const AccordionItem: React.FC<AccordionItemProps> = ({
             className="relative z-10 overflow-hidden"
           >
             <div
-              className="pb-4 pt-0 text-sm"
-              style={{ color: isDark ? "#B8B8C2" : "#333333" }}
+              className="pb-4 pt-1 text-base leading-relaxed"
+              style={{ color: isDark ? "#D0D0DA" : "#3A3A3A" }}
             >
               {children}
             </div>
