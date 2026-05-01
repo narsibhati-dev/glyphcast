@@ -170,7 +170,7 @@ const Pricing = () => {
         }}
       >
         <button
-          className="relative px-4 py-3 flex justify-center items-center font-medium"
+          className="relative px-7 py-3 flex justify-center items-center font-medium"
           style={{ borderRadius: "99px", zIndex: 1 }}
           onClick={() => setActiveTab("monthly")}
         >
@@ -199,7 +199,7 @@ const Pricing = () => {
           </span>
         </button>
         <button
-          className="relative px-4 py-3 flex justify-center items-center font-medium"
+          className="relative px-7 py-3 flex justify-center items-center font-medium"
           style={{ borderRadius: "99px", zIndex: 1 }}
           onClick={() => setActiveTab("yearly")}
         >

@@ -401,7 +401,7 @@ function BackgroundCanvasSection({
   }, [responsiveFit, previewRef, cellWidth, setColumns]);
 
   return (
-    <AccordionSection title="Canvas Settings" defaultOpen={false}>
+    <AccordionSection title="Canvas Settings" defaultOpen={true}>
       <Row label="Auto-Fit Screen">
         <ToggleButton toggle={responsiveFit} setToggle={setResponsiveFit} />
       </Row>
@@ -498,7 +498,7 @@ function ConversionSection() {
   return (
     <AccordionSection
       title="Conversion"
-      defaultOpen={false}
+      defaultOpen={true}
       action={<ResetChip onClick={reset} />}
     >
       <SliderField
@@ -593,7 +593,7 @@ function AppearanceSection() {
   return (
     <AccordionSection
       title="Appearance"
-      defaultOpen={false}
+      defaultOpen={true}
       action={
         <ResetChip onClick={() => patchAppearance(DEFAULT_ASCII_APPEARANCE)} />
       }

@@ -76,17 +76,17 @@ function ShowcaseCard({
       </div>
 
       {/* Footer row */}
-      <div className="relative z-10 mt-auto flex items-center justify-between gap-3 px-4 pb-4 pt-2">
+      <div className="relative z-10 mt-auto flex items-end justify-between gap-4 px-5 pb-5 pt-3">
         <div className="min-w-0">
           <p
-            className="text-sm font-semibold"
+            className="text-base font-semibold leading-tight tracking-tight sm:text-lg"
             style={{ color: isDark ? "#F5F5F7" : "#111111" }}
           >
             {config.title}
           </p>
           <p
-            className="h-9 overflow-hidden text-xs leading-relaxed"
-            style={{ color: isDark ? "#B8B8C2" : "#888888" }}
+            className="h-11 overflow-hidden pt-1 text-sm leading-[1.45] sm:text-[15px]"
+            style={{ color: isDark ? "#C9C9D5" : "#6A6A72" }}
           >
             {config.description}
           </p>
@@ -96,7 +96,7 @@ function ShowcaseCard({
           variant="landing"
           size="sm"
           onClick={handleCopy}
-          className="shrink-0 gap-1.5 px-4"
+          className="shrink-0 gap-2 px-5 text-sm font-medium"
         >
           {copied ? (
             <Check className="size-3.5 shrink-0 text-emerald-500" />
