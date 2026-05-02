@@ -69,7 +69,7 @@ export const DEFAULT_ASCII_APPEARANCE: ASCIIAppearance = {
   fontStyle: "normal",
   letterSpacing: -0.18,
   lineHeight: 0.65,
-  showFrameCounter: true,
+  showFrameCounter: false,
   textColor: "#B54B00",
   textEffect: "none",
   useColors: false,

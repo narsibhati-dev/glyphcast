@@ -1,7 +1,7 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
 import { Moon, Pause, Play, Sun } from "lucide-react";
+import { useTheme } from "@/components/theme-provider";
 
 import { AsciiCanvas } from "@/components/ascii-canvas";
 import { Button } from "@/components/ui/button";
@@ -15,25 +15,6 @@ import { useStudio } from "@/lib/studio-context";
 import { cn } from "@/lib/utils";
 
 const VIDEO_PLAYBACK_HINT = "Load a video in Source Media to enable playback.";
-
-function subscribeToHtmlClass(onChange: () => void): () => void {
-  if (typeof document === "undefined") return () => {};
-  const observer = new MutationObserver(onChange);
-  observer.observe(document.documentElement, {
-    attributes: true,
-    attributeFilter: ["class"],
-  });
-  return () => observer.disconnect();
-}
-
-function getIsHtmlDark(): boolean {
-  if (typeof document === "undefined") return false;
-  return document.documentElement.classList.contains("dark");
-}
-
-function getServerSnapshotDark(): boolean {
-  return false;
-}
 
 export function PreviewStage() {
   const { canvasRef } = useStudio();
@@ -51,20 +32,11 @@ export function PreviewStage() {
 
   const isVideo = source?.kind === "video" || source?.kind === "gif";
 
-  // Subscribe to the `dark` class on <html> as an external store so we stay in
-  // sync with theme changes triggered anywhere in the app, without needing a
-  // setState-in-effect (which the React compiler lint flags).
-  const isUIDark = useSyncExternalStore(
-    subscribeToHtmlClass,
-    getIsHtmlDark,
-    getServerSnapshotDark,
-  );
+  const { theme, setTheme } = useTheme();
+  const isUIDark = theme === "dark";
 
   const toggleUITheme = () => {
-    const newDark = !document.documentElement.classList.contains("dark");
-    document.documentElement.classList.toggle("dark", newDark);
-    localStorage.setItem("studio-theme", newDark ? "dark" : "light");
-    patchAppearance({ backgroundColor: newDark ? "#0B0B0D" : "#ffffff" });
+    setTheme(isUIDark ? "light" : "dark");
   };
 
   const cellWidth = appearance.fontSize * 0.6 + appearance.letterSpacing;

@@ -17,17 +17,27 @@ const SHOWCASES: ShowcaseConfig[] = ASCII_SHOWCASE;
 const DARK_CARD_BASE = "#151518";
 const DARK_CARD_INSET = "#1C1C20";
 const DARK_CARD_RAISED = "#222228";
+const SHOWCASE_DARK_ACCENTS = [
+  { border: "#B54B00", glow: "rgba(181,75,0,0.22)" },
+  { border: "#4F7DFF", glow: "rgba(79,125,255,0.22)" },
+  { border: "#7B61FF", glow: "rgba(123,97,255,0.22)" },
+  { border: "#17A2A0", glow: "rgba(23,162,160,0.22)" },
+];
 
 /* ── Card ────────────────────────────────────────────────────────── */
 
 function ShowcaseCard({
   config,
   isDark,
+  cardIndex,
 }: {
   config: ShowcaseConfig;
   isDark: boolean;
+  cardIndex: number;
 }) {
   const [copied, setCopied] = useState(false);
+  const accent =
+    SHOWCASE_DARK_ACCENTS[cardIndex % SHOWCASE_DARK_ACCENTS.length];
 
   const handleCopy = async () => {
     const source = buildASCIIAnimationReactComponentSource({
@@ -46,13 +56,22 @@ function ShowcaseCard({
     <div
       className="group relative flex h-full flex-col overflow-hidden rounded-[20px] border transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0px_16px_48px_rgba(0,0,0,0.10)]"
       style={{
-        borderColor: isDark ? "#26262E" : "#E5E5E5",
+        borderColor: isDark ? accent.border : "#E5E5E5",
         background: isDark ? DARK_CARD_BASE : "#FFFFFF",
         boxShadow: isDark
-          ? "0px 4px 24px rgba(0,0,0,0.24)"
+          ? `0px 4px 24px rgba(0,0,0,0.24), 0px 0px 0px 1px ${accent.glow}`
           : "0px 4px 24px rgba(0,0,0,0.06)",
       }}
     >
+      <div
+        className="pointer-events-none absolute inset-x-0 top-0 z-10 h-px"
+        style={{
+          background: isDark
+            ? `linear-gradient(90deg, transparent 0%, ${accent.border} 50%, transparent 100%)`
+            : "transparent",
+        }}
+        aria-hidden
+      />
       {/* Subtle texture */}
       {!isDark ? (
         <div
@@ -172,9 +191,13 @@ export default function ShowcasePage() {
           </h1>
 
           <div className="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2">
-            {SHOWCASES.map((config) => (
+            {SHOWCASES.map((config, cardIndex) => (
               <div key={config.id} className="h-full">
-                <ShowcaseCard config={config} isDark={isDark} />
+                <ShowcaseCard
+                  config={config}
+                  isDark={isDark}
+                  cardIndex={cardIndex}
+                />
               </div>
             ))}
           </div>

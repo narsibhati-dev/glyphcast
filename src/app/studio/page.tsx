@@ -10,6 +10,7 @@ import { useAsciiStore } from "@/lib/store";
 import { useKeyboardShortcuts } from "@/lib/use-keyboard-shortcuts";
 import { cn } from "@/lib/utils";
 import { DesktopOnlyGate } from "@/components/desktop-only-gate";
+import { useTheme } from "@/components/theme-provider";
 
 export default function StudioPage() {
   return (
@@ -27,25 +28,6 @@ function StudioShell() {
 
   const previewRef = useRef<HTMLDivElement>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-
-  useEffect(() => {
-    const mq = window.matchMedia("(prefers-color-scheme: dark)");
-    const stored = localStorage.getItem("studio-theme");
-    const dark = stored ? stored === "dark" : mq.matches;
-    document.documentElement.classList.toggle("dark", dark);
-
-    const handler = (e: MediaQueryListEvent) => {
-      if (!localStorage.getItem("studio-theme")) {
-        document.documentElement.classList.toggle("dark", e.matches);
-      }
-    };
-    mq.addEventListener("change", handler);
-    return () => {
-      mq.removeEventListener("change", handler);
-      document.documentElement.classList.remove("dark");
-      localStorage.removeItem("studio-theme");
-    };
-  }, []);
 
   return (
     <div
@@ -103,14 +85,13 @@ function useDefaultSample() {
   const setPlaying = useAsciiStore((s) => s.setPlaying);
   const patchAppearance = useAsciiStore((s) => s.patchAppearance);
 
+  const { theme } = useTheme();
+
   useEffect(() => {
-    const stored = localStorage.getItem("studio-theme");
-    const isDark = stored
-      ? stored === "dark"
-      : window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const isDark = theme === "dark";
     patchAppearance({ backgroundColor: isDark ? "#0B0B0D" : "#ffffff" });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [theme]);
 
   useEffect(() => {
     if (source) return;
