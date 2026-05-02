@@ -82,6 +82,24 @@ export default function RootLayout({
       suppressHydrationWarning
       className={`${archivo.variable} ${jetbrainsMono.variable} ${asciiBrand.variable}`}
     >
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+(function(){
+  try {
+    var k='glyphcast-theme';
+    var def='light';
+    var s=localStorage.getItem(k);
+    var t=(s==='light'||s==='dark')?s:def;
+    var d=document.documentElement;
+    d.classList.toggle('dark',t==='dark');
+    d.style.colorScheme=t;
+  } catch(e) {}
+})();`,
+          }}
+        />
+      </head>
       <body className="min-h-full font-sans antialiased">
         <ThemeProvider
           attribute="class"

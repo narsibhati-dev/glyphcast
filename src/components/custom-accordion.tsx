@@ -82,7 +82,7 @@ const AccordionItem: React.FC<AccordionItemProps> = ({
         />
       )}
       <button
-        className="w-full flex justify-between items-center py-4 text-base sm:text-lg font-semibold text-left transition-colors relative z-10 cursor-pointer"
+        className="w-full flex justify-between items-center py-4 text-base sm:text-lg font-medium text-left transition-colors relative z-10 cursor-pointer"
         style={{ color: isOpen ? (isDark ? "#F5F5F7" : "#111111") : undefined }}
         onClick={onClick}
         aria-expanded={isOpen}

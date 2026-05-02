@@ -1,5 +1,4 @@
 import { CustomAccordion } from "@/components/custom-accordion";
-import { DmOnXButton } from "@/components/landing-ui/dm-on-x-button";
 import React from "react";
 
 type FAQItem = {
@@ -52,9 +51,9 @@ const Faq = () => {
     <div className="flex justify-center items-center">
       <div className="landing-content-width flex flex-col items-center gap-10">
         <div className="flex flex-col items-center text-center gap-3">
-          <div className="text-3xl md:text-4xl font-medium">
+          <span className="text-3xl sm:text-4xl md:text-5xl mt-2">
             Frequently asked questions
-          </div>
+          </span>
           <p className="text-sm text-muted-foreground max-w-sm">
             Can&apos;t find the answer you&apos;re looking for?{" "}
             <span className="text-foreground font-medium">
@@ -71,8 +70,6 @@ const Faq = () => {
             }))}
           />
         </div>
-
-        <DmOnXButton />
       </div>
     </div>
   );

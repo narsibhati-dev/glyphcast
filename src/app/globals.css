@@ -99,6 +99,7 @@
   html {
     @apply font-sans;
     scroll-behavior: smooth;
+    scrollbar-gutter: stable;
   }
 
   /* Tabular figures + lining numerals across the app */
