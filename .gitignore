@@ -24,6 +24,9 @@
 .DS_Store
 *.pem
 
+# internal / roadmap (not tracked)
+PremiumPlan.md
+
 # debug
 npm-debug.log*
 yarn-debug.log*

@@ -25,8 +25,8 @@ const ASCII_PRO = [
   "╚═══════════════╝",
 ];
 
-const AsciiVisual = ({ tier }: { tier: "monthly" | "yearly" }) => {
-  const frames = tier === "yearly" ? ASCII_PRO : ASCII_FREE;
+const AsciiVisual = ({ tier }: { tier: "basic" | "premium" }) => {
+  const frames = tier === "premium" ? ASCII_PRO : ASCII_FREE;
   const [activeRow, setActiveRow] = useState(0);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
@@ -43,7 +43,7 @@ const AsciiVisual = ({ tier }: { tier: "monthly" | "yearly" }) => {
     <div className="h-full w-full flex items-center justify-center p-4">
       <pre
         className="select-none leading-relaxed text-sm font-mono"
-        style={{ color: tier === "yearly" ? "#B54B00" : "#888" }}
+        style={{ color: tier === "premium" ? "#B54B00" : "#888" }}
       >
         {frames.map((row, i) => (
           <div
@@ -70,7 +70,7 @@ const Pricing = () => {
 
   const sideColumnWidthPx = 260;
   const [isPricingPanelHovered, setIsPricingPanelHovered] = useState(false);
-  const [activeTab, setActiveTab] = useState<"monthly" | "yearly">("monthly");
+  const [activeTab, setActiveTab] = useState<"basic" | "premium">("basic");
   const { theme } = useTheme();
   const isDark = theme === "dark";
   const cardBg = isDark ? DARK_CARD_LEVEL_3 : "#FFFFFF";
@@ -141,23 +141,24 @@ const Pricing = () => {
       transition: { duration: 0.12, ease: "easeIn" },
     },
   };
-  const monthlyPoints = [
-    "Generate high-quality ASCII art",
-    "Export PNG, TXT, and copyable code snippets",
-    "Access core style presets",
-    "Fast rendering for short-form content",
-    "Watermarked exports",
-    "Standard support",
-    "Great for trying Glyphcast",
+  const basicPoints = [
+    "Image, GIF, and video to ASCII in the browser",
+    "Live preview with play and scrub",
+    "Charset presets for density and feel",
+    "Font stacks and typography controls",
+    "Grid width, threshold, invert, and source color",
+    "Stylized treatments on the ASCII layer",
+    "Export PNG, video, React, ZIP, or clipboard",
   ];
-  const yearlyPoints = [
-    "Everything in Monthly",
-    "Unlimited exports (PNG / TXT / code)",
-    "No watermark on outputs",
-    "Access premium style packs",
-    "Priority rendering + queue",
-    "Priority support",
-    "Save 20% with annual billing",
+  const premiumPoints = [
+    "Everything in Basic",
+    "Export at higher resolutions (1x to 4x) and chosen format",
+    "Crop and rotate before you export",
+    "Website backgrounds: blur, solid, source image, or transparent",
+    "Advanced character styles, blend modes, opacity, and overlays",
+    "Animated ASCII with motion controls, plus interactive lighting",
+    "Deep post-processing: CRT, glitch, bloom, grain, and more",
+    "Pro masking: freehand brush, size, invert, overlay, clear",
   ];
 
   return (
@@ -177,9 +178,9 @@ const Pricing = () => {
         <button
           className="relative px-7 py-3 flex justify-center items-center font-medium"
           style={{ borderRadius: "99px", zIndex: 1 }}
-          onClick={() => setActiveTab("monthly")}
+          onClick={() => setActiveTab("basic")}
         >
-          {activeTab === "monthly" && (
+          {activeTab === "basic" && (
             <motion.div
               layoutId="pricing-tab-pill"
               className="absolute inset-0"
@@ -197,7 +198,7 @@ const Pricing = () => {
           <span
             className="relative z-10"
             style={{
-              color: activeTab === "monthly" ? "#222" : "#fff",
+              color: activeTab === "basic" ? "#222" : "#fff",
             }}
           >
             Basic
@@ -206,9 +207,9 @@ const Pricing = () => {
         <button
           className="relative px-7 py-3 flex justify-center items-center font-medium"
           style={{ borderRadius: "99px", zIndex: 1 }}
-          onClick={() => setActiveTab("yearly")}
+          onClick={() => setActiveTab("premium")}
         >
-          {activeTab === "yearly" && (
+          {activeTab === "premium" && (
             <motion.div
               layoutId="pricing-tab-pill"
               className="absolute inset-0"
@@ -226,7 +227,7 @@ const Pricing = () => {
           <span
             className="relative z-10"
             style={{
-              color: activeTab === "yearly" ? "#222" : "#fff",
+              color: activeTab === "premium" ? "#222" : "#fff",
             }}
           >
             Premium
@@ -299,7 +300,7 @@ const Pricing = () => {
                     variants={sectionVariants}
                   >
                     <span className=" font-medium text-2xl">
-                      {activeTab === "monthly" ? "Pay Monthly" : "Pay Yearly"}
+                      {activeTab === "basic" ? "Basic" : "Premium"}
                     </span>{" "}
                   </motion.div>
                   <motion.div
@@ -307,27 +308,26 @@ const Pricing = () => {
                     className="text-lg mt-3"
                     variants={sectionVariants}
                   >
-                    {activeTab === "monthly"
-                      ? "Perfect for creators getting started with Glyphcast. Build and export polished ASCII content with essential tools and flexible output options."
-                      : "Built for teams and power creators who need unlimited output, premium styles, faster turnaround, and the best long-term value."}
+                    {activeTab === "basic"
+                      ? "In-browser studio: images, GIFs, and video to ASCII; export PNG, video, React, ZIP, or clipboard."
+                      : "Pro controls for export scale, framing, web-ready backgrounds, advanced styles, animation, lighting, masking, and post-processing."}
                   </motion.div>
                   <motion.div
                     className="mt-6 flex flex-col gap-4"
                     variants={pointsContainerVariants}
                   >
-                    {(activeTab === "monthly"
-                      ? monthlyPoints
-                      : yearlyPoints
-                    ).map((point) => (
-                      <motion.div
-                        key={point}
-                        className="flex gap-1.5"
-                        variants={pointVariants}
-                      >
-                        <Check className="text-muted-foreground shrink-0 size-5 mt-0.5" />
-                        <span className="text">{point}</span>
-                      </motion.div>
-                    ))}
+                    {(activeTab === "basic" ? basicPoints : premiumPoints).map(
+                      (point) => (
+                        <motion.div
+                          key={point}
+                          className="flex gap-1.5"
+                          variants={pointVariants}
+                        >
+                          <Check className="text-muted-foreground shrink-0 size-5 mt-0.5" />
+                          <span className="text">{point}</span>
+                        </motion.div>
+                      ),
+                    )}
                   </motion.div>
                 </motion.div>
               </motion.div>
