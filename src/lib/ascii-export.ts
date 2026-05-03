@@ -172,8 +172,6 @@ export function exportASCIIAnimationAsReactComponent({
   fps,
   frames,
   chars,
-  sourceWidth,
-  sourceHeight,
 }: ASCIIComponentExportParams) {
   if (frames.length === 0) {
     throw new Error("Convert a video first so there are frames to export.");
@@ -255,7 +253,7 @@ export async function exportASCIIAsImage({
   downloadBlob(blob, `${sanitizeFileStem(fileName)}.png`);
 }
 
-export function exportASCIIAsZip({
+export function exportASCIIAsJson({
   frames,
   fileName,
 }: {
@@ -266,17 +264,15 @@ export function exportASCIIAsZip({
     throw new Error("No frames to export.");
   }
 
-  const files: Record<string, Uint8Array> = {};
-  const padLen = String(frames.length).length;
-  frames.forEach((frame, i) => {
-    const name = `frame_${String(i + 1).padStart(padLen, "0")}.txt`;
-    files[name] = strToU8(frame);
-  });
-
-  const zip = zipSync(files);
+  const payload = {
+    version: 1 as const,
+    frameCount: frames.length,
+    frames,
+  };
+  const json = JSON.stringify(payload, null, 2);
   downloadBlob(
-    new Blob([zip.buffer as ArrayBuffer], { type: "application/zip" }),
-    `${sanitizeFileStem(fileName)}.zip`,
+    new Blob([json], { type: "application/json" }),
+    `${sanitizeFileStem(fileName)}.json`,
   );
 }
 
@@ -727,13 +723,6 @@ function downloadBlob(blob: Blob, fileName: string) {
   link.click();
   link.remove();
   window.setTimeout(() => URL.revokeObjectURL(objectUrl), 0);
-}
-
-function downloadTextFile(content: string, fileName: string) {
-  downloadBlob(
-    new Blob([content], { type: "text/plain;charset=utf-8" }),
-    fileName,
-  );
 }
 
 function sanitizeFileStem(fileName: string) {

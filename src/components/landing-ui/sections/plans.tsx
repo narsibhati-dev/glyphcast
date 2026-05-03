@@ -64,7 +64,6 @@ const AsciiVisual = ({ tier }: { tier: "basic" | "premium" }) => {
 
 const Plans = () => {
   const DARK_CARD_BASE = "#151518";
-  const DARK_CARD_LEVEL_2 = "#222228";
   const DARK_CARD_LEVEL_3 = "#26262E";
   const DARK_CARD_DEEP_INSET = "#2E2E38";
 

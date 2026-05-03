@@ -14,7 +14,7 @@ import {
 import type { AsciiCanvasHandle } from "@/components/ascii-canvas";
 
 export type ExportHandler = () => void | Promise<void>;
-export type ExportActionName = "image" | "video" | "component" | "zip" | "copy";
+export type ExportActionName = "image" | "video" | "component" | "json";
 export type ExportActionMap = Partial<Record<ExportActionName, ExportHandler>>;
 
 interface StudioContextValue {

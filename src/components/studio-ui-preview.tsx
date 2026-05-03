@@ -1,514 +1,200 @@
 "use client";
-import React from "react";
+
+import Image from "next/image";
+import Link from "next/link";
+import { useState, type ReactNode } from "react";
 import {
+  ArrowUpRight,
   Bold,
-  Copy,
-  FileCode2,
-  Image as ImageIcon,
+  ChevronDown,
+  Film,
   Italic,
-  RotateCcw,
-  Search,
+  Moon,
+  Play,
+  Sun,
+  Trash2,
   Upload,
-  Video,
 } from "lucide-react";
 
+import { ColorField } from "@/components/color-field";
+import { useTheme } from "@/components/theme-provider";
+import ToggleButton from "@/components/toggle-button";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
 import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import Fire from "./fire";
+import { siteConfig } from "@/lib/site";
+import {
+  STUDIO_CARD_OUTLINE,
+  STUDIO_DROPZONE,
+  STUDIO_FIELD_CLASS,
+  STUDIO_FIELD_MONO_CLASS,
+  STUDIO_FIELD_READONLY_MUTED,
   STUDIO_OUTLINE_TERTIARY,
+  STUDIO_SELECT_CONTENT,
+  STUDIO_SELECT_ITEM,
   STUDIO_SLIDER_CLASS,
+  STUDIO_TEXT_LABEL,
+  STUDIO_TEXT_META,
 } from "@/lib/studio-theme";
 import { cn } from "@/lib/utils";
-import Fire from "./fire";
-import { useTheme } from "@/components/theme-provider";
 
-export default function StudioUiPreview() {
-  const { theme } = useTheme();
-  const isDark = theme === "dark";
+const SIDEBAR_PANEL =
+  "w-full shrink-0 rounded-3xl border border-[#E5E5E5] dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-xl shadow-black/6 dark:shadow-black/40 lg:w-[320px] lg:max-h-[680px] lg:overflow-y-auto [&::-webkit-scrollbar]:hidden [scrollbar-width:none]";
 
-  const PREVIEW = {
-    card: cn(
-      "overflow-hidden rounded-xl border shadow-[0px_1px_2px_rgba(0,0,0,0.04)]",
-      isDark ? "border-zinc-700 bg-zinc-800" : "border-[#E5E5E5] bg-white",
-    ),
-    cardHeader: cn(
-      "border-b px-3 py-2.5",
-      isDark
-        ? "border-zinc-700 bg-zinc-800"
-        : "border-[#E5E5E5] bg-[linear-gradient(180deg,#FFFFFF_0%,#F9FAFC_100%)]",
-    ),
-    label: cn(
-      "text-[10px] font-medium uppercase tracking-[0.12em]",
-      isDark ? "text-zinc-400" : "text-[#888]",
-    ),
-    labelNarrow: cn(
-      "text-[9px] font-medium uppercase tracking-[0.12em]",
-      isDark ? "text-zinc-400" : "text-[#888]",
-    ),
-    meta: cn("text-[10px]", isDark ? "text-zinc-400" : "text-[#666]"),
-    valueMono: cn(
-      "text-[10px] font-mono tabular-nums",
-      isDark ? "text-zinc-400" : "text-[#666]",
-    ),
-    field: cn(
-      "h-7 text-[10px] shadow-none focus-visible:border-[#B54B00] focus-visible:ring-[#B54B00]/20",
-      isDark
-        ? "border-zinc-700 bg-zinc-900 text-zinc-100"
-        : "border-[#E5E5E5] bg-white text-[#111]",
-    ),
-    slider: STUDIO_SLIDER_CLASS,
-    sectionBg: isDark ? "bg-zinc-900" : "bg-white",
-    wrapperBg: isDark
-      ? "bg-zinc-900 text-zinc-100 border-zinc-700"
-      : "bg-[linear-gradient(180deg,#FFFFFF_0%,#FCFCFD_100%)] text-[#111] border-[#E5E5E5]",
-    previewCanvasBg: isDark
-      ? "bg-zinc-950 border-zinc-700"
-      : "bg-[#F9FAFC] border-[#E5E5E5]",
-    previewFooterBg: isDark
-      ? "bg-zinc-800 border-zinc-700"
-      : "bg-[#F9FAFC] border-[#E5E5E5]",
-    statBorder: isDark ? "border-zinc-700" : "border-[#E5E5E5]",
-    statHover: isDark ? "hover:bg-zinc-700" : "hover:bg-[#F9FAFC]",
-    statText: isDark ? "text-zinc-100" : "text-[#111]",
-    uploadBg: isDark
-      ? "bg-zinc-900 border-[#B54B00]/40 text-zinc-400 hover:border-[#B54B00]/60 hover:bg-[#2A1800]/40"
-      : "bg-[#F9FAFC] border-[#B54B00]/40 text-[#666] hover:border-[#B54B00]/60 hover:bg-[#FFF5ED]/80",
-    fileMeta: isDark
-      ? "border-zinc-700 bg-zinc-900 text-zinc-400"
-      : "border-[#E5E5E5] bg-white text-[#666]",
-    selectContent: isDark
-      ? "rounded-xl border-zinc-700 bg-zinc-800 text-zinc-100 shadow-[0px_14px_36px_rgba(0,0,0,0.3)]"
-      : "rounded-xl border-[#E5E5E5] bg-white text-[#111] shadow-[0px_14px_36px_rgba(0,0,0,0.12)]",
-    selectItem: isDark
-      ? "rounded-lg py-2 text-[11px] font-medium text-zinc-100 data-[highlighted]:bg-zinc-700 data-[highlighted]:text-zinc-100 focus:bg-zinc-700 focus:text-zinc-100 data-[state=checked]:bg-zinc-700 data-[state=checked]:text-zinc-100"
-      : "rounded-lg py-2 text-[11px] font-medium text-[#111] data-[highlighted]:bg-[#FFF5ED] data-[highlighted]:text-[#111] focus:bg-[#FFF5ED] focus:text-[#111] data-[state=checked]:bg-[#FFF5ED] data-[state=checked]:text-[#111]",
-    outlineBtn: isDark
-      ? "border-zinc-700 bg-zinc-800 text-zinc-100 hover:bg-zinc-700"
-      : "border-[#D8D8D8] bg-white text-[#111] hover:bg-[#F9FAFC]",
-    fontSearchBtn: isDark ? "bg-zinc-700" : "bg-[#F3F3F3]",
-    fontSearchIcon: isDark ? "text-zinc-400" : "text-[#777]",
-    textarea: isDark
-      ? "border-zinc-700 bg-zinc-900 text-zinc-100"
-      : "border-[#DCDCDC] bg-[linear-gradient(180deg,#FDFDFD_0%,#F7F7F9_100%)] text-[#1F1F1F]",
-    componentBtn: isDark
-      ? "border-[#7A3300]/60 bg-[#2A1800] text-[#FFAB70] hover:bg-[#3A2000]"
-      : "border-[#EBC6A5] bg-[#FFF5ED] text-[#7A3300] hover:bg-[#FFECDD]",
-    resetBtn: isDark
-      ? "text-zinc-300 hover:bg-zinc-700"
-      : "text-[#111] hover:bg-[#F9FAFC]",
-    colorPillBg: isDark
-      ? "border-zinc-700 bg-zinc-800 text-zinc-100"
-      : "border-[#D8D8D8] bg-white text-[#111]",
-  };
+const PREVIEW_PANEL =
+  "flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden rounded-3xl border border-[#E5E5E5] dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-xl shadow-black/6 dark:shadow-black/40 lg:h-[680px]";
 
-  const outlineTertiary = STUDIO_OUTLINE_TERTIARY;
+const DEMO_BUTTON_TOOLTIP_CLASS = cn(
+  "z-50 max-w-[240px] rounded-xl border border-zinc-600/90 bg-zinc-900 px-3 py-2 font-sans text-left text-[11px] font-normal normal-case tracking-normal text-zinc-100 shadow-xl",
+  "data-[side=bottom]:slide-in-from-top-1 data-[side=top]:slide-in-from-bottom-1 data-open:animate-in data-open:fade-in-0 data-closed:animate-out data-closed:fade-out-0",
+);
 
+function FieldLabel({ children }: { children: ReactNode }) {
   return (
-    <div
-      className={cn(
-        "mt-10 landing-content-width max-w-[1100px] overflow-x-hidden rounded-3xl border font-satoshi shadow-[0px_4px_24px_rgba(0,0,0,0.06)]",
-        PREVIEW.wrapperBg,
-      )}
-    >
-      <section
-        className={cn("w-full rounded-[32px] p-3 md:p-4", PREVIEW.sectionBg)}
+    <span className={cn("font-sans text-xs", STUDIO_TEXT_LABEL)}>
+      {children}
+    </span>
+  );
+}
+
+function MiniDivider({ label }: { label: string }) {
+  return (
+    <div className="flex items-center gap-3 pt-2 pb-1">
+      <span
+        className={cn(
+          "font-mono text-[9px] font-semibold uppercase tracking-widest",
+          STUDIO_TEXT_LABEL,
+        )}
       >
-        <div className="grid gap-3 lg:grid-cols-[min(320px,38vw)_1fr]">
-          <div className="order-2 space-y-3 lg:order-1 lg:max-h-[70vh] lg:overflow-y-auto lg:pr-1 lg:[&::-webkit-scrollbar]:hidden lg:[scrollbar-width:none]">
-            <Panel title="Source Media" isDark={isDark} PREVIEW={PREVIEW}>
-              <button
-                type="button"
-                className={cn(
-                  "flex h-24 w-full items-center justify-center gap-2 rounded-xl border border-dashed text-xs transition-colors",
-                  PREVIEW.uploadBg,
-                )}
-              >
-                <Upload className="h-3.5 w-3.5 text-[#B54B00]/80" />
-                Drag and drop, click to upload
-              </button>
-              <div
-                className={cn(
-                  "rounded-lg border px-2 py-1.5 text-[10px]",
-                  PREVIEW.fileMeta,
-                )}
-              >
-                demo-video.mp4 • 17.4 MB
-              </div>
-              <Button
-                type="button"
-                variant="landingBlue"
-                className="h-7 w-full min-h-0 rounded-full text-[10px] py-0"
-                size="sm"
-              >
-                Convert to ASCII
-              </Button>
-            </Panel>
-
-            <Panel title="Conversion" isDark={isDark} PREVIEW={PREVIEW}>
-              <SliderField
-                label="Threshold"
-                value={30}
-                min={0}
-                max={200}
-                step={5}
-                PREVIEW={PREVIEW}
-              />
-              <div className="space-y-1">
-                <Label className={PREVIEW.label}>Charset</Label>
-                <Input
-                  className={cn("h-7 font-mono", PREVIEW.field)}
-                  value=" .,:;i1tfLCG08@"
-                  readOnly
-                />
-              </div>
-              <div className="flex gap-2">
-                <Button
-                  type="button"
-                  className="h-7 min-h-0 flex-1 rounded-full px-3 text-[10px] py-0"
-                  size="sm"
-                  variant="landing"
-                >
-                  Invert
-                </Button>
-                <Button
-                  type="button"
-                  className={cn("h-7 min-h-0 text-[10px]", PREVIEW.resetBtn)}
-                  size="sm"
-                  variant="ghost"
-                >
-                  <RotateCcw className="h-3.5 w-3.5" />
-                  Reset
-                </Button>
-              </div>
-            </Panel>
-
-            <Panel title="Appearance" isDark={isDark} PREVIEW={PREVIEW}>
-              <div className="space-y-1">
-                <Label className={PREVIEW.label}>Font Family</Label>
-                <Button
-                  type="button"
-                  variant="outline"
-                  className={cn(
-                    "h-8 w-full justify-between rounded-full px-3 text-xs font-medium",
-                    PREVIEW.outlineBtn,
-                  )}
-                >
-                  JetBrains Mono
-                  <span
-                    className={cn(
-                      "flex size-5 items-center justify-center rounded-full",
-                      PREVIEW.fontSearchBtn,
-                    )}
-                  >
-                    <Search
-                      className={cn("h-3.5 w-3.5", PREVIEW.fontSearchIcon)}
-                    />
-                  </span>
-                </Button>
-              </div>
-              <div className="flex gap-2">
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="outline"
-                  className={cn(
-                    "h-8 flex-1 gap-1 rounded-full border text-[11px] font-medium shadow-[inset_0px_1px_0px_rgba(255,255,255,0.1)]",
-                    PREVIEW.outlineBtn,
-                  )}
-                >
-                  <Bold className="h-3 w-3" />
-                  Bold
-                </Button>
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="outline"
-                  className={cn(
-                    "h-8 flex-1 gap-1 rounded-full border text-[11px] font-medium shadow-[inset_0px_1px_0px_rgba(255,255,255,0.1)]",
-                    PREVIEW.outlineBtn,
-                  )}
-                >
-                  <Italic className="h-3 w-3" />
-                  Italic
-                </Button>
-              </div>
-              <SliderField
-                label="Font Size"
-                value={10}
-                min={0.5}
-                max={24}
-                step={0.1}
-                PREVIEW={PREVIEW}
-              />
-              <SliderField
-                label="Vertical Gap"
-                value={0.95}
-                min={0.6}
-                max={1.6}
-                step={0.01}
-                PREVIEW={PREVIEW}
-              />
-              <SliderField
-                label="Horizontal Gap"
-                value={0.04}
-                min={-0.5}
-                max={1}
-                step={0.01}
-                PREVIEW={PREVIEW}
-              />
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  type="button"
-                  className={cn(
-                    "flex h-8 items-center gap-2 rounded-full border px-3 text-[11px] transition-colors",
-                    PREVIEW.colorPillBg,
-                  )}
-                >
-                  <span className="size-3 rounded-full bg-[#B54B00]" />
-                  #B54B00
-                </button>
-                <button
-                  type="button"
-                  className={cn(
-                    "flex h-8 items-center gap-2 rounded-full border px-3 text-[11px] transition-colors",
-                    PREVIEW.colorPillBg,
-                  )}
-                >
-                  <span
-                    className={cn(
-                      "size-3 rounded-full border",
-                      isDark
-                        ? "border-zinc-600 bg-zinc-900"
-                        : "border-[#CFCFCF] bg-white",
-                    )}
-                  />
-                  {isDark ? "#18181B" : "#FFFFFF"}
-                </button>
-              </div>
-            </Panel>
-
-            <Panel title="Export" isDark={isDark} PREVIEW={PREVIEW}>
-              <Label
-                className={cn(
-                  "px-1 text-center text-[9px] font-medium uppercase tracking-[0.1em] leading-relaxed",
-                  isDark ? "text-zinc-500" : "text-[#7A7A7A]",
-                )}
-              >
-                Full React component with in-app text frame exports
-              </Label>
-              <textarea
-                readOnly
-                className={cn(
-                  "h-24 w-full resize-none rounded-2xl border p-4 font-mono text-[11px] leading-relaxed shadow-[inset_0px_1px_0px_rgba(255,255,255,0.04)]",
-                  PREVIEW.textarea,
-                )}
-                value={'<ASCIIAnimation frames={["..."]} />'}
-              />
-              <Button
-                type="button"
-                size="sm"
-                variant="landingBlue"
-                className="h-8 w-full min-h-0 gap-1 rounded-full px-3 text-[11px] py-0"
-              >
-                <Copy className="h-3.5 w-3.5" />
-                Copy Full React Component
-              </Button>
-              <div className="grid grid-cols-3 gap-2">
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="outline"
-                  className={cn(
-                    "h-8 min-w-0 justify-center gap-1.5 rounded-full border px-2 text-[9px] font-medium",
-                    PREVIEW.outlineBtn,
-                  )}
-                >
-                  <ImageIcon className="h-3.5 w-3.5 shrink-0" />
-                  <span className="min-w-0 truncate">Image</span>
-                </Button>
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="outline"
-                  className={cn(
-                    "h-8 min-w-0 justify-center gap-1.5 rounded-full border px-2 text-[9px] font-medium",
-                    PREVIEW.outlineBtn,
-                  )}
-                >
-                  <Video className="h-3.5 w-3.5 shrink-0" />
-                  <span className="min-w-0 truncate">Video</span>
-                </Button>
-                <Button
-                  type="button"
-                  size="sm"
-                  variant="outline"
-                  className={cn(
-                    "h-8 min-w-0 justify-center gap-1.5 rounded-full border px-2 text-[9px] font-medium",
-                    PREVIEW.componentBtn,
-                  )}
-                >
-                  <FileCode2 className="h-3.5 w-3.5 shrink-0" />
-                  <span className="min-w-0 truncate">Component</span>
-                </Button>
-              </div>
-            </Panel>
-          </div>
-
-          <div className="order-1 h-auto lg:order-2 lg:h-full lg:sticky lg:top-3 xl:top-4 lg:max-h-[70vh]">
-            <div className={cn(PREVIEW.card, "flex h-auto flex-col lg:h-full")}>
-              <div
-                className={cn(
-                  "flex items-center justify-between",
-                  PREVIEW.cardHeader,
-                )}
-              >
-                <span
-                  className={cn(
-                    "text-[11px] font-semibold uppercase tracking-wider",
-                    isDark ? "text-zinc-100" : "text-[#111]",
-                  )}
-                >
-                  Preview
-                </span>
-                <span className={cn("font-medium", PREVIEW.meta)}>
-                  240f · 130x72 (780x684px)
-                </span>
-              </div>
-
-              <div
-                className={cn(
-                  "overflow-hidden p-3 lg:flex-1",
-                  isDark ? "bg-zinc-800" : "bg-white",
-                )}
-              >
-                <div
-                  className={cn(
-                    "relative flex h-[420px] w-full items-center justify-center overflow-hidden rounded-lg border lg:h-full lg:min-h-[420px]",
-                    PREVIEW.previewCanvasBg,
-                  )}
-                >
-                  <div
-                    className="absolute inset-0"
-                    style={{
-                      transform: "scale(0.6)",
-                      transformOrigin: "center center",
-                    }}
-                  >
-                    <Fire />
-                  </div>
-                </div>
-              </div>
-
-              <div
-                className={cn("border-t px-4 py-2.5", PREVIEW.previewFooterBg)}
-              >
-                <div className="mb-1.5 flex items-center justify-between">
-                  <Label className={PREVIEW.labelNarrow}>
-                    Timeline Scrubber
-                  </Label>
-                  <span className={cn(PREVIEW.valueMono)}>
-                    00:12.4 / 00:34.8
-                  </span>
-                </div>
-                <Slider
-                  className={PREVIEW.slider}
-                  defaultValue={[12.4]}
-                  max={34.8}
-                  min={0}
-                  step={0.1}
-                />
-              </div>
-
-              <div
-                className={cn("grid grid-cols-3 border-t", PREVIEW.statBorder)}
-              >
-                <Stat
-                  label="Frames"
-                  value="240"
-                  isDark={isDark}
-                  PREVIEW={PREVIEW}
-                />
-                <Stat
-                  label="Grid"
-                  value="130x72"
-                  isDark={isDark}
-                  PREVIEW={PREVIEW}
-                />
-                <Stat
-                  label="Resolution"
-                  value="780x684px"
-                  isDark={isDark}
-                  PREVIEW={PREVIEW}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+        {label}
+      </span>
+      <div className="h-px flex-1 bg-[#E5E5E5]/80 dark:bg-zinc-700/80" />
     </div>
   );
 }
 
-function Panel({
-  children,
+function Row({ label, children }: { label: string; children: ReactNode }) {
+  return (
+    <div className="flex items-center justify-between gap-3 py-1">
+      <FieldLabel>{label}</FieldLabel>
+      <div className="flex items-center gap-2">{children}</div>
+    </div>
+  );
+}
+
+function MockResetChip() {
+  return (
+    <Button
+      type="button"
+      variant="landing"
+      size="sm"
+      className="h-7 min-h-0 rounded-full px-3 py-0 font-mono text-[9px] font-semibold uppercase tracking-widest text-[#B54B00]"
+    >
+      Reset
+    </Button>
+  );
+}
+
+function MockAccordion({
   title,
-  isDark,
-  PREVIEW,
+  action,
+  children,
 }: {
-  children: React.ReactNode;
   title: string;
-  isDark: boolean;
-  PREVIEW: Record<string, string>;
+  action?: ReactNode;
+  children: ReactNode;
 }) {
   return (
-    <div className={PREVIEW.card}>
-      <div className={PREVIEW.cardHeader}>
-        <span
-          className={cn(
-            "text-[11px] font-semibold uppercase tracking-wider",
-            isDark ? "text-zinc-100" : "text-[#111]",
-          )}
-        >
-          {title}
-        </span>
+    <section className="border-b border-[#E5E5E5]/70 dark:border-zinc-800/70 last:border-0">
+      <header className="flex cursor-default items-center justify-between gap-2 px-4 py-3 select-none">
+        <div className="flex items-center gap-2">
+          <ChevronDown className="size-3.5 rotate-0 text-[#B54B00]/40 transition-transform duration-200" />
+          <h3 className="font-sans text-xs font-semibold tracking-wide text-[#111] dark:text-zinc-100">
+            {title}
+          </h3>
+        </div>
+        <div>{action}</div>
+      </header>
+      <div className="overflow-hidden">
+        <div className="space-y-4 px-4 pb-4 pt-1">{children}</div>
       </div>
-      <div className="space-y-2.5 p-2.5">{children}</div>
-    </div>
+    </section>
   );
 }
 
-function SliderField({
+function MockTopBar() {
+  return (
+    <header
+      suppressHydrationWarning
+      className="flex h-14 shrink-0 items-center justify-between border-b border-[#E5E5E5] dark:border-zinc-800 bg-[#F9FAFC] dark:bg-zinc-950 px-6"
+    >
+      <div className="flex items-center gap-4">
+        <div className="group flex shrink-0 items-center gap-2 md:gap-3">
+          <Image
+            src={siteConfig.logoPath}
+            alt="Logo"
+            width={32}
+            height={32}
+            unoptimized
+            className="h-8 w-8 object-contain rounded-lg md:h-9 md:w-9"
+          />
+          <div className="flex min-w-0 items-baseline gap-1.5 sm:gap-2">
+            <span className="[font-family:var(--font-ascii-brand)] text-base font-medium tracking-wide whitespace-nowrap text-[#111] dark:text-zinc-100 md:text-lg">
+              {siteConfig.productName}
+            </span>
+            <span className="hidden rounded-full border border-[#E5C4A5] dark:border-zinc-700 bg-[#FFF8F3] dark:bg-zinc-800 px-2 py-0.5 font-mono text-[9px] uppercase tracking-widest text-[#B54B00] sm:inline">
+              Studio
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div className="flex items-center gap-3 font-mono text-xs uppercase tracking-widest text-zinc-400 dark:text-zinc-500">
+        <span className="hidden md:inline">Browser-Native</span>
+      </div>
+    </header>
+  );
+}
+
+function MockSliderField({
   label,
-  max,
-  min,
-  step,
   value,
-  PREVIEW,
+  min,
+  max,
+  step,
+  display,
 }: {
   label: string;
-  max: number;
-  min: number;
-  step: number;
   value: number;
-  PREVIEW: Record<string, string>;
+  min: number;
+  max: number;
+  step: number;
+  display?: string;
 }) {
   return (
     <div className="space-y-1.5">
       <div className="flex items-center justify-between">
-        <Label className={PREVIEW.label}>{label}</Label>
-        <span
-          className={cn(
-            "text-[10px] tabular-nums font-medium",
-            PREVIEW.valueMono,
-          )}
-        >
-          {value}
+        <FieldLabel>{label}</FieldLabel>
+        <span className="font-mono text-[10px] tabular-nums text-[#111] dark:text-zinc-300">
+          {display ?? value}
         </span>
       </div>
       <Slider
-        className={PREVIEW.slider}
+        className={STUDIO_SLIDER_CLASS}
         defaultValue={[value]}
         max={max}
         min={min}
@@ -518,35 +204,473 @@ function SliderField({
   );
 }
 
-function Stat({
-  label,
-  value,
-  isDark,
-  PREVIEW,
-}: {
-  label: string;
-  value: string;
-  isDark: boolean;
-  PREVIEW: Record<string, string>;
-}) {
+function StatCell({ label, value }: { label: string; value: string }) {
   return (
-    <button
-      type="button"
-      className={cn(
-        "border-r px-2 py-2.5 text-center last:border-r-0 transition-colors",
-        PREVIEW.statBorder,
-        PREVIEW.statHover,
-      )}
-    >
-      <div className={cn(PREVIEW.labelNarrow, "mb-0.5")}>{label}</div>
-      <div
-        className={cn(
-          "text-[12px] font-medium tabular-nums leading-tight",
-          PREVIEW.statText,
-        )}
-      >
+    <div className="flex min-w-0 flex-col gap-1 p-4">
+      <span className="font-mono text-[10px] font-medium uppercase tracking-widest text-[#888] dark:text-zinc-500">
+        {label}
+      </span>
+      <span className="truncate font-mono text-sm font-semibold tabular-nums text-[#111] dark:text-zinc-100">
         {value}
-      </div>
-    </button>
+      </span>
+    </div>
+  );
+}
+
+export default function StudioUiPreview() {
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
+
+  const [autoFit, setAutoFit] = useState(true);
+  const [invertMapping, setInvertMapping] = useState(false);
+  const [useSourceColors, setUseSourceColors] = useState(false);
+  const [showFrameCounter, setShowFrameCounter] = useState(false);
+  const [isBold, setIsBold] = useState(false);
+  const [isItalic, setIsItalic] = useState(false);
+
+  return (
+    <TooltipProvider delayDuration={500}>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <div
+            tabIndex={0}
+            className={cn(
+              "mt-10 landing-content-width max-w-[1100px] cursor-default overflow-hidden rounded-3xl border font-satoshi shadow-[0px_4px_24px_rgba(0,0,0,0.06)] outline-none focus-visible:ring-2 focus-visible:ring-[#B54B00]/35 focus-visible:ring-offset-2 focus-visible:ring-offset-[#F9FAFC] dark:focus-visible:ring-offset-zinc-950",
+              isDark
+                ? "border-zinc-800 bg-zinc-950"
+                : "border-[#E5E5E5] bg-[#F9FAFC]",
+            )}
+          >
+            <MockTopBar />
+
+            <div className="grid grid-cols-1 gap-3 p-3 md:gap-4 md:p-4 lg:grid-cols-[320px_1fr]">
+              <aside className={SIDEBAR_PANEL}>
+                <MockAccordion title="Source Media">
+                  <button
+                    type="button"
+                    className={cn(
+                      "flex min-h-24 w-full cursor-default flex-col items-center justify-center gap-3 px-3 py-5 text-center",
+                      STUDIO_DROPZONE,
+                    )}
+                  >
+                    <Upload className="h-3.5 w-3.5 shrink-0 text-[#B54B00]/80" />
+                    <div className="space-y-1">
+                      <p className="font-sans text-xs font-semibold text-[#111] dark:text-zinc-100">
+                        Drop or browse
+                      </p>
+                      <p className="font-sans text-[10px] text-[#666] dark:text-zinc-500">
+                        Image, GIF, or video · up to 30 MB
+                      </p>
+                    </div>
+                  </button>
+
+                  <div
+                    className={cn(
+                      "flex items-center gap-3 rounded-lg bg-white dark:bg-zinc-800 p-2 pl-3",
+                      STUDIO_CARD_OUTLINE,
+                      "shadow-[0px_1px_2px_rgba(0,0,0,0.04)]",
+                    )}
+                  >
+                    <div className="flex size-7 shrink-0 items-center justify-center rounded-md border border-[#E5E5E5] dark:border-zinc-700 bg-[#F9FAFC] dark:bg-zinc-700 text-[#B54B00]">
+                      <Film className="size-3.5" />
+                    </div>
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate font-sans text-xs font-semibold text-[#111] dark:text-zinc-100">
+                        Sample source
+                      </p>
+                      <p className="font-mono text-[10px] tabular-nums text-[#666] dark:text-zinc-500">
+                        500 × 500
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      tabIndex={-1}
+                      aria-label="Remove source"
+                      className="flex size-7 shrink-0 cursor-default items-center justify-center rounded-sm text-[#888] transition-colors hover:bg-red-500/10 hover:text-red-400"
+                    >
+                      <Trash2 className="size-3.5" />
+                    </button>
+                  </div>
+
+                  <Button
+                    type="button"
+                    variant="landingBlue"
+                    size="sm"
+                    className="h-8 w-full min-h-0 gap-2 rounded-full px-3 py-0 font-sans text-[11px] font-semibold tracking-wide"
+                  >
+                    Export ASCII
+                  </Button>
+                </MockAccordion>
+
+                <MockAccordion title="Canvas Settings">
+                  <Row label="Auto-Fit Screen">
+                    <ToggleButton toggle={autoFit} setToggle={setAutoFit} />
+                  </Row>
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="space-y-1.5">
+                      <FieldLabel>Width (Cols)</FieldLabel>
+                      <div
+                        className={cn(
+                          "flex items-center overflow-hidden rounded-md border border-[#E5E5E5] dark:border-zinc-700 bg-white dark:bg-zinc-800",
+                          autoFit && "pointer-events-none opacity-50",
+                        )}
+                      >
+                        <span className="flex h-8 w-7 shrink-0 items-center justify-center border-r border-[#E5E5E5] dark:border-zinc-700 text-[#888] dark:text-zinc-400">
+                          <svg
+                            width="10"
+                            height="10"
+                            viewBox="0 0 10 10"
+                            fill="none"
+                          >
+                            <path
+                              d="M2 4.5h6"
+                              stroke="currentColor"
+                              strokeWidth="1.5"
+                              strokeLinecap="round"
+                            />
+                          </svg>
+                        </span>
+                        <input
+                          type="text"
+                          readOnly
+                          className="h-8 w-full min-w-0 bg-transparent text-center font-mono text-xs tabular-nums text-[#111] dark:text-zinc-100 outline-none"
+                          value={130}
+                        />
+                        <span className="flex h-8 w-7 shrink-0 items-center justify-center border-l border-[#E5E5E5] dark:border-zinc-700 text-[#888] dark:text-zinc-400">
+                          <svg
+                            width="10"
+                            height="10"
+                            viewBox="0 0 10 10"
+                            fill="none"
+                          >
+                            <path
+                              d="M5 2v6M2 5h6"
+                              stroke="currentColor"
+                              strokeWidth="1.5"
+                              strokeLinecap="round"
+                            />
+                          </svg>
+                        </span>
+                      </div>
+                    </div>
+                    <div className="space-y-1.5">
+                      <FieldLabel>Height (Rows)</FieldLabel>
+                      <Input
+                        type="text"
+                        readOnly
+                        className={STUDIO_FIELD_READONLY_MUTED}
+                        value={72}
+                      />
+                    </div>
+                  </div>
+                </MockAccordion>
+
+                <MockAccordion title="Conversion" action={<MockResetChip />}>
+                  <MockSliderField
+                    label="Density Threshold"
+                    value={30}
+                    min={-100}
+                    max={100}
+                    step={1}
+                  />
+
+                  <div className="space-y-2 pt-2">
+                    <div className="space-y-1.5">
+                      <FieldLabel>Character Set Mapping</FieldLabel>
+                      <p
+                        className={cn(
+                          "max-w-full text-[10px] leading-relaxed",
+                          STUDIO_TEXT_META,
+                        )}
+                      >
+                        There are many built-in brightness ramps and styles, so
+                        the menu is long scroll the list, or type your own
+                        sequence in the field below. Muted gray in each row is a
+                        sample of the character order (dark → light), not the
+                        preview&apos;s ink color (set under Appearance).
+                      </p>
+                    </div>
+                    <Select defaultValue="terminal">
+                      <SelectTrigger
+                        className={cn(STUDIO_FIELD_CLASS, "font-sans")}
+                      >
+                        <SelectValue placeholder="Select preset…" />
+                      </SelectTrigger>
+                      <SelectContent
+                        className={cn(
+                          STUDIO_SELECT_CONTENT,
+                          "max-h-[min(50dvh,280px)]",
+                        )}
+                      >
+                        <SelectItem
+                          value="terminal"
+                          className={STUDIO_SELECT_ITEM}
+                        >
+                          <span className="font-semibold">Retro Terminal</span>
+                          <span className="ml-2 font-mono text-[10px] text-[#666] dark:text-zinc-500">
+                            .:-=+*#%@
+                          </span>
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <Input
+                      readOnly
+                      spellCheck={false}
+                      autoComplete="off"
+                      className={STUDIO_FIELD_MONO_CLASS}
+                      value=" .,:;i1tfLCG08@"
+                    />
+                  </div>
+
+                  <Row label="Invert Mapping">
+                    <ToggleButton
+                      toggle={invertMapping}
+                      setToggle={setInvertMapping}
+                    />
+                  </Row>
+                </MockAccordion>
+
+                <MockAccordion title="Appearance" action={<MockResetChip />}>
+                  <MiniDivider label="Typography" />
+                  <div className="space-y-2">
+                    <FieldLabel>Font Family</FieldLabel>
+                    <Select defaultValue="jetbrains-mono">
+                      <SelectTrigger
+                        className={cn(STUDIO_FIELD_CLASS, "font-sans")}
+                      >
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className={STUDIO_SELECT_CONTENT}>
+                        <SelectItem
+                          value="jetbrains-mono"
+                          className={STUDIO_SELECT_ITEM}
+                        >
+                          <span
+                            style={{
+                              fontFamily: '"JetBrains Mono", monospace',
+                            }}
+                          >
+                            JetBrains Mono
+                          </span>
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <Row label="Style & Weight">
+                    <div className="flex items-center gap-1.5">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        aria-pressed={isBold}
+                        onClick={() => setIsBold(!isBold)}
+                        className={cn(
+                          STUDIO_OUTLINE_TERTIARY,
+                          "h-7 w-8 min-w-8 rounded-full border-[#D8D8D8] p-0",
+                          isBold &&
+                            "border-[#EBC6A5] bg-[#FFF5ED] text-[#7A3300] shadow-[inset_0_1px_1px_rgba(0,0,0,0.05)]",
+                        )}
+                      >
+                        <Bold className="size-3.5" />
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        size="sm"
+                        aria-pressed={isItalic}
+                        onClick={() => setIsItalic(!isItalic)}
+                        className={cn(
+                          STUDIO_OUTLINE_TERTIARY,
+                          "h-7 w-8 min-w-8 rounded-full border-[#D8D8D8] p-0",
+                          isItalic &&
+                            "border-[#EBC6A5] bg-[#FFF5ED] text-[#7A3300] shadow-[inset_0_1px_1px_rgba(0,0,0,0.05)]",
+                        )}
+                      >
+                        <Italic className="size-3.5" />
+                      </Button>
+                    </div>
+                  </Row>
+
+                  <MockSliderField
+                    label="Font Size"
+                    value={10}
+                    min={4}
+                    max={24}
+                    step={0.5}
+                    display="10.0px"
+                  />
+                  <div className="grid grid-cols-2 gap-4">
+                    <MockSliderField
+                      label="Line Height"
+                      value={0.95}
+                      min={0.5}
+                      max={1.6}
+                      step={0.01}
+                      display="0.95"
+                    />
+                    <MockSliderField
+                      label="Letter Spacing"
+                      value={0.04}
+                      min={-0.5}
+                      max={1}
+                      step={0.01}
+                      display="0.04"
+                    />
+                  </div>
+
+                  <MiniDivider label="Theme Colors" />
+                  <div className="space-y-1.5">
+                    <ColorField
+                      label="Background"
+                      value="#FFFFFF"
+                      onChange={() => {}}
+                      asRow
+                    />
+                    <ColorField
+                      label="Text"
+                      value="#B54B00"
+                      onChange={() => {}}
+                      asRow
+                    />
+                  </div>
+                  <Row label="Use Source Colors">
+                    <ToggleButton
+                      toggle={useSourceColors}
+                      setToggle={setUseSourceColors}
+                    />
+                  </Row>
+
+                  <MiniDivider label="Meta" />
+                  <Row label="Show Frame Counter">
+                    <ToggleButton
+                      toggle={showFrameCounter}
+                      setToggle={setShowFrameCounter}
+                    />
+                  </Row>
+                </MockAccordion>
+              </aside>
+
+              <div className={PREVIEW_PANEL}>
+                <div className="flex h-full min-h-0 flex-col overflow-hidden">
+                  {/* Header strip */}
+                  <div className="flex h-12 shrink-0 items-center justify-between gap-3 border-b border-[#E5E5E5] dark:border-zinc-800 bg-[linear-gradient(180deg,#FFFFFF_0%,#F9FAFC_100%)] dark:bg-[linear-gradient(180deg,#18181b_0%,#18181b_100%)] px-6">
+                    <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1.5">
+                        <div className="size-3 rounded-full border border-[#D6D6D6] dark:border-zinc-600 bg-white dark:bg-zinc-700 shadow-[0px_0.5px_0_rgba(0,0,0,0.06)]" />
+                        <div className="size-3 rounded-full border border-[#D6D6D6] dark:border-zinc-600 bg-white dark:bg-zinc-700 shadow-[0px_0.5px_0_rgba(0,0,0,0.06)]" />
+                        <div className="size-3 rounded-full border border-[#D6D6D6] dark:border-zinc-600 bg-white dark:bg-zinc-700 shadow-[0px_0.5px_0_rgba(0,0,0,0.06)]" />
+                      </div>
+                      <span className="ml-2 font-mono text-[10px] font-medium uppercase tracking-widest text-[#888] dark:text-zinc-500">
+                        Preview
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <Button
+                        type="button"
+                        variant="landingBlue"
+                        size="sm"
+                        aria-label="Play"
+                        className="h-8 gap-2 rounded-full px-4 font-mono text-[10px] uppercase tracking-widest text-white"
+                      >
+                        <Play className="size-3.5" />
+                        <span>Play</span>
+                      </Button>
+                      <Tooltip delayDuration={200}>
+                        <TooltipTrigger asChild>
+                          <Button
+                            type="button"
+                            variant="landingBlue"
+                            size="sm"
+                            tabIndex={-1}
+                            aria-label="Demo only — open Studio to switch theme"
+                            className="h-8 gap-2 rounded-full px-4 font-mono text-[10px] uppercase tracking-widest text-white"
+                          >
+                            {isDark ? (
+                              <Sun className="size-3.5" />
+                            ) : (
+                              <Moon className="size-3.5" />
+                            )}
+                            <span>{isDark ? "Light Mode" : "Dark Mode"}</span>
+                          </Button>
+                        </TooltipTrigger>
+                        <TooltipContent
+                          side="bottom"
+                          sideOffset={10}
+                          className={DEMO_BUTTON_TOOLTIP_CLASS}
+                        >
+                          Demo button — opens the real toggle inside Studio.
+                        </TooltipContent>
+                      </Tooltip>
+                    </div>
+                  </div>
+
+                  {/* Stage */}
+                  <div className="flex min-h-0 flex-1 flex-col bg-[#F9FAFC] dark:bg-zinc-950 p-4">
+                    <div className="relative flex min-h-[420px] w-full flex-1 items-center justify-center overflow-hidden rounded-2xl border border-[#D4D4D4] dark:border-zinc-700 bg-zinc-950 shadow-[inset_0_2px_8px_rgba(0,0,0,0.35)]">
+                      <div
+                        className="absolute inset-0"
+                        style={{
+                          transform: "scale(0.6)",
+                          transformOrigin: "center center",
+                        }}
+                      >
+                        <Fire />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Scrub */}
+                  <div className="flex shrink-0 items-center gap-4 border-t border-[#E5E5E5] dark:border-zinc-800 bg-white dark:bg-zinc-900 px-6 py-4">
+                    <span className="font-mono text-[10px] uppercase tracking-widest text-[#888] dark:text-zinc-500">
+                      Scrub
+                    </span>
+                    <Slider
+                      className={cn("flex-1", STUDIO_SLIDER_CLASS)}
+                      defaultValue={[124]}
+                      min={0}
+                      max={239}
+                      step={1}
+                    />
+                    <span className="w-24 shrink-0 text-right font-mono text-xs tabular-nums text-[#111] dark:text-zinc-100">
+                      124 / 240
+                    </span>
+                  </div>
+
+                  {/* Stats */}
+                  <div className="grid shrink-0 grid-cols-2 divide-x divide-y divide-[#E5E5E5] dark:divide-zinc-800 border-t border-[#E5E5E5] dark:border-zinc-800 bg-white dark:bg-zinc-900 sm:grid-cols-4 sm:divide-y-0">
+                    <StatCell label="Mode" value="Video" />
+                    <StatCell label="Resolution" value="780×684" />
+                    <StatCell label="Grid" value="130×72" />
+                    <StatCell label="Frames" value="240" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </TooltipTrigger>
+
+        <TooltipContent
+          collisionPadding={16}
+          side="bottom"
+          align="center"
+          sideOffset={8}
+          className={cn(
+            "z-50 inline-flex w-fit max-w-none items-center gap-2 whitespace-nowrap rounded-full border border-zinc-600/90 bg-zinc-900 px-3 py-1.5 font-sans text-[11px] font-normal normal-case tracking-normal text-zinc-100 shadow-lg",
+            "data-[side=bottom]:slide-in-from-top-1 data-[side=top]:slide-in-from-bottom-1 data-open:animate-in data-open:fade-in-0 data-closed:animate-out data-closed:fade-out-0",
+          )}
+        >
+          <span className="text-zinc-300">Static preview ·</span>
+          <Link
+            href={siteConfig.studioPath}
+            className="inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-semibold text-[#FFB07A] hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FFB07A]"
+          >
+            Open Studio
+            <ArrowUpRight className="size-3 shrink-0" aria-hidden />
+          </Link>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   );
 }

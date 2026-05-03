@@ -28,7 +28,6 @@ export function PreviewStage() {
   const columns = useAsciiStore((s) => s.columns);
   const mode = useAsciiStore((s) => s.mode);
   const appearance = useAsciiStore((s) => s.appearance);
-  const patchAppearance = useAsciiStore((s) => s.patchAppearance);
 
   const isVideo = source?.kind === "video" || source?.kind === "gif";
 

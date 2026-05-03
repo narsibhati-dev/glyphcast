@@ -45,11 +45,9 @@ const fadeUpVariants: Variants = {
 
 export const Hero = forwardRef<HTMLElement, HeroProps>(function Hero(
   {
-    sampleId,
     columns,
     charsetId,
     invert,
-    onSampleChange,
     onColumnsChange,
     onCharsetChange,
     onInvertChange,
@@ -57,7 +55,8 @@ export const Hero = forwardRef<HTMLElement, HeroProps>(function Hero(
   ref,
 ) {
   const sample = useMemo<LandingSample>(
-    () => LANDING_SAMPLES.find((s) => s.id === "abstract") ?? LANDING_SAMPLES[0],
+    () =>
+      LANDING_SAMPLES.find((s) => s.id === "abstract") ?? LANDING_SAMPLES[0],
     [],
   );
   const charset = useMemo(
@@ -74,7 +73,6 @@ export const Hero = forwardRef<HTMLElement, HeroProps>(function Hero(
       className="relative overflow-hidden py-24 lg:py-32 bg-zinc-950"
     >
       <div className="relative mx-auto max-w-7xl px-5 lg:px-8">
-        
         {/* Centered Text Content */}
         <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
           <motion.div
@@ -104,7 +102,9 @@ export const Hero = forwardRef<HTMLElement, HeroProps>(function Hero(
             variants={fadeUpVariants}
             className="mt-6 text-balance text-lg leading-relaxed text-zinc-400 sm:text-xl"
           >
-            Drop in an image or video, tune dozens of fonts, charsets, and effects live. Export as PNG, ZIP, or a React component — everything stays local in your browser.
+            Drop in an image or video, tune dozens of fonts, charsets, and
+            effects live. Export as PNG, ZIP, or a React component — everything
+            stays local in your browser.
           </motion.p>
 
           <motion.div
@@ -114,13 +114,22 @@ export const Hero = forwardRef<HTMLElement, HeroProps>(function Hero(
             variants={fadeUpVariants}
             className="mt-10 flex flex-wrap items-center justify-center gap-4"
           >
-            <Button asChild size="lg" className="h-12 rounded-full px-8 text-base">
+            <Button
+              asChild
+              size="lg"
+              className="h-12 rounded-full px-8 text-base"
+            >
               <Link href="/studio">
                 Open the Studio
                 <ArrowRight className="ml-2 size-4" />
               </Link>
             </Button>
-            <Button asChild variant="outline" size="lg" className="h-12 rounded-full border-zinc-800 bg-transparent px-8 text-base text-zinc-300 hover:bg-zinc-900 hover:text-white">
+            <Button
+              asChild
+              variant="outline"
+              size="lg"
+              className="h-12 rounded-full border-zinc-800 bg-transparent px-8 text-base text-zinc-300 hover:bg-zinc-900 hover:text-white"
+            >
               <a href="#examples">See examples</a>
             </Button>
           </motion.div>
@@ -169,7 +178,9 @@ export const Hero = forwardRef<HTMLElement, HeroProps>(function Hero(
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <h3 className="text-sm font-medium text-white">Columns</h3>
-                  <span className="font-mono text-xs text-zinc-400">{columns}</span>
+                  <span className="font-mono text-xs text-zinc-400">
+                    {columns}
+                  </span>
                 </div>
                 <Slider
                   value={[columns]}
@@ -188,7 +199,11 @@ export const Hero = forwardRef<HTMLElement, HeroProps>(function Hero(
                   </SelectTrigger>
                   <SelectContent className="rounded-xl border-zinc-800 bg-zinc-950 text-white">
                     {ASCII_CHAR_PRESETS.map((c) => (
-                      <SelectItem key={c.id} value={c.id} className="rounded-lg">
+                      <SelectItem
+                        key={c.id}
+                        value={c.id}
+                        className="rounded-lg"
+                      >
                         {c.label}
                       </SelectItem>
                     ))}
@@ -228,8 +243,12 @@ export const Hero = forwardRef<HTMLElement, HeroProps>(function Hero(
 function Stat({ value, label }: { value: string; label: string }) {
   return (
     <div className="flex flex-col items-center justify-center bg-zinc-950 px-4 py-8 text-center">
-      <dt className="order-2 mt-2 text-sm font-medium text-zinc-500">{label}</dt>
-      <dd className="order-1 text-3xl font-bold tracking-tight text-white">{value}</dd>
+      <dt className="order-2 mt-2 text-sm font-medium text-zinc-500">
+        {label}
+      </dt>
+      <dd className="order-1 text-3xl font-bold tracking-tight text-white">
+        {value}
+      </dd>
     </div>
   );
 }

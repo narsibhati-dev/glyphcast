@@ -12,14 +12,9 @@ import { useDropzone, type FileRejection } from "react-dropzone";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Bold,
-  Check,
   ChevronDown,
-  Code2,
-  Copy,
-  FileArchive,
   Film,
   Image as ImageIcon,
-  ImageDown,
   Italic,
   ArrowDownToLine,
   Trash2,
@@ -38,12 +33,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { ColorField } from "@/components/color-field";
 
 import { useAsciiStore, type StudioSource } from "@/lib/store";
@@ -53,10 +42,10 @@ import {
   DEFAULT_ASCII_APPEARANCE,
 } from "@/lib/ascii-config";
 import {
-  buildASCIIAnimationReactComponentSource,
+  exportASCIIAnimationAsReactComponent,
   exportASCIIAnimationAsVideo,
   exportASCIIAsImage,
-  exportASCIIAsZip,
+  exportASCIIAsJson,
 } from "@/lib/ascii-export";
 import { loadGoogleFont } from "@/lib/font-loader";
 import { useStudio } from "@/lib/studio-context";
@@ -736,14 +725,6 @@ function AppearanceSection() {
 /* Export                                                                      */
 /* ─────────────────────────────────────────────────────────────────────────── */
 
-const EXPORT_FORMATS = [
-  { id: "image" as const, label: "Image", icon: ImageDown },
-  { id: "video" as const, label: "Video", icon: Film },
-  { id: "react" as const, label: "React Component", icon: Code2 },
-  { id: "zip" as const, label: "ZIP Archive", icon: FileArchive },
-];
-type ExportFormat = (typeof EXPORT_FORMATS)[number]["id"];
-
 export function ExportSection() {
   const PROGRESS_TOAST_ID = "studio-export-progress";
   const {
@@ -759,10 +740,8 @@ export function ExportSection() {
   const mode = useAsciiStore((s) => s.mode);
 
   const filename = useAsciiStore((s) => s.exportFilename);
-  const setFilename = useAsciiStore((s) => s.setExportFilename);
   const [progress, setProgress] = useState(0);
   const [exportStage, setExportStage] = useState("");
-  const [selectedFormat, setSelectedFormat] = useState<ExportFormat>("image");
   const abortRef = useRef<AbortController | null>(null);
 
   const dismissProgressToast = useCallback(() => {
@@ -803,18 +782,6 @@ export function ExportSection() {
     [filename, source],
   );
 
-  const downloadTextFile = useCallback((content: string, fileName: string) => {
-    const blob = new Blob([content], { type: "text/plain" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = fileName;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    URL.revokeObjectURL(url);
-  }, []);
-
   const downloadPNG = useCallback(async () => {
     const result = canvasRef.current?.getFrameResult();
     const frame = result?.text ?? canvasRef.current?.getFrameText() ?? "";
@@ -846,21 +813,15 @@ export function ExportSection() {
       setProgress(0);
       setExportStage("");
     }
-  }, [appearance, canvasRef, charset, isExporting, setIsExporting, stem]);
-
-  const copyText = useCallback(async () => {
-    const text = canvasRef.current?.getFrameText() ?? "";
-    if (!text) {
-      toast.error("Nothing to copy yet");
-      return;
-    }
-    try {
-      await navigator.clipboard.writeText(text);
-      toast.success("Copied to clipboard");
-    } catch {
-      toast.error("Clipboard access denied");
-    }
-  }, [canvasRef]);
+  }, [
+    appearance,
+    canvasRef,
+    charset,
+    dismissProgressToast,
+    isExporting,
+    setIsExporting,
+    stem,
+  ]);
 
   const exportVideo = useCallback(async () => {
     if (!source || (source.kind !== "video" && source.kind !== "gif")) {
@@ -872,7 +833,6 @@ export function ExportSection() {
     setProgress(0);
     const ctrl = new AbortController();
     abortRef.current = ctrl;
-    let frameCount = 0;
     try {
       await exportASCIIAnimationAsVideo({
         appearance,
@@ -894,7 +854,6 @@ export function ExportSection() {
           if (!canvasRef.current) return Promise.resolve();
           return canvasRef.current.streamFrames(
             async (text, colors, idx, total) => {
-              frameCount = total;
               await onFrame(text, colors, idx, total);
             },
             signal ?? ctrl.signal,
@@ -920,6 +879,7 @@ export function ExportSection() {
     appearance,
     canvasRef,
     charset,
+    dismissProgressToast,
     isExporting,
     setIsExporting,
     source,
@@ -946,19 +906,18 @@ export function ExportSection() {
       }
       setExportStage("Building component");
       setProgress(85);
-      const code = buildASCIIAnimationReactComponentSource({
-        appearance: { ...appearance, showFrameCounter: false },
-        componentName: toPascalCase(stem()),
+      exportASCIIAnimationAsReactComponent({
+        appearance,
+        fileName: stem(),
         fps: 24,
         frames: results.map((r) => r.text),
         chars: charset,
-        sourceWidth: source.width,
-        sourceHeight: source.height,
       });
       setProgress(100);
       dismissProgressToast();
-      downloadTextFile(code, `${stem()}.tsx`);
-      toast.success("React component exported", { position: "bottom-center" });
+      toast.success("React component exported (ZIP)", {
+        position: "bottom-center",
+      });
     } catch (err) {
       dismissProgressToast();
       toast.error(err instanceof Error ? err.message : "Failed");
@@ -971,14 +930,14 @@ export function ExportSection() {
     appearance,
     canvasRef,
     charset,
-    downloadTextFile,
+    dismissProgressToast,
     isExporting,
     setIsExporting,
     source,
     stem,
   ]);
 
-  const exportZip = useCallback(async () => {
+  const exportJson = useCallback(async () => {
     if (!source) {
       toast.error("Load a file first");
       return;
@@ -996,15 +955,15 @@ export function ExportSection() {
         toast.error("No frames captured");
         return;
       }
-      setExportStage("Building ZIP");
+      setExportStage("Building JSON");
       setProgress(90);
-      exportASCIIAsZip({
+      exportASCIIAsJson({
         frames: results.map((r) => r.text),
         fileName: stem(),
       });
       setProgress(100);
       dismissProgressToast();
-      toast.success("ZIP exported", { position: "bottom-center" });
+      toast.success("JSON exported", { position: "bottom-center" });
     } catch (err) {
       dismissProgressToast();
       toast.error(err instanceof Error ? err.message : "Failed");
@@ -1013,7 +972,14 @@ export function ExportSection() {
       setProgress(0);
       setExportStage("");
     }
-  }, [canvasRef, isExporting, setIsExporting, source, stem]);
+  }, [
+    canvasRef,
+    dismissProgressToast,
+    isExporting,
+    setIsExporting,
+    source,
+    stem,
+  ]);
 
   useEffect(() => {
     const h =
@@ -1031,41 +997,16 @@ export function ExportSection() {
       image: downloadPNG,
       video: exportVideo,
       component: exportComponent,
-      zip: exportZip,
-      copy: copyText,
+      json: exportJson,
     });
     return () => registerExportActions(null);
   }, [
-    copyText,
     downloadPNG,
     exportComponent,
     exportVideo,
-    exportZip,
+    exportJson,
     registerExportActions,
   ]);
-
-  const handleExport = useCallback(() => {
-    switch (selectedFormat) {
-      case "image":
-        return downloadPNG();
-      case "video":
-        return exportVideo();
-      case "react":
-        return exportComponent();
-      case "zip":
-        return exportZip();
-    }
-  }, [selectedFormat, downloadPNG, exportVideo, exportComponent, exportZip]);
-
-  const isVideoFormat = selectedFormat === "video";
-  const isVideoDisabled =
-    !source || (source.kind !== "video" && source.kind !== "gif");
-  const isExportDisabled =
-    isExporting || !source || (isVideoFormat && isVideoDisabled);
-
-  const currentFormat =
-    EXPORT_FORMATS.find((f) => f.id === selectedFormat) ?? EXPORT_FORMATS[0];
-  const CurrentIcon = currentFormat.icon;
 
   return null;
 }
@@ -1228,15 +1169,4 @@ function loadVideo(url: string): Promise<HTMLVideoElement> {
     v.onerror = () => rej(new Error("Failed to load video"));
     v.src = url;
   });
-}
-
-function toPascalCase(value: string) {
-  const normalized = value
-    .split(/[^a-zA-Z0-9]+/)
-    .filter(Boolean)
-    .map((segment) => segment[0].toUpperCase() + segment.slice(1));
-  const joined = normalized.join("");
-  return joined && /^[A-Z]/.test(joined)
-    ? joined
-    : `Ascii${joined || "Export"}`;
 }

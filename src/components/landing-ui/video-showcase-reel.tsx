@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 
 const VIDEOS = [
@@ -80,11 +81,15 @@ export default function VideoShowcaseReel() {
               preload="metadata"
             />
           ) : (
-            <img
-              src={current.source}
-              alt="Source video"
-              className="h-full w-full object-cover"
-            />
+            <div className="relative h-full w-full">
+              <Image
+                src={current.source}
+                alt="Source video"
+                fill
+                className="object-cover"
+                unoptimized
+              />
+            </div>
           )}
           {/* Source label */}
           <div className="absolute top-2 left-2">

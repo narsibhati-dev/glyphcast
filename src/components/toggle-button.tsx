@@ -21,6 +21,7 @@ const ToggleButton = ({
       }}
     >
       <motion.div
+        initial={{ x: toggle ? "22px" : "0px" }}
         transition={{ type: "spring", stiffness: 350, damping: 30 }}
         animate={{ x: toggle ? "22px" : "0px" }}
         className="h-[18px] w-[18px] border rounded-full bg-[#F4F4F4]"

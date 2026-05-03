@@ -3,15 +3,15 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, ImageDown, Film, Code2, FileArchive, Copy } from "lucide-react";
+import { X, ImageDown, Film, Code2, FileJson } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAsciiStore } from "@/lib/store";
 import { useStudio, type ExportActionName } from "@/lib/studio-context";
-import { STUDIO_FIELD_MONO_CLASS, STUDIO_TEXT_LABEL } from "@/lib/studio-theme";
+import { STUDIO_FIELD_CLASS, STUDIO_TEXT_LABEL } from "@/lib/studio-theme";
 import { cn } from "@/lib/utils";
 
-type ModalFormat = "image" | "video" | "component" | "zip";
+type ModalFormat = "image" | "video" | "component" | "json";
 
 const MODAL_FORMATS: {
   id: ModalFormat;
@@ -38,10 +38,10 @@ const MODAL_FORMATS: {
     icon: Code2,
   },
   {
-    id: "zip",
-    label: "ZIP Archive",
-    subtitle: "All frames as plain text files",
-    icon: FileArchive,
+    id: "json",
+    label: "JSON",
+    subtitle: "All frames in one .json file",
+    icon: FileJson,
   },
 ];
 
@@ -119,14 +119,9 @@ export function ExportModal({ open, onClose }: ExportModalProps) {
       image: "image",
       video: "video",
       component: "component",
-      zip: "zip",
+      json: "json",
     };
     setTimeout(() => requestExportAction(actionMap[selectedFormat]), 150);
-  }
-
-  function handleCopy() {
-    onClose();
-    setTimeout(() => requestExportAction("copy"), 150);
   }
 
   if (typeof document === "undefined") return null;
@@ -152,7 +147,7 @@ export function ExportModal({ open, onClose }: ExportModalProps) {
             exit="exit"
             onClick={(e) => e.stopPropagation()}
             className={cn(
-              "relative w-full max-w-sm flex flex-col overflow-hidden",
+              "relative w-full max-w-md flex flex-col overflow-hidden font-satoshi",
               "rounded-2xl",
               "bg-white dark:bg-zinc-900",
               "border border-[#E5E5E5] dark:border-zinc-700",
@@ -161,7 +156,7 @@ export function ExportModal({ open, onClose }: ExportModalProps) {
           >
             {/* Header */}
             <div className="flex items-center justify-between px-5 py-4 border-b border-[#E5E5E5] dark:border-zinc-800">
-              <h2 className="font-sans text-sm font-semibold tracking-wide text-[#111] dark:text-zinc-100">
+              <h2 className="font-heading text-base font-bold tracking-tight text-[#111] dark:text-zinc-100">
                 Export
               </h2>
               <button
@@ -176,21 +171,21 @@ export function ExportModal({ open, onClose }: ExportModalProps) {
 
             {/* Body */}
             <div className="flex flex-col gap-5 px-5 py-5">
-              {/* File name */}
+              {/* Art name */}
               <div className="space-y-1.5">
                 <span
                   className={cn(
-                    "font-mono text-[9px] font-semibold uppercase tracking-widest",
+                    "text-[9px] font-semibold uppercase tracking-widest",
                     STUDIO_TEXT_LABEL,
                   )}
                 >
-                  File Name
+                  Art name
                 </span>
                 <Input
-                  placeholder="filename (optional)"
+                  placeholder="art name (optional)"
                   value={exportFilename}
                   onChange={(e) => setExportFilename(e.target.value)}
-                  className={STUDIO_FIELD_MONO_CLASS}
+                  className={cn(STUDIO_FIELD_CLASS, "rounded-[6px]")}
                 />
               </div>
 
@@ -198,7 +193,7 @@ export function ExportModal({ open, onClose }: ExportModalProps) {
               <div className="space-y-1.5">
                 <span
                   className={cn(
-                    "font-mono text-[9px] font-semibold uppercase tracking-widest",
+                    "text-[9px] font-semibold uppercase tracking-widest",
                     STUDIO_TEXT_LABEL,
                   )}
                 >
@@ -253,7 +248,7 @@ export function ExportModal({ open, onClose }: ExportModalProps) {
                         <span className="flex flex-col gap-0.5 min-w-0">
                           <span
                             className={cn(
-                              "font-sans text-xs font-semibold",
+                              "font-heading text-xs font-semibold tracking-tight",
                               selected
                                 ? "text-[#B54B00]"
                                 : "text-[#111] dark:text-zinc-100",
@@ -261,7 +256,7 @@ export function ExportModal({ open, onClose }: ExportModalProps) {
                           >
                             {label}
                           </span>
-                          <span className="font-sans text-[10px] text-[#888] dark:text-zinc-400 leading-tight">
+                          <span className="text-[10px] text-[#888] dark:text-zinc-400 leading-tight">
                             {subtitle}
                           </span>
                         </span>
@@ -273,46 +268,30 @@ export function ExportModal({ open, onClose }: ExportModalProps) {
             </div>
 
             {/* Footer */}
-            <div className="flex flex-col gap-2 px-5 pb-5">
-              {/* Copy Code */}
+            <div className="flex gap-2 px-5 pb-5">
               <Button
                 type="button"
-                variant="landing"
+                variant="outline"
                 size="sm"
-                onClick={handleCopy}
-                disabled={isExporting}
-                className="w-full h-9 rounded-full font-sans text-[11px] font-semibold tracking-wide text-[#B54B00] gap-2"
+                onClick={onClose}
+                className="flex-1 h-9 rounded-full font-satoshi text-[11px] font-semibold tracking-wide border-[#E5E5E5] dark:border-zinc-700"
               >
-                <Copy className="size-3.5" />
-                Copy Code
+                Cancel
               </Button>
-
-              {/* Cancel + Export */}
-              <div className="flex gap-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={onClose}
-                  className="flex-1 h-9 rounded-full font-sans text-[11px] font-semibold tracking-wide border-[#E5E5E5] dark:border-zinc-700"
-                >
-                  Cancel
-                </Button>
-                <Button
-                  type="button"
-                  variant="landingBlue"
-                  size="sm"
-                  onClick={handleExport}
-                  disabled={
-                    isExporting ||
-                    !source ||
-                    (selectedFormat === "video" && isVideoDisabled)
-                  }
-                  className="flex-1 h-9 rounded-full font-sans text-[11px] font-semibold tracking-wide"
-                >
-                  Export
-                </Button>
-              </div>
+              <Button
+                type="button"
+                variant="landingBlue"
+                size="sm"
+                onClick={handleExport}
+                disabled={
+                  isExporting ||
+                  !source ||
+                  (selectedFormat === "video" && isVideoDisabled)
+                }
+                className="flex-1 h-9 rounded-full font-satoshi text-[11px] font-semibold tracking-wide"
+              >
+                Export
+              </Button>
             </div>
           </motion.div>
         </motion.div>

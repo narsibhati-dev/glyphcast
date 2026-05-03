@@ -8,11 +8,6 @@ import { ASCII_CHAR_PRESETS } from "@/lib/ascii-config";
 import { MiniAsciiCanvas } from "./mini-ascii-canvas";
 import { LANDING_SAMPLES, type LandingSample } from "./samples";
 
-interface ExamplesProps {
-  onPick: (sample: LandingSample) => void;
-  activeSampleId: string;
-}
-
 const PRESET_BY_ID = new Map(ASCII_CHAR_PRESETS.map((p) => [p.id, p]));
 
 /* ── Dimensions ────────────────────────────────────────────────────────────── */
@@ -20,8 +15,8 @@ const CARD_W = 300;
 const CARD_H = 210;
 const GAP = 20;
 const STEP = CARD_W + GAP;
-const PAD = 32;           // left padding inside the stage
-const PIPE_X_PX = 340;   // pipe position in px from stage left edge
+const PAD = 32; // left padding inside the stage
+const PIPE_X_PX = 340; // pipe position in px from stage left edge
 const SCROLL_DURATION = 14; // seconds per full LANDING_SAMPLES loop
 
 /* Triple the samples so the loop has plenty of runway */
@@ -35,7 +30,8 @@ interface DeviceCardProps {
 }
 
 function DeviceCard({ sample, showOriginal }: DeviceCardProps) {
-  const preset = PRESET_BY_ID.get(sample.defaults.charset) ?? ASCII_CHAR_PRESETS[0];
+  const preset =
+    PRESET_BY_ID.get(sample.defaults.charset) ?? ASCII_CHAR_PRESETS[0];
 
   return (
     <div
@@ -47,8 +43,12 @@ function DeviceCard({ sample, showOriginal }: DeviceCardProps) {
         <span className="size-2.5 rounded-full bg-[#ff5f56]" />
         <span className="size-2.5 rounded-full bg-[#febc2e]" />
         <span className="size-2.5 rounded-full bg-[#28c840]" />
-        <span className="ml-2 font-mono text-[9px] text-zinc-500">Glyphcast</span>
-        <span className="ml-auto font-mono text-[9px] text-zinc-600">{sample.label}</span>
+        <span className="ml-2 font-mono text-[9px] text-zinc-500">
+          Glyphcast
+        </span>
+        <span className="ml-auto font-mono text-[9px] text-zinc-600">
+          {sample.label}
+        </span>
       </div>
 
       {/* Content */}
@@ -113,7 +113,7 @@ function ScrollStrip({ showOriginal, motionX }: ScrollStripProps) {
 }
 
 /* ── Scanner stage ─────────────────────────────────────────────────────────── */
-function ScannerStage({ activeSampleId }: { activeSampleId: string }) {
+function ScannerStage() {
   const x = useMotionValue(0);
 
   useEffect(() => {
@@ -202,7 +202,7 @@ function ScannerStage({ activeSampleId }: { activeSampleId: string }) {
 }
 
 /* ── Examples section ──────────────────────────────────────────────────────── */
-export function Examples({ onPick, activeSampleId }: ExamplesProps) {
+export function Examples() {
   return (
     <section id="examples" className="bg-zinc-950 py-24 lg:py-32">
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
@@ -223,7 +223,7 @@ export function Examples({ onPick, activeSampleId }: ExamplesProps) {
           </p>
         </div>
 
-        <ScannerStage activeSampleId={activeSampleId} />
+        <ScannerStage />
       </div>
     </section>
   );
