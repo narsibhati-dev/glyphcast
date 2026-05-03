@@ -100,7 +100,7 @@ const Pricing = () => {
       opacity: 1,
       scale: 1,
       filter: "blur(0px)",
-      transition: { duration: 0.28, ease: [0.22, 1, 0.36, 1] },
+      transition: { duration: 0.28, ease: [0.22, 1, 0.36, 1] as const },
     },
     exit: {
       opacity: 0,
@@ -132,7 +132,7 @@ const Pricing = () => {
       opacity: 1,
       scale: 1,
       filter: "blur(0px)",
-      transition: { duration: 0.22, ease: [0.22, 1, 0.36, 1] },
+      transition: { duration: 0.22, ease: [0.22, 1, 0.36, 1] as const },
     },
     exit: {
       opacity: 0,
@@ -191,7 +191,7 @@ const Pricing = () => {
                 borderRadius: "99px",
                 zIndex: 0,
               }}
-              transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] as const }}
               initial={false}
             />
           )}
@@ -220,7 +220,7 @@ const Pricing = () => {
                 borderRadius: "99px",
                 zIndex: 0,
               }}
-              transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: 0.38, ease: [0.22, 1, 0.36, 1] as const }}
               initial={false}
             />
           )}
@@ -285,7 +285,7 @@ const Pricing = () => {
                 animate={{ height: "auto", opacity: 1 }}
                 exit={{ height: 0, opacity: 0 }}
                 transition={{
-                  height: { duration: 0.38, ease: [0.22, 1, 0.36, 1] },
+                  height: { duration: 0.38, ease: [0.22, 1, 0.36, 1] as const },
                   opacity: { duration: 0.2, ease: "easeOut" },
                 }}
               >
@@ -361,7 +361,7 @@ const Pricing = () => {
                       transition: {
                         delay: 0.38,
                         duration: 0.18,
-                        ease: [0.22, 1, 0.36, 1],
+                        ease: [0.22, 1, 0.36, 1] as const,
                       },
                     }}
                     exit={{
