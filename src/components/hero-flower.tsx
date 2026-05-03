@@ -1,6 +1,12 @@
 "use client";
 
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import FRAMES_JSON from "@/data/ascii-frames/hero-flower-frames.json";
 
 export const FPS = 24;
@@ -33,10 +39,39 @@ export default function HeroFlower({
   const [layoutSize, setLayoutSize] = useState<{ w: number; h: number } | null>(
     null,
   );
+  const [hasMeasured, setHasMeasured] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLPreElement>(null);
   const frameIndexRef = useRef(0);
   const frames = FRAMES;
+
+  const measure = useCallback(() => {
+    const container = containerRef.current;
+    const content = contentRef.current;
+    if (!container || !content) return;
+
+    const availableWidth = container.clientWidth;
+    const availableHeight = container.clientHeight;
+    const naturalWidth = content.scrollWidth;
+    const naturalHeight = content.scrollHeight;
+
+    if (naturalWidth <= 0 || naturalHeight <= 0) return;
+    if (availableWidth <= 0) return;
+
+    const scaleW = availableWidth / naturalWidth;
+    const scaleH =
+      availableHeight > 0
+        ? availableHeight / naturalHeight
+        : Number.POSITIVE_INFINITY;
+    const newScale = Math.min(scaleW, scaleH, 1);
+
+    setScale(newScale);
+    setLayoutSize({
+      w: naturalWidth * newScale,
+      h: naturalHeight * newScale,
+    });
+    setHasMeasured((prev) => prev || true);
+  }, []);
 
   useEffect(() => {
     frameIndexRef.current = 0;
@@ -70,38 +105,38 @@ export default function HeroFlower({
   }, [frames.length]);
 
   useLayoutEffect(() => {
-    const measure = () => {
-      const container = containerRef.current;
-      const content = contentRef.current;
-      if (!container || !content) return;
-
-      const availableWidth = container.clientWidth;
-      const availableHeight = container.clientHeight;
-      const naturalWidth = content.scrollWidth;
-      const naturalHeight = content.scrollHeight;
-
-      if (naturalWidth <= 0 || naturalHeight <= 0) return;
-      if (availableWidth <= 0) return;
-
-      const scaleW = availableWidth / naturalWidth;
-      const scaleH =
-        availableHeight > 0
-          ? availableHeight / naturalHeight
-          : Number.POSITIVE_INFINITY;
-      const newScale = Math.min(scaleW, scaleH, 1);
-
-      setScale(newScale);
-      setLayoutSize({
-        w: naturalWidth * newScale,
-        h: naturalHeight * newScale,
-      });
-    };
-
     measure();
     const observer = new ResizeObserver(measure);
     if (containerRef.current) observer.observe(containerRef.current);
-    return () => observer.disconnect();
-  }, [currentFrame, frames.length]);
+
+    let cancelled = false;
+    if (typeof document !== "undefined" && document.fonts?.ready) {
+      void document.fonts.ready.then(() => {
+        if (!cancelled) measure();
+      });
+    }
+
+    let innerRaf = 0;
+    const outerRaf = requestAnimationFrame(() => {
+      if (cancelled) return;
+      measure();
+      innerRaf = requestAnimationFrame(() => {
+        if (!cancelled) measure();
+      });
+    });
+
+    return () => {
+      cancelled = true;
+      cancelAnimationFrame(outerRaf);
+      cancelAnimationFrame(innerRaf);
+      observer.disconnect();
+    };
+  }, [frames.length, measure]);
+
+  useEffect(() => {
+    const id = requestAnimationFrame(() => measure());
+    return () => cancelAnimationFrame(id);
+  }, [currentFrame, measure]);
 
   if (!frames.length) return null;
 
@@ -126,6 +161,8 @@ export default function HeroFlower({
         minHeight: 0,
         maxWidth: "100%",
         maxHeight: "100%",
+        opacity: hasMeasured ? 1 : 0,
+        transition: "opacity 0.15s ease-out",
       }}
     >
       <div
