@@ -24,55 +24,13 @@ export const CHARS = " .:-=+*#%@";
 export const FRAMES = FRAMES_JSON as string[];
 
 export default function Ascii() {
-  const [frames, setFrames] = useState<string[]>([]);
   const [currentFrame, setCurrentFrame] = useState(0);
-  const [loadError, setLoadError] = useState<string | null>(null);
   const [scale, setScale] = useState(1);
   const [contentHeight, setContentHeight] = useState<number | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLPreElement>(null);
   const frameIndexRef = useRef(0);
-
-  useEffect(() => {
-    let mounted = true;
-    fetch("./ascii-frames.json")
-      .then((r) => {
-        if (!r.ok) throw new Error(`Failed to load frames JSON (${r.status})`);
-        return r.json();
-      })
-      .then((payload: unknown) => {
-        const parsedFrames = Array.isArray(payload)
-          ? payload
-          : payload &&
-              typeof payload === "object" &&
-              Array.isArray((payload as { frames?: unknown }).frames)
-            ? (payload as { frames: unknown[] }).frames
-            : null;
-        const normalizedFrames =
-          parsedFrames?.filter((f): f is string => typeof f === "string") ?? [];
-        if (!normalizedFrames.length) {
-          throw new Error(
-            "Invalid frames JSON. Expected string[] or { frames: string[] }.",
-          );
-        }
-        if (!mounted) return;
-        setFrames(normalizedFrames);
-        setCurrentFrame(0);
-        setLoadError(null);
-      })
-      .catch((error: unknown) => {
-        if (!mounted) return;
-        const message =
-          error instanceof Error
-            ? error.message
-            : "Failed to load ASCII frames JSON.";
-        console.error(message, error);
-        setLoadError(message);
-      });
-    return () => {
-      mounted = false;
-    };
-  }, []);
+  const frames = FRAMES;
 
   useEffect(() => {
     frameIndexRef.current = 0;
@@ -134,19 +92,6 @@ export default function Ascii() {
     if (containerRef.current) observer.observe(containerRef.current);
     return () => observer.disconnect();
   }, [frames]);
-
-  if (loadError) {
-    return (
-      <div
-        style={{
-          color: APPEARANCE.textColor,
-          fontFamily: APPEARANCE.fontFamily,
-        }}
-      >
-        {loadError}
-      </div>
-    );
-  }
 
   if (!frames.length) return null;
 

@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion, type Variants } from "framer-motion";
 import { useTheme } from "@/components/theme-provider";
 import { DmOnXButton } from "@/components/landing-ui/dm-on-x-button";
+import FlowerAscii from "@/components/ascii-animations/flower";
 
 const ASCII_FREE = [
   " ░░░░░░░░░░░░░ ",
@@ -67,7 +68,7 @@ const Plans = () => {
   const DARK_CARD_LEVEL_3 = "#26262E";
   const DARK_CARD_DEEP_INSET = "#2E2E38";
 
-  const sideColumnWidthPx = 260;
+  const sideColumnWidthPx = 280;
   const [isPlansPanelHovered, setIsPlansPanelHovered] = useState(false);
   const [activeTab, setActiveTab] = useState<"basic" | "premium">("basic");
   const { theme } = useTheme();
@@ -259,16 +260,17 @@ const Plans = () => {
           }}
         />
         <div
-          className="relative z-10 grid gap-4 p-4 grid-cols-1 items-stretch md:[grid-template-columns:1fr_var(--plans-side-col)]"
+          className="relative z-10 grid grid-cols-1 items-stretch gap-4 p-4 max-[920px]:gap-3 max-[920px]:p-3 md:[grid-template-columns:1fr_var(--plans-side-col)]"
           style={
             {
               "--plans-side-col": `${sideColumnWidthPx}px`,
+              minHeight: "520px",
             } as React.CSSProperties
           }
         >
           <motion.div
             layout="position"
-            className="px-8 py-7"
+            className="px-8 py-7 max-[920px]:px-5"
             style={{
               background: cardBg,
               boxShadow:
@@ -332,47 +334,57 @@ const Plans = () => {
               </motion.div>
             </AnimatePresence>
           </motion.div>
-          <div
-            className="h-full"
-            style={{
-              background: cardBg,
-              boxShadow:
-                "0px 15px 6px rgba(0, 0, 0, 0.01), 0px 4px 4px rgba(0, 0, 0, 0.09), 0px 1px 2px rgba(0, 0, 0, 0.1)",
-              borderRadius: "16px",
-            }}
-          >
-            <div className="p-3 flex gap-3 flex-col h-full">
-              <div
-                className="h-full flex-1 border rounded-xl"
-                style={{
-                  background: innerBg,
-                  boxShadow:
-                    "0px 1px 0px rgba(255, 255, 255, 0.25), inset 0px 1px 2px rgba(0, 0, 0, 0.15)",
-                }}
-              >
-                <AnimatePresence mode="wait" initial={false}>
-                  <motion.div
-                    key={activeTab}
-                    className="h-full max-sm:min-h-[20vh]"
-                    initial={{ opacity: 0 }}
-                    animate={{
-                      opacity: 1,
-                      transition: {
-                        delay: 0.38,
-                        duration: 0.18,
-                        ease: [0.22, 1, 0.36, 1] as const,
-                      },
-                    }}
-                    exit={{
-                      opacity: 0,
-                      transition: { duration: 0.05, ease: "linear" },
-                    }}
-                  >
-                    <AsciiVisual tier={activeTab} />
-                  </motion.div>
-                </AnimatePresence>
+          <div className="relative self-stretch min-h-0">
+            <div
+              className="absolute inset-0"
+              style={{
+                background: cardBg,
+                boxShadow:
+                  "0px 15px 6px rgba(0, 0, 0, 0.01), 0px 4px 4px rgba(0, 0, 0, 0.09), 0px 1px 2px rgba(0, 0, 0, 0.1)",
+                borderRadius: "16px",
+              }}
+            >
+              <div className="flex h-full min-h-0 flex-col gap-3 overflow-hidden p-3 max-[920px]:p-2">
+                <div
+                  className="h-full min-h-0 flex-1 border rounded-xl overflow-hidden"
+                  style={{
+                    background: innerBg,
+                    boxShadow:
+                      "0px 1px 0px rgba(255, 255, 255, 0.25), inset 0px 1px 2px rgba(0, 0, 0, 0.15)",
+                  }}
+                >
+                  <AnimatePresence mode="wait" initial={false}>
+                    <motion.div
+                      key={activeTab}
+                      className="h-full max-sm:min-h-[20vh]"
+                      initial={{ opacity: 0 }}
+                      animate={{
+                        opacity: 1,
+                        transition: {
+                          delay: 0.38,
+                          duration: 0.18,
+                          ease: [0.22, 1, 0.36, 1] as const,
+                        },
+                      }}
+                      exit={{
+                        opacity: 0,
+                        transition: { duration: 0.05, ease: "linear" },
+                      }}
+                    >
+                      {activeTab === "premium" ? (
+                        <div className="flex h-full min-h-0 w-full items-center justify-center overflow-hidden rounded-xl bg-[#0B0B0D]">
+                          <div className="h-full min-h-0 w-full">
+                            <FlowerAscii />
+                          </div>
+                        </div>
+                      ) : (
+                        <AsciiVisual tier={activeTab} />
+                      )}
+                    </motion.div>
+                  </AnimatePresence>
+                </div>
+                <DmOnXButton className="w-full shrink-0 rounded-xl max-[920px]:px-4 max-[920px]:py-3" />
               </div>
-              <DmOnXButton className="w-full rounded-xl" />
             </div>
           </div>
         </div>
