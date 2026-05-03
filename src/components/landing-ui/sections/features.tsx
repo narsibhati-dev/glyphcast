@@ -40,10 +40,10 @@ export default function Features() {
       >
         <motion.div
           variants={itemVariants}
-          className="flex justify-center items-center gap-2 text-xs border-2 border-blue-light-active px-3 py-1.5 rounded-full mb-6"
+          className="mb-6 flex items-center justify-center gap-2 rounded-full border-2 border-blue-light-active bg-blue-light px-3 py-1.5 text-xs dark:border-[#FFB07A]/50 dark:bg-zinc-950/95 dark:shadow-[inset_0_0_0_1px_rgba(255,176,122,0.12)]"
         >
           <motion.span
-            className="inline-flex text-[#B54B00]"
+            className="inline-flex text-[#B54B00] dark:text-[#FFB07A]"
             animate={{ y: [0, -3, 0], opacity: [0.7, 1, 0.7] }}
             transition={{
               duration: 2.6,
@@ -54,12 +54,14 @@ export default function Features() {
           >
             <Sparkles size={16} />
           </motion.span>
-          <span className="font-medium text-[#111111]">Core Capabilities</span>
+          <span className="font-medium text-[#111111] dark:text-zinc-100">
+            Core Capabilities
+          </span>
         </motion.div>
 
         <motion.h2
           variants={itemVariants}
-          className="text-3xl sm:text-4xl md:text-5xl font-medium mb-12"
+          className="mb-12 text-3xl font-medium sm:text-4xl md:text-5xl dark:text-zinc-50"
         >
           Everything you need to <br />
           <span
