@@ -2,6 +2,7 @@
 
 import Navbar from "@/components/landing-ui/navbar";
 import Bento from "@/components/landing-ui/sections/bento";
+import Features from "@/components/landing-ui/sections/features";
 import Faq from "@/components/landing-ui/sections/faq";
 import Footer from "@/components/landing-ui/sections/footer";
 import HeroSection from "@/components/landing-ui/sections/herosection";
@@ -18,6 +19,7 @@ export function LandingShell() {
             <HeroSection />
           </div>
           <Bento />
+          <Features />
           <Pricing />
           <Faq />
           <Footer />

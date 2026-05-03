@@ -53,6 +53,8 @@ const bentoStagger = {
 };
 
 const Bento = () => {
+  return null;
+  /*
   return (
     <div className="flex flex-col text-center justify-center items-center">
       <motion.header
@@ -256,6 +258,7 @@ const Bento = () => {
       </motion.div>
     </div>
   );
+  */
 };
 
 export default Bento;
