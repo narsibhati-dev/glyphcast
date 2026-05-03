@@ -1,11 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { Copy, Check } from "lucide-react";
 import Navbar from "@/components/landing-ui/navbar";
 import ASCIIAnimation from "@/components/ascii-animation";
-import { buildASCIIAnimationReactComponentSource } from "@/lib/ascii-export";
-import { Button } from "@/components/ui/button";
 import { useTheme } from "@/components/theme-provider";
 import { ThemeDockButton } from "@/components/theme-dock-button";
 import {
@@ -29,21 +25,6 @@ function ShowcaseCard({
   config: ShowcaseConfig;
   isDark: boolean;
 }) {
-  const [copied, setCopied] = useState(false);
-
-  const handleCopy = async () => {
-    const source = buildASCIIAnimationReactComponentSource({
-      appearance: config.appearance,
-      componentName: config.componentName,
-      fps: config.fps,
-      frames: config.frames,
-      chars: config.chars,
-    });
-    await navigator.clipboard.writeText(source);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
   return (
     <div
       className="group relative flex h-full flex-col overflow-hidden rounded-[20px] border transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0px_16px_48px_rgba(0,0,0,0.10)]"
@@ -72,7 +53,7 @@ function ShowcaseCard({
         />
       ) : null}
 
-      {/* Animation — inset gray panel */}
+      {/* Animation — inset panel; title + description overlaid bottom-left */}
       <div
         className="relative z-10 m-3 flex h-[320px] items-center justify-center overflow-hidden rounded-xl border"
         style={{
@@ -89,38 +70,14 @@ function ShowcaseCard({
           fitToContainer
           className="h-full w-full"
         />
-      </div>
-
-      {/* Footer row */}
-      <div className="relative z-10 mt-auto flex items-end justify-between gap-4 px-5 pb-5 pt-3">
-        <div className="min-w-0">
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 bg-linear-to-t from-black/80 via-black/45 to-transparent px-4 pb-4 pt-12">
           <p
-            className="text-base font-semibold leading-tight tracking-tight sm:text-lg"
-            style={{ color: isDark ? "#F5F5F7" : "#111111" }}
-          >
-            {config.title}
-          </p>
-          <p
-            className="h-11 overflow-hidden pt-1 text-sm leading-[1.45] sm:text-[15px]"
-            style={{ color: isDark ? "#C9C9D5" : "#6A6A72" }}
+            className="line-clamp-3 text-left text-sm font-light leading-[1.45] sm:text-[15px]"
+            style={{ color: "#D9DAE3" }}
           >
             {config.description}
           </p>
         </div>
-
-        <Button
-          variant="landing"
-          size="sm"
-          onClick={handleCopy}
-          className="shrink-0 gap-2 px-5 text-sm font-medium"
-        >
-          {copied ? (
-            <Check className="size-3.5 shrink-0 text-emerald-500" />
-          ) : (
-            <Copy className="size-3.5 shrink-0" />
-          )}
-          {copied ? "Copied!" : "Copy"}
-        </Button>
       </div>
     </div>
   );
