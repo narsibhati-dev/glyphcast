@@ -62,14 +62,14 @@ const AsciiVisual = ({ tier }: { tier: "basic" | "premium" }) => {
   );
 };
 
-const Pricing = () => {
+const Plans = () => {
   const DARK_CARD_BASE = "#151518";
   const DARK_CARD_LEVEL_2 = "#222228";
   const DARK_CARD_LEVEL_3 = "#26262E";
   const DARK_CARD_DEEP_INSET = "#2E2E38";
 
   const sideColumnWidthPx = 260;
-  const [isPricingPanelHovered, setIsPricingPanelHovered] = useState(false);
+  const [isPlansPanelHovered, setIsPlansPanelHovered] = useState(false);
   const [activeTab, setActiveTab] = useState<"basic" | "premium">("basic");
   const { theme } = useTheme();
   const isDark = theme === "dark";
@@ -163,7 +163,7 @@ const Pricing = () => {
 
   return (
     <div
-      id="pricing"
+      id="plans"
       className="flex flex-col justify-center items-center scroll-mt-32"
     >
       <div
@@ -182,7 +182,7 @@ const Pricing = () => {
         >
           {activeTab === "basic" && (
             <motion.div
-              layoutId="pricing-tab-pill"
+              layoutId="plans-tab-pill"
               className="absolute inset-0"
               style={{
                 background: "#F5F5F5",
@@ -211,7 +211,7 @@ const Pricing = () => {
         >
           {activeTab === "premium" && (
             <motion.div
-              layoutId="pricing-tab-pill"
+              layoutId="plans-tab-pill"
               className="absolute inset-0"
               style={{
                 background: "#F5F5F5",
@@ -236,8 +236,8 @@ const Pricing = () => {
       </div>
       <div
         className="landing-content-width border mt-10 relative overflow-hidden"
-        onMouseEnter={() => setIsPricingPanelHovered(true)}
-        onMouseLeave={() => setIsPricingPanelHovered(false)}
+        onMouseEnter={() => setIsPlansPanelHovered(true)}
+        onMouseLeave={() => setIsPlansPanelHovered(false)}
         style={{
           background: outerBg,
           boxShadow:
@@ -253,17 +253,17 @@ const Pricing = () => {
           muted
           playsInline
           style={{
-            opacity: isPricingPanelHovered ? 1 : 0,
+            opacity: isPlansPanelHovered ? 1 : 0,
             height: "100%",
             width: "105%",
             objectFit: "cover",
           }}
         />
         <div
-          className="relative z-10 grid gap-4 p-4 grid-cols-1 items-stretch md:[grid-template-columns:1fr_var(--pricing-side-col)]"
+          className="relative z-10 grid gap-4 p-4 grid-cols-1 items-stretch md:[grid-template-columns:1fr_var(--plans-side-col)]"
           style={
             {
-              "--pricing-side-col": `${sideColumnWidthPx}px`,
+              "--plans-side-col": `${sideColumnWidthPx}px`,
             } as React.CSSProperties
           }
         >
@@ -382,4 +382,4 @@ const Pricing = () => {
   );
 };
 
-export default Pricing;
+export default Plans;

@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 
 const NAV_LINKS = [
   { href: "/showcase", label: "Showcase" },
-  { href: "/#pricing", label: "Pricing" },
+  { href: "/#plans", label: "Plans" },
 ] as const;
 
 const Navbar = () => {
@@ -51,18 +51,19 @@ const Navbar = () => {
     : "border-transparent bg-transparent shadow-none backdrop-blur-none";
 
   return (
-    <div className="landing-navbar-scroll fixed top-5 z-50 px-1 sm:px-0">
+    <div className="landing-navbar-scroll fixed top-5 z-50 box-border max-w-full min-w-0 px-2 sm:px-0">
       <nav
         aria-label="Main"
         className={cn(
-          "flex items-center justify-between gap-3 rounded-full border px-2 py-2 pl-3 transition-[background,border-color,box-shadow,backdrop-filter] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] sm:px-3 sm:pl-4",
+          "grid w-full min-w-0 max-w-full grid-cols-[minmax(0,1fr)_auto] items-center gap-x-2 gap-y-2 rounded-full border px-2 py-2 transition-[background,border-color,box-shadow,backdrop-filter] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] sm:gap-x-3 sm:px-3 md:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] md:px-4",
           barSurface,
         )}
       >
-        <div className="flex min-w-0 shrink-0 items-center">
+        {/* Brand — column 1 */}
+        <div className="col-start-1 flex min-w-0 justify-self-start">
           <Link
             href="/"
-            className="flex items-center gap-2.5 rounded-full py-1 pr-2 transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#B54B00]"
+            className="flex min-w-0 max-w-full items-center gap-2 rounded-full py-1 pr-1 transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#B54B00] sm:gap-2.5 sm:pr-2"
           >
             <Image
               src={siteConfig.logoPath}
@@ -71,19 +72,19 @@ const Navbar = () => {
               height={48}
               priority
               unoptimized
-              className="size-9 shrink-0 rounded-[11px] object-contain lg:size-11"
+              className="size-8 shrink-0 rounded-[10px] object-contain sm:size-9 sm:rounded-[11px] lg:size-11"
             />
-            <span className="[font-family:var(--font-ascii-brand)] text-[15px] font-medium tracking-wide text-[#111] dark:text-zinc-100 lg:text-lg">
+            <span className="[font-family:var(--font-ascii-brand)] truncate text-[14px] font-medium tracking-wide text-[#111] dark:text-zinc-100 sm:text-[15px] lg:text-lg">
               {siteConfig.productName}
             </span>
           </Link>
         </div>
 
-        {/* Center nav — desktop */}
-        <div className="hidden min-w-0 flex-1 justify-center px-2 lg:flex">
+        {/* Center nav — column 2 on md+ (hidden on small screens without breaking grid) */}
+        <div className="col-start-2 hidden justify-self-center px-0.5 sm:px-1 md:block md:row-start-1">
           <div
             className={cn(
-              "flex items-center rounded-full p-1 ring-1 transition-colors duration-300",
+              "flex max-w-full items-center rounded-full p-1 ring-1 transition-colors duration-300",
               scrolled
                 ? isDark
                   ? "bg-white/6 ring-white/10"
@@ -97,7 +98,7 @@ const Navbar = () => {
               <Link
                 key={href}
                 href={href}
-                className="rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition-colors hover:bg-black/6 hover:text-foreground dark:text-[#B9BAC6] dark:hover:bg-white/10 dark:hover:text-[#F2F2F7]"
+                className="shrink-0 rounded-full px-2.5 py-2 text-[13px] font-medium text-muted-foreground transition-colors hover:bg-black/6 hover:text-foreground sm:px-3 sm:text-sm dark:text-[#B9BAC6] dark:hover:bg-white/10 dark:hover:text-[#F2F2F7] lg:px-4"
               >
                 {label}
               </Link>
@@ -105,36 +106,39 @@ const Navbar = () => {
           </div>
         </div>
 
-        {/* Actions */}
-        <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
-          <div className="hidden items-center gap-2 lg:flex">
-            <div className="relative group/repo flex items-center justify-center">
-              <div className="relative transition-transform duration-200 group-hover/repo:-translate-y-0.5">
+        {/* Actions — column 2 on mobile, column 3 on md+ */}
+        <div className="col-start-2 flex min-w-0 justify-end justify-self-end md:col-start-3">
+          <div className="hidden min-w-0 items-center gap-1.5 lg:flex xl:gap-2">
+            <div className="relative min-w-0 group/repo flex items-center justify-center">
+              <div className="relative min-w-0 transition-transform duration-200 group-hover/repo:-translate-y-0.5">
                 <Link
                   href={siteConfig.githubUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="relative z-10 block w-fit"
+                  className="relative block min-w-0 max-w-full"
                 >
                   <Button
-                    className="min-w-48 justify-center transition-all duration-200 hover:shadow-[0_10px_22px_rgba(181,75,0,0.2)]"
+                    className="max-w-full justify-center px-3 py-2.5 text-[13px] transition-all duration-200 hover:shadow-[0_10px_22px_rgba(181,75,0,0.2)] xl:px-5.5 xl:py-3.5 xl:text-sm"
                     variant="landing"
                     size="landing"
                   >
-                    Give us a star
+                    {siteConfig.githubStarCtaLabel}
                   </Button>
                 </Link>
-                <span className="pointer-events-none absolute -inset-1 rounded-[999px] border border-[#B54B00]/35 opacity-0 group-hover/repo:opacity-100 transition-opacity duration-200" />
+                <span className="pointer-events-none absolute -inset-1 rounded-[999px] border border-[#B54B00]/35 opacity-0 transition-opacity duration-200 group-hover/repo:opacity-100" />
               </div>
             </div>
-            <Link href={siteConfig.studioPath} className="shrink-0">
+            <Link
+              href={siteConfig.studioPath}
+              className="min-w-0 max-w-[min(100%,11rem)] xl:max-w-none"
+            >
               <Button
-                className="group min-w-48 justify-center relative overflow-hidden transition-[padding] duration-200 hover:pr-10"
+                className="group max-w-full justify-center px-3 py-2.5 text-[13px] relative overflow-hidden transition-[padding] duration-200 hover:pr-9 xl:px-5.5 xl:py-3.5 xl:text-sm xl:hover:pr-10"
                 variant="landingBlue"
                 size="landing"
               >
                 Open studio
-                <ChevronRight className="w-4 absolute right-4 -translate-x-5 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-200" />
+                <ChevronRight className="w-4 absolute right-3 -translate-x-4 opacity-0 transition-all duration-200 group-hover:translate-x-0 group-hover:opacity-100 xl:right-4 xl:-translate-x-5" />
               </Button>
             </Link>
           </div>
@@ -142,7 +146,7 @@ const Navbar = () => {
           <button
             type="button"
             className={cn(
-              "flex size-10 items-center justify-center rounded-full transition-colors lg:hidden",
+              "flex size-9 shrink-0 items-center justify-center rounded-full transition-colors sm:size-10 lg:hidden",
               isDark ? "hover:bg-white/10" : "hover:bg-black/6",
             )}
             onClick={() => setMobileMenuOpen((o) => !o)}
@@ -163,7 +167,7 @@ const Navbar = () => {
         <div
           id="landing-mobile-nav"
           className={cn(
-            "lg:hidden mt-3 overflow-hidden rounded-2xl border shadow-[0_16px_48px_rgba(0,0,0,0.15)] duration-200 motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-top-2",
+            "mt-3 max-h-[min(70dvh,calc(100dvh-5.5rem))] overflow-y-auto overscroll-contain rounded-2xl border shadow-[0_16px_48px_rgba(0,0,0,0.15)] duration-200 motion-safe:animate-in motion-safe:fade-in motion-safe:slide-in-from-top-2 lg:hidden",
             isDark
               ? "border-[#36363F] bg-[#1C1C22]/96 backdrop-blur-xl"
               : "border-black/8 bg-white/96 backdrop-blur-xl",
@@ -209,7 +213,7 @@ const Navbar = () => {
                     variant="landing"
                     size="landing"
                   >
-                    Give us a star
+                    {siteConfig.githubStarCtaLabel}
                   </Button>
                 </Link>
                 <span className="pointer-events-none absolute -inset-1 rounded-[999px] border border-[#B54B00]/35 opacity-0 group-hover/repo:opacity-100 transition-opacity duration-200" />

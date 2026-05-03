@@ -115,7 +115,7 @@ function useDefaultSample() {
       setPlaying(true);
     };
     video.addEventListener("loadedmetadata", onLoadedMetadata);
-    video.src = "/portal-marquee-video/below-video/fire.mp4";
+    video.src = "/media/landing-reel/original/fire.mp4";
     video.load();
     return () => {
       cancelled = true;

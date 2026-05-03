@@ -12,6 +12,8 @@ export const siteConfig = {
   studioPath: "/studio",
   githubRepo: repo,
   githubUrl: `https://github.com/${repo}`,
+  /** Primary GitHub CTA label (nav, hero, footer). */
+  githubStarCtaLabel: "Star on GitHub" as const,
   githubApiStarsUrl: `https://api.github.com/repos/${repo}`,
   xUrl: "https://x.com/marsihq" as const,
   xHandle: "@marsihq" as const,

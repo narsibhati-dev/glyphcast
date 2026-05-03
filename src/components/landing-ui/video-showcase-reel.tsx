@@ -5,23 +5,23 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const VIDEOS = [
   {
-    ascii: "/portal-marquee-video/fire-ascii.mp4",
-    source: "/portal-marquee-video/below-video/fire.mp4",
+    ascii: "/media/landing-reel/rendered/fire.mp4",
+    source: "/media/landing-reel/original/fire.mp4",
     label: "Fire",
   },
   {
-    ascii: "/portal-marquee-video/skull-ascii.mp4",
-    source: "/portal-marquee-video/below-video/skull.gif",
+    ascii: "/media/landing-reel/rendered/skull.mp4",
+    source: "/media/landing-reel/original/skull.gif",
     label: "Skull",
   },
   {
-    ascii: "/portal-marquee-video/car-drifting-ascii.mp4",
-    source: "/portal-marquee-video/below-video/car.gif",
+    ascii: "/media/landing-reel/rendered/car.mp4",
+    source: "/media/landing-reel/original/car.gif",
     label: "Car Drift",
   },
   {
-    ascii: "/portal-marquee-video/stroke-ascii.mp4",
-    source: "/portal-marquee-video/below-video/stroke.gif",
+    ascii: "/media/landing-reel/rendered/stroke.mp4",
+    source: "/media/landing-reel/original/stroke.gif",
     label: "Stroke",
   },
 ];

@@ -28,8 +28,6 @@ type ASCIIComponentExportParams = {
   fps: number;
   frames: string[];
   chars: string;
-  sourceWidth: number;
-  sourceHeight: number;
 };
 
 type ASCIIRenderMetrics = {
@@ -183,17 +181,24 @@ export function exportASCIIAnimationAsReactComponent({
 
   const stem = sanitizeFileStem(fileName);
   const componentName = toPascalCase(stem);
+  const precroppedFrames = cropFrames(frames);
   const source = buildASCIIAnimationReactComponentSource({
     appearance: { ...appearance, showFrameCounter: false },
     componentName,
     fps,
-    frames: cropFrames(frames),
     chars,
-    sourceWidth,
-    sourceHeight,
   });
+  const framesJson = JSON.stringify(precroppedFrames);
 
-  downloadTextFile(source, `${stem}.tsx`);
+  const zipFiles: Record<string, Uint8Array> = {
+    [`${stem}.tsx`]: strToU8(source),
+    [`${stem}-frames.json`]: strToU8(framesJson),
+  };
+  const zip = zipSync(zipFiles);
+  downloadBlob(
+    new Blob([zip.buffer as ArrayBuffer], { type: "application/zip" }),
+    `${stem}.zip`,
+  );
 }
 
 export async function exportASCIIAsImage({
@@ -279,35 +284,26 @@ export function buildASCIIAnimationReactComponentSource({
   appearance,
   componentName,
   fps,
-  frames,
   chars,
-  sourceWidth,
-  sourceHeight,
 }: {
   appearance: ASCIIAppearance;
   componentName: string;
   fps: number;
-  frames: string[];
   chars: string;
-  sourceWidth?: number;
-  sourceHeight?: number;
 }) {
-  const aspectRatio =
-    sourceWidth && sourceHeight ? sourceWidth / sourceHeight : null;
-  const framesJson = JSON.stringify(frames, null, "\t");
   const appearanceJson = JSON.stringify(appearance, null, "\t");
 
   return [
     '"use client";',
     "",
-    'import React, { useEffect, useRef, useState } from "react";',
+    'import React, { useEffect, useLayoutEffect, useRef, useState } from "react";',
     "",
     `export const FPS = ${fps};`,
-    `export const FRAMES = ${framesJson};`,
     `export const APPEARANCE = ${appearanceJson};`,
     `export const CHARS = ${JSON.stringify(chars)};`,
     "",
     `export default function ${componentName}() {`,
+    "\tconst [frames, setFrames] = useState<string[]>([]);",
     "\tconst [currentFrame, setCurrentFrame] = useState(0);",
     "\tconst [scale, setScale] = useState(1);",
     "\tconst [contentHeight, setContentHeight] = useState<number | null>(null);",
@@ -315,6 +311,13 @@ export function buildASCIIAnimationReactComponentSource({
     "\tconst contentRef = useRef<HTMLPreElement>(null);",
     "",
     "\tuseEffect(() => {",
+    `\t\tfetch("./${componentName}-frames.json")`,
+    "\t\t\t.then((r) => r.json())",
+    "\t\t\t.then(setFrames);",
+    "\t}, []);",
+    "",
+    "\tuseEffect(() => {",
+    "\t\tif (frames.length <= 1) return;",
     "\t\tlet animationId: number;",
     "\t\tlet lastTime = 0;",
     "\t\tconst frameDuration = 1000 / FPS;",
@@ -324,7 +327,7 @@ export function buildASCIIAnimationReactComponentSource({
     "\t\t\tconst delta = time - lastTime;",
     "",
     "\t\t\tif (delta >= frameDuration) {",
-    "\t\t\t\tsetCurrentFrame((current: number) => (current + 1) % FRAMES.length);",
+    "\t\t\t\tsetCurrentFrame((current: number) => (current + 1) % frames.length);",
     "\t\t\t\tlastTime = time - (delta % frameDuration);",
     "\t\t\t}",
     "",
@@ -333,9 +336,9 @@ export function buildASCIIAnimationReactComponentSource({
     "",
     "\t\tanimationId = requestAnimationFrame(animate);",
     "\t\treturn () => cancelAnimationFrame(animationId);",
-    "\t}, []);",
+    "\t}, [frames.length]);",
     "",
-    "\tuseEffect(() => {",
+    "\tuseLayoutEffect(() => {",
     "\t\tconst measure = () => {",
     "\t\t\tconst container = containerRef.current;",
     "\t\t\tconst content = contentRef.current;",
@@ -359,10 +362,13 @@ export function buildASCIIAnimationReactComponentSource({
     "\t\tconst observer = new ResizeObserver(measure);",
     "\t\tif (containerRef.current) observer.observe(containerRef.current);",
     "\t\treturn () => observer.disconnect();",
-    "\t}, []);",
+    "\t}, [frames]);",
+    "",
+    "\tif (!frames.length) return null;",
     "",
     "\tconst effect = APPEARANCE.textEffect;",
     '\tconst needsStyles = effect !== "none";',
+    "\tconst text = frames[currentFrame];",
     "",
     "\treturn (",
     "\t\t<div",
@@ -377,9 +383,6 @@ export function buildASCIIAnimationReactComponentSource({
     '\t\t\t\toverflow: "hidden",',
     '\t\t\t\tposition: "relative",',
     '\t\t\t\twidth: "100%",',
-    ...(aspectRatio !== null
-      ? [`\t\t\t\taspectRatio: "${aspectRatio.toFixed(6)}",`]
-      : []),
     "\t\t\t\t...(contentHeight !== null ? { height: `${contentHeight}px` } : {}),",
     "\t\t\t}}",
     "\t\t>",
@@ -395,10 +398,10 @@ export function buildASCIIAnimationReactComponentSource({
     "\t\t\t\t` }} />",
     "\t\t\t)}",
     "",
-    '\t\t\t<div style={{ transform: `scale(${scale})`, transformOrigin: "left top" }}>',
+    '\t\t\t<div style={{ transform: `scale(${scale})`, transformOrigin: "top left" }}>',
     "\t\t\t\t{APPEARANCE.showFrameCounter && (",
     '\t\t\t\t\t<div style={{ opacity: 0.5, fontSize: "10px", marginBottom: "8px" }}>',
-    "\t\t\t\t\t\tFrame: {currentFrame + 1}/{FRAMES.length}",
+    "\t\t\t\t\t\tFrame: {currentFrame + 1}/{frames.length}",
     "\t\t\t\t\t</div>",
     "\t\t\t\t)}",
     "\t\t\t\t<pre",
@@ -424,7 +427,6 @@ export function buildASCIIAnimationReactComponentSource({
     "\t\t\t\t\t}}",
     "\t\t\t\t>",
     "\t\t\t\t\t{(() => {",
-    "\t\t\t\t\t\tconst text = FRAMES[currentFrame];",
     "\t\t\t\t\t\tconst threshold = APPEARANCE.textEffectThreshold;",
     "",
     '\t\t\t\t\t\tif (!text || effect === "none" || threshold <= 0 || !CHARS) {',

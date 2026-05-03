@@ -100,7 +100,10 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="min-h-full font-sans antialiased">
+      <body
+        className="min-h-full font-sans antialiased"
+        suppressHydrationWarning
+      >
         <ThemeProvider
           attribute="class"
           defaultTheme="light"

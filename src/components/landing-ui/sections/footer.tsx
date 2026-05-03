@@ -40,22 +40,14 @@ const Footer = () => {
               {siteConfig.productName}
             </span>
           </Link>
-          <div className="flex items-center gap-6 text-sm text-[#999] dark:text-[#B8B8C2]">
-            <Link
-              href="/#pricing"
-              className="hover:text-[#111] dark:hover:text-zinc-100 transition-colors"
-            >
-              Pricing
-            </Link>
-            <Link
-              href={siteConfig.githubUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hover:text-[#111] dark:hover:text-zinc-100 transition-colors"
-            >
-              GitHub
-            </Link>
-          </div>
+          <Link
+            href={siteConfig.githubUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm text-[#999] hover:text-[#111] dark:text-[#B8B8C2] dark:hover:text-zinc-100 transition-colors"
+          >
+            GitHub
+          </Link>
         </div>
 
         {/* Inset gray card: CTA + divider + wordmark + copyright */}
@@ -101,7 +93,7 @@ const Footer = () => {
                       variant="landing"
                       size="landing"
                     >
-                      Give us a star
+                      {siteConfig.githubStarCtaLabel}
                     </Button>
                   </Link>
                   <span className="pointer-events-none absolute -inset-1 rounded-[999px] border border-[#B54B00]/35 opacity-0 transition-opacity duration-200 group-hover/repo:opacity-100" />

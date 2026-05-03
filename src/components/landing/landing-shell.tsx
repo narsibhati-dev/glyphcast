@@ -5,7 +5,7 @@ import Features from "@/components/landing-ui/sections/features";
 import Faq from "@/components/landing-ui/sections/faq";
 import Footer from "@/components/landing-ui/sections/footer";
 import HeroSection from "@/components/landing-ui/sections/herosection";
-import Pricing from "@/components/landing-ui/sections/pricing";
+import Plans from "@/components/landing-ui/sections/plans";
 import { ThemeDockButton } from "@/components/theme-dock-button";
 
 export function LandingShell() {
@@ -18,7 +18,7 @@ export function LandingShell() {
             <HeroSection />
           </div>
           <Features />
-          <Pricing />
+          <Plans />
           <Faq />
           <Footer />
         </div>
