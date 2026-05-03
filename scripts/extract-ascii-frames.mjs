@@ -43,7 +43,7 @@ function extractFramesArrayLiteral(content) {
 }
 
 const root = path.join(import.meta.dirname, "..");
-const componentsDir = path.join(root, "src/components/ascii-components");
+const componentsDir = path.join(root, "src/components/ascii-animations");
 const outDir = path.join(root, "src/data/ascii-frames");
 fs.mkdirSync(outDir, { recursive: true });
 

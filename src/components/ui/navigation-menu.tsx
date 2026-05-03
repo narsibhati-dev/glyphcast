@@ -10,7 +10,10 @@ const NavigationMenu = React.forwardRef<
 >(({ className, children, ...props }, ref) => (
   <nav
     ref={ref}
-    className={cn("relative z-10 flex max-w-max flex-1 items-center justify-center", className)}
+    className={cn(
+      "relative z-10 flex max-w-max flex-1 items-center justify-center",
+      className,
+    )}
     {...props}
   >
     {children}
@@ -24,7 +27,10 @@ const NavigationMenuList = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <ul
     ref={ref}
-    className={cn("group flex flex-1 list-none items-center justify-center gap-1", className)}
+    className={cn(
+      "group flex flex-1 list-none items-center justify-center gap-1",
+      className,
+    )}
     {...props}
   />
 ));
@@ -42,23 +48,29 @@ interface NavigationMenuLinkProps extends React.ComponentPropsWithoutRef<"a"> {
   asChild?: boolean;
 }
 
-const NavigationMenuLink = React.forwardRef<HTMLAnchorElement, NavigationMenuLinkProps>(
-  ({ className, asChild, children, ...props }, ref) => {
-    const Comp = asChild ? Slot.Root : "a";
-    return (
-      <Comp
-        ref={ref as React.Ref<HTMLAnchorElement>}
-        className={cn(
-          "block select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
-          className,
-        )}
-        {...props}
-      >
-        {children}
-      </Comp>
-    );
-  },
-);
+const NavigationMenuLink = React.forwardRef<
+  HTMLAnchorElement,
+  NavigationMenuLinkProps
+>(({ className, asChild, children, ...props }, ref) => {
+  const Comp = asChild ? Slot.Root : "a";
+  return (
+    <Comp
+      ref={ref as React.Ref<HTMLAnchorElement>}
+      className={cn(
+        "block select-none rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+        className,
+      )}
+      {...props}
+    >
+      {children}
+    </Comp>
+  );
+});
 NavigationMenuLink.displayName = "NavigationMenuLink";
 
-export { NavigationMenu, NavigationMenuList, NavigationMenuItem, NavigationMenuLink };
+export {
+  NavigationMenu,
+  NavigationMenuList,
+  NavigationMenuItem,
+  NavigationMenuLink,
+};

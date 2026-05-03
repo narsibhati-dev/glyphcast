@@ -22,7 +22,8 @@ export async function GET(request: NextRequest) {
       html: string;
     };
 
-    const handle = (data.author_url ?? "").split("/").filter(Boolean).pop() ?? "";
+    const handle =
+      (data.author_url ?? "").split("/").filter(Boolean).pop() ?? "";
 
     const textMatch = data.html.match(/<p[^>]*>([\s\S]*?)<\/p>/);
     const rawText = textMatch ? textMatch[1] : "";
@@ -45,6 +46,9 @@ export async function GET(request: NextRequest) {
       tweetUrl,
     });
   } catch {
-    return NextResponse.json({ error: "Failed to fetch tweet" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to fetch tweet" },
+      { status: 500 },
+    );
   }
 }

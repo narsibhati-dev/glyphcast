@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "generate:ascii-index": "node scripts/generate-ascii-index.mjs",
     "format": "prettier --write .",
     "prepare": "husky"
   },

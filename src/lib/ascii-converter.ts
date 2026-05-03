@@ -44,7 +44,10 @@ export type ConvertibleSource =
 let scratchCanvas: HTMLCanvasElement | null = null;
 let scratchCtx: CanvasRenderingContext2D | null = null;
 
-function getScratchContext(width: number, height: number): {
+function getScratchContext(
+  width: number,
+  height: number,
+): {
   canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
 } {

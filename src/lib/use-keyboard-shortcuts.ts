@@ -15,11 +15,7 @@ export function useKeyboardShortcuts() {
       const target = e.target as HTMLElement | null;
       if (target) {
         const tag = target.tagName;
-        if (
-          tag === "INPUT" ||
-          tag === "TEXTAREA" ||
-          target.isContentEditable
-        ) {
+        if (tag === "INPUT" || tag === "TEXTAREA" || target.isContentEditable) {
           return;
         }
       }

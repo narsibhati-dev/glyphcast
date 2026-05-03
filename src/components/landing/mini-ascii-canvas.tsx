@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  useDeferredValue,
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import { useDeferredValue, useEffect, useRef, useState } from "react";
 import { imageToAscii, type ImageToAsciiResult } from "@/lib/ascii-converter";
 import {
   DEFAULT_ASCII_APPEARANCE,
@@ -215,7 +210,7 @@ function paint({
       if (ch === " ") continue;
       const fill =
         useColors && result.colors
-          ? result.colors[y]?.[x] ?? appearance.textColor
+          ? (result.colors[y]?.[x] ?? appearance.textColor)
           : appearance.textColor;
       ctx.fillStyle = fill;
       ctx.fillText(ch, x * cellWidth, yPx);

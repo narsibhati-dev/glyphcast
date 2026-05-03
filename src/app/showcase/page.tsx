@@ -7,7 +7,7 @@ import { ThemeDockButton } from "@/components/theme-dock-button";
 import {
   ASCII_SHOWCASE,
   type ASCIIShowcaseEntry,
-} from "@/components/ascii-components";
+} from "@/components/ascii-animations";
 type ShowcaseConfig = ASCIIShowcaseEntry;
 const SHOWCASES: ShowcaseConfig[] = ASCII_SHOWCASE;
 const DARK_CARD_BASE = "#151518";
@@ -70,7 +70,7 @@ function ShowcaseCard({
           fitToContainer
           className="h-full w-full"
         />
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 bg-linear-to-t from-black/80 via-black/45 to-transparent px-4 pb-4 pt-12">
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 px-4 pb-4 pt-12">
           <p
             className="line-clamp-3 text-left text-sm font-light leading-[1.45] sm:text-[15px]"
             style={{ color: "#D9DAE3" }}
