@@ -12,6 +12,7 @@ import {
 } from "@/lib/studio-theme";
 import { useAsciiStore } from "@/lib/store";
 import { useStudio } from "@/lib/studio-context";
+import { WindowTrafficLights } from "@/components/window-traffic-lights";
 import { cn } from "@/lib/utils";
 
 const VIDEO_PLAYBACK_HINT = "Load a video in Source Media to enable playback.";
@@ -53,12 +54,8 @@ export function PreviewStage() {
       {/* ── Header strip ─────────────────────────────────────────────── */}
       <div className="flex h-12 shrink-0 items-center justify-between gap-3 border-b border-[#E5E5E5] dark:border-zinc-800 bg-[linear-gradient(180deg,#FFFFFF_0%,#F9FAFC_100%)] dark:bg-[linear-gradient(180deg,#18181b_0%,#18181b_100%)] px-6">
         <div className="flex items-center gap-2">
-          <div className="flex items-center gap-1.5">
-            <div className="size-3 rounded-full border border-[#D6D6D6] dark:border-zinc-600 bg-white dark:bg-zinc-700 shadow-[0px_0.5px_0_rgba(0,0,0,0.06)]" />
-            <div className="size-3 rounded-full border border-[#D6D6D6] dark:border-zinc-600 bg-white dark:bg-zinc-700 shadow-[0px_0.5px_0_rgba(0,0,0,0.06)]" />
-            <div className="size-3 rounded-full border border-[#D6D6D6] dark:border-zinc-600 bg-white dark:bg-zinc-700 shadow-[0px_0.5px_0_rgba(0,0,0,0.06)]" />
-          </div>
-          <span className="ml-2 font-mono text-[10px] font-medium uppercase tracking-widest text-[#888] dark:text-zinc-500">
+          <WindowTrafficLights />
+          <span className="ml-2 font-satoshi text-[11px] font-semibold uppercase tracking-[0.12em] text-[#888] dark:text-zinc-500">
             Preview
           </span>
         </div>

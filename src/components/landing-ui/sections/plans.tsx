@@ -1,67 +1,11 @@
 "use client";
 import { Check } from "lucide-react";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { AnimatePresence, motion, type Variants } from "framer-motion";
 import { useTheme } from "@/components/theme-provider";
 import { DmOnXButton } from "@/components/landing-ui/dm-on-x-button";
 import FlowerAscii from "@/components/ascii-animations/flower";
-
-const ASCII_FREE = [
-  " ░░░░░░░░░░░░░ ",
-  "░  ▒▒▒▒▒▒▒▒▒  ░",
-  "░ ▒  ·  ·  ▒ ░",
-  "░ ▒  ASCII  ▒ ░",
-  "░ ▒  STUDIO ▒ ░",
-  "░  ▒▒▒▒▒▒▒▒▒  ░",
-  " ░░░░░░░░░░░░░ ",
-];
-
-const ASCII_PRO = [
-  "╔═══════════════╗",
-  "║  ┌─────────┐  ║",
-  "║  │ ▓▓▓▓▓▓▓ │  ║",
-  "║  │ ▓ PRO ▓ │  ║",
-  "║  │ ▓▓▓▓▓▓▓ │  ║",
-  "║  └─────────┘  ║",
-  "╚═══════════════╝",
-];
-
-const AsciiVisual = ({ tier }: { tier: "basic" | "premium" }) => {
-  const frames = tier === "premium" ? ASCII_PRO : ASCII_FREE;
-  const [activeRow, setActiveRow] = useState(0);
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
-
-  useEffect(() => {
-    intervalRef.current = setInterval(() => {
-      setActiveRow((p) => (p + 1) % frames.length);
-    }, 380);
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-    };
-  }, [frames.length]);
-
-  return (
-    <div className="h-full w-full flex items-center justify-center p-4">
-      <pre
-        className="select-none leading-relaxed text-sm font-mono"
-        style={{ color: tier === "premium" ? "#B54B00" : "#888" }}
-      >
-        {frames.map((row, i) => (
-          <div
-            key={i}
-            style={{
-              opacity: i === activeRow ? 1 : 0.45,
-              fontWeight: i === activeRow ? 700 : 400,
-              transition: "opacity 0.3s ease, font-weight 0.3s ease",
-            }}
-          >
-            {row}
-          </div>
-        ))}
-      </pre>
-    </div>
-  );
-};
+import StrokeAscii from "@/components/ascii-animations/stroke";
 
 const Plans = () => {
   const DARK_CARD_BASE = "#151518";
@@ -371,15 +315,19 @@ const Plans = () => {
                         transition: { duration: 0.05, ease: "linear" },
                       }}
                     >
-                      {activeTab === "premium" ? (
-                        <div className="flex h-full min-h-0 w-full items-center justify-center overflow-hidden rounded-xl bg-[#0B0B0D]">
-                          <div className="h-full min-h-0 w-full">
-                            <FlowerAscii />
-                          </div>
+                      <div className="flex h-full min-h-0 w-full items-center justify-center overflow-hidden rounded-xl bg-[#F5F5F5] dark:bg-[#0B0B0D]">
+                        <div className="h-full min-h-0 w-full">
+                          {activeTab === "premium" ? (
+                            <FlowerAscii
+                              backgroundColor={isDark ? "#0B0B0D" : "#F5F5F5"}
+                            />
+                          ) : (
+                            <StrokeAscii
+                              backgroundColor={isDark ? "#0B0B0D" : "#F5F5F5"}
+                            />
+                          )}
                         </div>
-                      ) : (
-                        <AsciiVisual tier={activeTab} />
-                      )}
+                      </div>
                     </motion.div>
                   </AnimatePresence>
                 </div>

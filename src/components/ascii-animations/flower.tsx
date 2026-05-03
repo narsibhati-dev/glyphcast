@@ -23,7 +23,11 @@ export const APPEARANCE = {
 export const CHARS = " .:-=+*#%@";
 export const FRAMES = FRAMES_JSON as string[];
 
-export default function Ascii() {
+export default function Ascii({
+  backgroundColor = APPEARANCE.backgroundColor,
+}: {
+  backgroundColor?: string;
+} = {}) {
   const [currentFrame, setCurrentFrame] = useState(0);
   const [scale, setScale] = useState(1);
   const [contentHeight, setContentHeight] = useState<number | null>(null);
@@ -103,7 +107,7 @@ export default function Ascii() {
     <div
       ref={containerRef}
       style={{
-        backgroundColor: APPEARANCE.backgroundColor,
+        backgroundColor,
         borderRadius: `${APPEARANCE.borderRadius}px`,
         color: APPEARANCE.textColor,
         display: "flex",

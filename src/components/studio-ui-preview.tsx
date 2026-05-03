@@ -29,7 +29,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import Fire from "./fire";
+import HeroFlower from "@/components/hero-flower";
+import { WindowTrafficLights } from "@/components/window-traffic-lights";
 import { siteConfig } from "@/lib/site";
 import {
   STUDIO_CARD_OUTLINE,
@@ -156,7 +157,7 @@ function MockTopBar() {
         </div>
       </div>
 
-      <div className="flex items-center gap-3 font-mono text-xs uppercase tracking-widest text-zinc-400 dark:text-zinc-500">
+      <div className="flex items-center gap-3 font-satoshi text-[11px] font-semibold uppercase tracking-[0.12em] text-zinc-400 dark:text-zinc-500">
         <span className="hidden md:inline">Browser-Native</span>
       </div>
     </header>
@@ -561,12 +562,8 @@ export default function StudioUiPreview() {
             {/* Header strip */}
             <div className="flex min-h-12 shrink-0 items-center gap-x-2 gap-y-2 border-b border-[#E5E5E5] dark:border-zinc-800 bg-[linear-gradient(180deg,#FFFFFF_0%,#F9FAFC_100%)] dark:bg-[linear-gradient(180deg,#18181b_0%,#18181b_100%)] px-3 py-2 sm:gap-x-3 sm:px-6 sm:py-0">
               <div className="flex shrink-0 items-center gap-2">
-                <div className="flex items-center gap-1.5">
-                  <div className="size-3 rounded-full border border-[#D6D6D6] dark:border-zinc-600 bg-white dark:bg-zinc-700 shadow-[0px_0.5px_0_rgba(0,0,0,0.06)]" />
-                  <div className="size-3 rounded-full border border-[#D6D6D6] dark:border-zinc-600 bg-white dark:bg-zinc-700 shadow-[0px_0.5px_0_rgba(0,0,0,0.06)]" />
-                  <div className="size-3 rounded-full border border-[#D6D6D6] dark:border-zinc-600 bg-white dark:bg-zinc-700 shadow-[0px_0.5px_0_rgba(0,0,0,0.06)]" />
-                </div>
-                <span className="ml-2 font-mono text-[10px] font-medium uppercase tracking-widest text-[#888] dark:text-zinc-500">
+                <WindowTrafficLights />
+                <span className="ml-2 font-satoshi text-[11px] font-semibold uppercase tracking-[0.12em] text-[#888] dark:text-zinc-500">
                   Preview
                 </span>
               </div>
@@ -602,15 +599,16 @@ export default function StudioUiPreview() {
 
             {/* Stage */}
             <div className="flex min-h-0 flex-1 flex-col bg-[#F9FAFC] dark:bg-zinc-950 p-4">
-              <div className="relative flex min-h-[420px] w-full flex-1 items-center justify-center overflow-hidden rounded-2xl border border-[#D4D4D4] dark:border-zinc-700 bg-zinc-950 shadow-[inset_0_2px_8px_rgba(0,0,0,0.35)]">
-                <div
-                  className="absolute inset-0"
-                  style={{
-                    transform: "scale(0.6)",
-                    transformOrigin: "center center",
-                  }}
-                >
-                  <Fire />
+              <div
+                className={cn(
+                  "relative flex min-h-0 w-full flex-1 items-center justify-center overflow-hidden rounded-2xl border border-[#D4D4D4] bg-white shadow-[inset_0_1px_4px_rgba(0,0,0,0.06)]",
+                  "dark:border-zinc-700 dark:bg-zinc-950 dark:shadow-[inset_0_2px_8px_rgba(0,0,0,0.35)]",
+                )}
+              >
+                <div className="flex h-full min-h-0 w-full items-center justify-center">
+                  <HeroFlower
+                    backgroundColor={isDark ? "#0B0B0D" : "#FFFFFF"}
+                  />
                 </div>
               </div>
             </div>

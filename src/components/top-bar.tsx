@@ -53,7 +53,7 @@ export function TopBar({ sidebarOpen, onToggleSidebar }: TopBarProps) {
         </Link>
       </div>
 
-      <div className="flex items-center gap-3 font-mono text-xs uppercase tracking-widest text-zinc-400 dark:text-zinc-500">
+      <div className="flex items-center gap-3 font-satoshi text-[11px] font-semibold uppercase tracking-[0.12em] text-zinc-400 dark:text-zinc-500">
         <span className="hidden md:inline">Browser-Native</span>
       </div>
     </header>

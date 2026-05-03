@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
-import FRAMES_JSON from "./frames/stroke-frames.json";
+import FRAMES_JSON from "@/data/ascii-frames/hero-flower-frames.json";
 
 export const FPS = 24;
 export const APPEARANCE = {
@@ -9,7 +9,7 @@ export const APPEARANCE = {
   borderRadius: 8,
   fontFamily:
     'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
-  fontSize: 12,
+  fontSize: 17.5,
   fontWeight: "normal",
   fontStyle: "normal",
   letterSpacing: -0.18,
@@ -20,10 +20,10 @@ export const APPEARANCE = {
   useColors: false,
   textEffectThreshold: 0,
 };
-export const CHARS = " .:-=+*#%@";
+export const CHARS = " .:░▒▓█";
 export const FRAMES = FRAMES_JSON as string[];
 
-export default function StrokeAscii({
+export default function HeroFlower({
   backgroundColor = APPEARANCE.backgroundColor,
 }: {
   backgroundColor?: string;
@@ -106,7 +106,6 @@ export default function StrokeAscii({
   if (!frames.length) return null;
 
   const effect = APPEARANCE.textEffect;
-  const needsStyles = effect !== "none";
   const text = frames[currentFrame];
 
   return (
@@ -143,22 +142,6 @@ export default function StrokeAscii({
         <div
           style={{ transform: `scale(${scale})`, transformOrigin: "top left" }}
         >
-          {needsStyles && (
-            <style
-              dangerouslySetInnerHTML={{
-                __html: `
-					@keyframes ascii-rainbow { 0% { background-position: 0%; } 100% { background-position: 200%; } }
-					@keyframes ascii-burn-neon { 0%, 100% { color: #ff3300; text-shadow: 0 0 20px #ff0000, 0 0 40px #ff3300; } 50% { color: #ffffff; text-shadow: 0 0 10px #ffffff, 0 0 20px #ffaa00; } }
-					@keyframes ascii-neural-pulse { 0% { filter: hue-rotate(0deg); } 50% { filter: hue-rotate(180deg); } 100% { filter: hue-rotate(360deg); } }
-					.ascii-effect-video { background-image: url('https://i.pinimg.com/originals/80/b7/5e/80b75eb774b647c67b2efa531b57ba13.gif'); background-size: cover; background-clip: text; -webkit-background-clip: text; color: transparent !important; }
-					.ascii-effect-gradient { background-image: linear-gradient(45deg, #ff4c4c, #b3ff4c, #4c99ff, #4cc3ff, #b34cff); background-size: 200%; background-clip: text; -webkit-background-clip: text; color: transparent !important; animation: ascii-rainbow 5s linear infinite; }
-					.ascii-effect-burn { animation: ascii-burn-neon 1.5s alternate infinite ease-in-out; }
-					.ascii-effect-neural { animation: ascii-neural-pulse 3s linear infinite; text-shadow: 0 0 10px rgba(0, 100, 255, 0.5), 0 0 20px rgba(0, 50, 255, 0.3); }
-				`,
-              }}
-            />
-          )}
-
           {APPEARANCE.showFrameCounter && (
             <div
               style={{ opacity: 0.5, fontSize: "10px", marginBottom: "8px" }}
