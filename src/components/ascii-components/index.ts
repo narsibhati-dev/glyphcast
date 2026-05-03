@@ -36,9 +36,11 @@ export interface ASCIIShowcaseEntry {
 // HOW TO ADD YOUR OWN ANIMATION
 //
 // 1. Export your animation from the Glyphcast studio (React component).
-// 2. Paste the downloaded .tsx file into this folder.
-// 3. Import its exported constants below.
-// 4. Add an entry to the ASCII_SHOWCASE array.
+// 2. Paste the downloaded .tsx into this folder (with `export const FRAMES = [...]`).
+// 3. Run `node scripts/extract-ascii-frames.mjs` (after adding the name to that script)
+//    or manually create `src/data/ascii-frames/<id>.frames.json` as a JSON string array,
+//    then replace FRAMES with `import ... from "@/data/ascii-frames/<id>.frames.json"`.
+// 4. Import FPS / FRAMES / APPEARANCE / CHARS below and add an ASCII_SHOWCASE entry.
 // ─────────────────────────────────────────────────────────────────────────────
 
 // Example — uncomment and adapt:
