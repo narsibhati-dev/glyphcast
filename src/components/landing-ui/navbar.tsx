@@ -128,17 +128,17 @@ const Navbar = () => {
                 <span className="pointer-events-none absolute -inset-1 rounded-[999px] border border-[#B54B00]/35 opacity-0 transition-opacity duration-200 group-hover/repo:opacity-100" />
               </div>
             </div>
-            <Link
-              href={siteConfig.studioPath}
-              className="min-w-0 max-w-[min(100%,11rem)] xl:max-w-none"
-            >
+            <Link href={siteConfig.studioPath} className="min-w-0 shrink-0">
               <Button
-                className="group max-w-full justify-center px-3 py-2.5 text-[13px] relative overflow-hidden transition-[padding] duration-200 hover:pr-9 xl:px-5.5 xl:py-3.5 xl:text-sm xl:hover:pr-10"
+                className="group inline-flex max-w-full min-w-0 items-center justify-center gap-2 px-3 py-2.5 text-[13px] xl:px-5.5 xl:py-3.5 xl:text-sm"
                 variant="landingBlue"
                 size="landing"
               >
                 Open studio
-                <ChevronRight className="w-4 absolute right-3 -translate-x-4 opacity-0 transition-all duration-200 group-hover:translate-x-0 group-hover:opacity-100 xl:right-4 xl:-translate-x-5" />
+                <ChevronRight
+                  className="size-4 shrink-0 transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:group-hover:translate-x-0"
+                  aria-hidden
+                />
               </Button>
             </Link>
           </div>
@@ -224,12 +224,15 @@ const Navbar = () => {
               onClick={() => setMobileMenuOpen(false)}
             >
               <Button
-                className="group w-full relative overflow-hidden transition-[padding] duration-200 hover:pr-10"
+                className="group inline-flex w-full items-center justify-center gap-2"
                 variant="landingBlue"
                 size="landing"
               >
                 Open studio
-                <ChevronRight className="w-4 absolute right-4 -translate-x-5 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-200" />
+                <ChevronRight
+                  className="size-4 shrink-0 transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:group-hover:translate-x-0"
+                  aria-hidden
+                />
               </Button>
             </Link>
           </div>

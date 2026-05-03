@@ -26,9 +26,6 @@ export function PreviewStage() {
   const isPlaying = useAsciiStore((s) => s.isPlaying);
   const setPlaying = useAsciiStore((s) => s.setPlaying);
   const setFrame = useAsciiStore((s) => s.setFrame);
-  const columns = useAsciiStore((s) => s.columns);
-  const mode = useAsciiStore((s) => s.mode);
-  const appearance = useAsciiStore((s) => s.appearance);
 
   const isVideo = source?.kind === "video" || source?.kind === "gif";
 
@@ -38,16 +35,6 @@ export function PreviewStage() {
   const toggleUITheme = () => {
     setTheme(isUIDark ? "light" : "dark");
   };
-
-  const cellWidth = appearance.fontSize * 0.6 + appearance.letterSpacing;
-  const cellHeight = appearance.fontSize * appearance.lineHeight;
-  const cellAspect = cellHeight > 0 ? cellWidth / cellHeight : 0.5;
-  const approxRows = source
-    ? Math.max(
-        1,
-        Math.round((columns * source.height * cellAspect) / source.width),
-      )
-    : 0;
 
   return (
     <div className="flex h-full flex-col overflow-hidden">
@@ -130,7 +117,7 @@ export function PreviewStage() {
       {/* ── Video scrubber ───────────────────────────────────────────── */}
       {isVideo && (
         <div className="flex shrink-0 items-center gap-4 border-t border-[#E5E5E5] dark:border-zinc-800 bg-white dark:bg-zinc-900 px-6 py-4">
-          <span className="font-mono text-[10px] uppercase tracking-widest text-[#888] dark:text-zinc-500">
+          <span className="font-satoshi text-[11px] font-semibold uppercase tracking-[0.12em] text-[#888] dark:text-zinc-500">
             Scrub
           </span>
           <Slider
@@ -147,36 +134,6 @@ export function PreviewStage() {
           </span>
         </div>
       )}
-
-      {/* ── Stats footer ─────────────────────────────────────────────── */}
-      <div className="grid shrink-0 grid-cols-2 divide-x divide-y divide-[#E5E5E5] dark:divide-zinc-800 border-t border-[#E5E5E5] dark:border-zinc-800 bg-white dark:bg-zinc-900 sm:grid-cols-4 sm:divide-y-0">
-        <StatCell
-          label="Mode"
-          value={mode.charAt(0).toUpperCase() + mode.slice(1)}
-        />
-        <StatCell
-          label="Resolution"
-          value={source ? `${source.width}×${source.height}` : ""}
-        />
-        <StatCell
-          label="Grid"
-          value={source ? `${columns}×${approxRows}` : ""}
-        />
-        <StatCell label="Frames" value={isVideo ? String(totalFrames) : ""} />
-      </div>
-    </div>
-  );
-}
-
-function StatCell({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex min-w-0 flex-col gap-1 p-4">
-      <span className="font-mono text-[10px] font-medium uppercase tracking-widest text-[#888] dark:text-zinc-500">
-        {label}
-      </span>
-      <span className="truncate font-mono text-sm font-semibold tabular-nums text-[#111] dark:text-zinc-100">
-        {value}
-      </span>
     </div>
   );
 }

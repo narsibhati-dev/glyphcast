@@ -9,9 +9,6 @@ import {
   ChevronDown,
   Film,
   Italic,
-  Moon,
-  Play,
-  Sun,
   Trash2,
   Upload,
 } from "lucide-react";
@@ -29,7 +26,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import HeroFlower from "@/components/hero-flower";
+import HeroFlower, { FRAMES as HERO_FRAMES } from "@/components/hero-flower";
 import { WindowTrafficLights } from "@/components/window-traffic-lights";
 import { siteConfig } from "@/lib/site";
 import {
@@ -46,6 +43,10 @@ import {
   STUDIO_TEXT_META,
 } from "@/lib/studio-theme";
 import { cn } from "@/lib/utils";
+
+const HERO_MOCK_FRAME_COUNT = HERO_FRAMES.length;
+const HERO_MOCK_SCRUB_MAX = Math.max(0, HERO_MOCK_FRAME_COUNT - 1);
+const HERO_MOCK_SCRUB_DEFAULT = Math.min(124, HERO_MOCK_SCRUB_MAX);
 
 const SIDEBAR_PANEL =
   "w-full shrink-0 rounded-3xl border border-[#E5E5E5] dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-xl shadow-black/6 dark:shadow-black/40 lg:w-[320px] lg:max-h-[680px] lg:overflow-y-auto [&::-webkit-scrollbar]:hidden [scrollbar-width:none]";
@@ -198,19 +199,6 @@ function MockSliderField({
   );
 }
 
-function StatCell({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="flex min-w-0 flex-col gap-1 p-4">
-      <span className="font-mono text-[10px] font-medium uppercase tracking-widest text-[#888] dark:text-zinc-500">
-        {label}
-      </span>
-      <span className="truncate font-mono text-sm font-semibold tabular-nums text-[#111] dark:text-zinc-100">
-        {value}
-      </span>
-    </div>
-  );
-}
-
 export default function StudioUiPreview() {
   const { theme } = useTheme();
   const isDark = theme === "dark";
@@ -235,7 +223,7 @@ export default function StudioUiPreview() {
       <MockTopBar />
 
       <div className="grid grid-cols-1 gap-3 p-3 md:gap-4 md:p-4 lg:grid-cols-[320px_1fr]">
-        <aside className={SIDEBAR_PANEL}>
+        <aside className={cn(SIDEBAR_PANEL, "hidden lg:block")}>
           <MockAccordion title="Source Media">
             <div className="group/dz relative w-full overflow-visible">
               <button
@@ -563,37 +551,12 @@ export default function StudioUiPreview() {
             <div className="flex min-h-12 shrink-0 items-center gap-x-2 gap-y-2 border-b border-[#E5E5E5] dark:border-zinc-800 bg-[linear-gradient(180deg,#FFFFFF_0%,#F9FAFC_100%)] dark:bg-[linear-gradient(180deg,#18181b_0%,#18181b_100%)] px-3 py-2 sm:gap-x-3 sm:px-6 sm:py-0">
               <div className="flex shrink-0 items-center gap-2">
                 <WindowTrafficLights />
-                <span className="ml-2 font-satoshi text-[11px] font-semibold uppercase tracking-[0.12em] text-[#888] dark:text-zinc-500">
-                  Preview
-                </span>
               </div>
 
-              <div className="ml-auto flex shrink-0 items-center gap-2">
-                <Button
-                  type="button"
-                  variant="landingBlue"
-                  size="sm"
-                  aria-label="Play"
-                  className="h-8 gap-2 rounded-full px-4 font-mono text-[10px] uppercase tracking-widest text-white"
-                >
-                  <Play className="size-3.5" />
-                  <span>Play</span>
-                </Button>
-                <Button
-                  type="button"
-                  variant="landingBlue"
-                  size="sm"
-                  tabIndex={-1}
-                  aria-label="Demo only — open Studio to switch theme"
-                  className="h-8 gap-2 rounded-full px-4 font-mono text-[10px] uppercase tracking-widest text-white"
-                >
-                  {isDark ? (
-                    <Sun className="size-3.5" />
-                  ) : (
-                    <Moon className="size-3.5" />
-                  )}
-                  <span>{isDark ? "Light Mode" : "Dark Mode"}</span>
-                </Button>
+              <div className="ml-auto flex shrink-0 items-center">
+                <span className="font-satoshi text-[11px] font-semibold uppercase tracking-[0.12em] text-[#888] dark:text-zinc-500">
+                  Preview
+                </span>
               </div>
             </div>
 
@@ -620,22 +583,15 @@ export default function StudioUiPreview() {
               </span>
               <Slider
                 className={cn("flex-1", STUDIO_SLIDER_CLASS)}
-                defaultValue={[124]}
+                defaultValue={[HERO_MOCK_SCRUB_DEFAULT]}
                 min={0}
-                max={239}
+                max={HERO_MOCK_SCRUB_MAX}
                 step={1}
               />
               <span className="w-24 shrink-0 text-right font-mono text-xs tabular-nums text-[#111] dark:text-zinc-100">
-                124 / 240
+                {String(HERO_MOCK_SCRUB_DEFAULT + 1).padStart(3, "0")} /{" "}
+                {String(HERO_MOCK_FRAME_COUNT).padStart(3, "0")}
               </span>
-            </div>
-
-            {/* Stats */}
-            <div className="grid shrink-0 grid-cols-2 divide-x divide-y divide-[#E5E5E5] dark:divide-zinc-800 border-t border-[#E5E5E5] dark:border-zinc-800 bg-white dark:bg-zinc-900 sm:grid-cols-4 sm:divide-y-0">
-              <StatCell label="Mode" value="Video" />
-              <StatCell label="Resolution" value="780×684" />
-              <StatCell label="Grid" value="130×72" />
-              <StatCell label="Frames" value="240" />
             </div>
           </div>
         </div>

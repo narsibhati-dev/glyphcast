@@ -169,12 +169,15 @@ const HeroSection = () => {
           <section className="mt-8 flex flex-col items-center gap-2 md:flex-row md:justify-center">
             <Link href={siteConfig.studioPath} className="inline-flex">
               <Button
-                className="group relative min-w-48 justify-center overflow-hidden transition-[padding] duration-200 hover:pr-10"
+                className="group inline-flex min-w-48 items-center justify-center gap-2"
                 variant="landingBlue"
                 size="landing"
               >
                 Open studio
-                <ChevronRight className="w-4 absolute right-4 -translate-x-5 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-200" />
+                <ChevronRight
+                  className="size-4 shrink-0 transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:group-hover:translate-x-0"
+                  aria-hidden
+                />
               </Button>
             </Link>
 

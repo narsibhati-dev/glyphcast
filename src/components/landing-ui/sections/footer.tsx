@@ -72,12 +72,15 @@ const Footer = () => {
             <div className="flex w-fit max-w-full shrink-0 flex-col items-end gap-2 self-center sm:self-end">
               <Link href={siteConfig.studioPath} className="inline-flex">
                 <Button
-                  className="group relative min-w-48 justify-center overflow-hidden transition-[padding] duration-200 hover:pr-10"
+                  className="group inline-flex min-w-48 items-center justify-center gap-2"
                   variant="landingBlue"
                   size="landing"
                 >
                   Open studio
-                  <ChevronRight className="absolute right-4 w-4 -translate-x-5 opacity-0 transition-all duration-200 group-hover:translate-x-0 group-hover:opacity-100" />
+                  <ChevronRight
+                    className="size-4 shrink-0 transition-transform duration-200 group-hover:translate-x-0.5 motion-reduce:group-hover:translate-x-0"
+                    aria-hidden
+                  />
                 </Button>
               </Link>
               <div className="group/repo relative inline-flex">
