@@ -1,7 +1,6 @@
 "use client";
 
 import Navbar from "@/components/landing-ui/navbar";
-import Bento from "@/components/landing-ui/sections/bento";
 import Features from "@/components/landing-ui/sections/features";
 import Faq from "@/components/landing-ui/sections/faq";
 import Footer from "@/components/landing-ui/sections/footer";
@@ -18,7 +17,6 @@ export function LandingShell() {
           <div className="w-full relative">
             <HeroSection />
           </div>
-          <Bento />
           <Features />
           <Pricing />
           <Faq />

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, type Variants } from "framer-motion";
-import { Zap, Settings, Download, Sparkles, ChevronRight } from "lucide-react";
+import { Settings, Download, Sparkles, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
@@ -73,11 +73,11 @@ export default function Features() {
           </span>
         </motion.h2>
 
-        <div className="grid h-auto grid-cols-1 gap-4 sm:grid-cols-12 sm:grid-rows-2 w-full mt-4">
-          {/* Card 1 */}
+        <div className="mt-4 grid h-auto w-full grid-cols-1 gap-4 sm:grid-cols-12 sm:gap-y-6">
+          {/* Card 1 — top-left; slightly narrower than 7/5 pinwheel so card 2 breathes */}
           <motion.div
             variants={itemVariants}
-            className="relative flex flex-col items-start rounded-[16px] text-left sm:col-span-7 sm:row-start-1 overflow-hidden group"
+            className="group relative flex flex-col items-start overflow-hidden rounded-[16px] text-left sm:col-span-6 sm:row-start-1 sm:col-start-1 lg:col-span-7"
             style={{
               background: "#FFF3EC",
               border: "1px solid #FFD0AC",
@@ -92,7 +92,7 @@ export default function Features() {
                   "linear-gradient(180deg, rgba(181,75,0,0.14) 0%, rgba(181,75,0,0.03) 46%, rgba(181,75,0,0.10) 100%)",
               }}
             />
-            <div className="relative z-10 w-full h-[200px] sm:h-[250px]">
+            <div className="relative z-10 h-[152px] w-full sm:h-[min(32vw,240px)] sm:min-h-[176px]">
               <VideoShowcaseReel />
             </div>
             <div className="relative z-10 flex w-full flex-col items-start px-4 pb-4 text-left sm:px-6 sm:pb-6">
@@ -109,7 +109,7 @@ export default function Features() {
           {/* Card 2 */}
           <motion.div
             variants={itemVariants}
-            className="relative flex flex-col items-start p-6 sm:p-8 rounded-[16px] text-left sm:col-span-5 sm:row-start-1 overflow-hidden group min-h-[220px]"
+            className="group relative flex min-h-[200px] flex-col items-start overflow-hidden rounded-[16px] p-6 text-left sm:col-span-6 sm:col-start-7 sm:row-start-1 sm:min-h-[220px] sm:self-stretch sm:p-8 lg:col-span-5 lg:col-start-8"
             style={{
               background: "#FFF3EC",
               border: "1px solid #FFD0AC",
@@ -129,9 +129,9 @@ export default function Features() {
                 exact aesthetic.
               </p>
             </div>
-            <div className="mt-auto pt-6 relative z-10 w-fit">
-              <div className="p-3 rounded-xl bg-white shadow-sm ring-1 ring-[#FFD0AC]">
-                <Settings className="w-6 h-6 text-[#B54B00]" />
+            <div className="relative z-10 mt-auto w-fit pt-6">
+              <div className="rounded-xl bg-white p-3 shadow-sm ring-1 ring-[#FFD0AC]">
+                <Settings className="h-6 w-6 text-[#B54B00]" />
               </div>
             </div>
           </motion.div>
@@ -139,7 +139,7 @@ export default function Features() {
           {/* Card 3 */}
           <motion.div
             variants={itemVariants}
-            className="relative flex flex-col items-start p-6 sm:p-8 rounded-[16px] text-left sm:col-span-7 sm:row-start-2 overflow-hidden group min-h-[220px]"
+            className="group relative flex min-h-[220px] flex-col items-start overflow-hidden rounded-[16px] p-6 text-left sm:col-span-7 sm:col-start-1 sm:row-start-2 sm:min-h-[260px] sm:self-stretch sm:p-8 lg:col-span-6"
             style={{
               background: "#FFF3EC",
               border: "1px solid #FFD0AC",
@@ -169,7 +169,7 @@ export default function Features() {
           {/* Card 4: Build in the open studio */}
           <motion.div
             variants={itemVariants}
-            className="relative flex flex-col justify-between overflow-hidden p-6 sm:p-8 rounded-[16px] sm:col-span-5 sm:row-start-2 min-h-[220px]"
+            className="relative flex min-h-[220px] flex-col justify-between overflow-hidden rounded-[16px] p-6 sm:col-span-5 sm:col-start-8 sm:row-start-2 sm:min-h-[240px] sm:self-stretch sm:p-8 lg:col-span-6 lg:col-start-7"
             style={{
               background:
                 "linear-gradient(135deg, #6B2800 0%, #B54B00 55%, #D96020 100%)",
