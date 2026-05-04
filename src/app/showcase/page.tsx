@@ -16,6 +16,25 @@ const DARK_CARD_RAISED = "#222228";
 /** Outer card edge — same family as fill, matches `--border` in dark theme */
 const DARK_CARD_OUTLINE = DARK_CARD_RAISED;
 
+/** Overlay copy should follow ASCII canvas luminance, not the page theme. */
+function isAsciiBackgroundDark(backgroundColor: string | undefined): boolean {
+  if (!backgroundColor || typeof backgroundColor !== "string") return true;
+  const hex = backgroundColor.replace("#", "").trim();
+  if (!(hex.length === 3 || hex.length === 6)) return true;
+  const normalized =
+    hex.length === 3
+      ? hex
+          .split("")
+          .map((c) => c + c)
+          .join("")
+      : hex;
+  const r = parseInt(normalized.slice(0, 2), 16) / 255;
+  const g = parseInt(normalized.slice(2, 4), 16) / 255;
+  const b = parseInt(normalized.slice(4, 6), 16) / 255;
+  const lum = 0.2126 * r + 0.7152 * g + 0.0722 * b;
+  return lum < 0.5;
+}
+
 /* ── Card ────────────────────────────────────────────────────────── */
 
 function ShowcaseCard({
@@ -25,6 +44,14 @@ function ShowcaseCard({
   config: ShowcaseConfig;
   isDark: boolean;
 }) {
+  const asciiCanvasDark = isAsciiBackgroundDark(
+    config.appearance.backgroundColor,
+  );
+  const overlayDescColor = asciiCanvasDark ? "#D9DAE3" : "#1f2937";
+  const overlayFade = asciiCanvasDark
+    ? "linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 100%)"
+    : "linear-gradient(to top, rgba(255,255,255,0.92) 0%, transparent 100%)";
+
   return (
     <div
       className="group relative flex h-full flex-col overflow-hidden rounded-[20px] border transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0px_16px_48px_rgba(0,0,0,0.10)]"
@@ -70,10 +97,13 @@ function ShowcaseCard({
           fitToContainer
           className="h-full w-full"
         />
-        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20 px-4 pb-4 pt-12">
+        <div
+          className="pointer-events-none absolute inset-x-0 bottom-0 z-20 px-4 pb-4 pt-12"
+          style={{ background: overlayFade }}
+        >
           <p
             className="line-clamp-3 text-left text-sm font-light leading-[1.45] sm:text-[15px]"
-            style={{ color: "#D9DAE3" }}
+            style={{ color: overlayDescColor }}
           >
             {config.description}
           </p>

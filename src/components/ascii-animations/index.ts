@@ -21,6 +21,13 @@ import {
 } from "./flower";
 
 import {
+  APPEARANCE as MemeAppearance,
+  CHARS as MemeChars,
+  FPS as MemeFps,
+  FRAMES as MemeFrames,
+} from "./meme";
+
+import {
   APPEARANCE as StrokeAppearance,
   CHARS as StrokeChars,
   FPS as StrokeFps,
@@ -79,12 +86,24 @@ export const ASCII_SHOWCASE: ASCIIShowcaseEntry[] = [
     appearance: FlowerAppearance as ASCIIAppearance,
   },
   {
+    id: "meme",
+    title: "Meme",
+    description: "ASCII meme animation.",
+    filename: "meme.tsx",
+    accentColor: "#B54B00",
+    componentName: "Meme",
+    frames: MemeFrames,
+    fps: MemeFps,
+    chars: MemeChars,
+    appearance: MemeAppearance as ASCIIAppearance,
+  },
+  {
     id: "stroke",
     title: "Stroke",
     description: "ASCII stroke animation.",
     filename: "stroke.tsx",
     accentColor: "#B54B00",
-    componentName: "Stroke",
+    componentName: "StrokeAscii",
     frames: StrokeFrames,
     fps: StrokeFps,
     chars: StrokeChars,
@@ -112,6 +131,13 @@ export {
   FPS as FLOWER_FPS,
   FRAMES as FLOWER_FRAMES,
 } from "./flower";
+
+export {
+  APPEARANCE as MEME_APPEARANCE,
+  CHARS as MEME_CHARS,
+  FPS as MEME_FPS,
+  FRAMES as MEME_FRAMES,
+} from "./meme";
 
 export {
   APPEARANCE as STROKE_APPEARANCE,
