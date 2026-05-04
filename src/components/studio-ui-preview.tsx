@@ -52,7 +52,7 @@ const SIDEBAR_PANEL =
   "w-full shrink-0 rounded-3xl border border-[#E5E5E5] dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-xl shadow-black/6 dark:shadow-black/40 lg:w-[320px] lg:max-h-[680px] lg:overflow-y-auto [&::-webkit-scrollbar]:hidden [scrollbar-width:none]";
 
 const PREVIEW_PANEL =
-  "flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden rounded-3xl border border-[#E5E5E5] dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-xl shadow-black/6 dark:shadow-black/40 lg:h-[680px]";
+  "flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden rounded-3xl border border-[#E5E5E5] dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-xl shadow-black/6 dark:shadow-black/40 max-lg:h-[min(62dvh,420px)] lg:h-[680px]";
 
 const POINTER_HINT_CLASS = cn(
   "inline-flex w-fit max-w-full shrink-0 items-center gap-2 whitespace-nowrap overflow-hidden rounded-full border border-white/25 bg-gradient-to-r from-[#8F3D0C] via-[#B54B00] to-[#C75F18] px-3 py-1.5 font-sans text-[11px] font-normal normal-case tracking-normal text-white ring-1 ring-inset ring-white/10 dark:from-[#7A350A] dark:via-[#A34400] dark:to-[#B8520F]",

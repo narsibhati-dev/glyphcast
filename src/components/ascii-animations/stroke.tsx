@@ -1,6 +1,12 @@
 "use client";
 
-import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import FRAMES_JSON from "./frames/stroke-frames.json";
 
 export const FPS = 24;
@@ -36,6 +42,7 @@ export default function StrokeAscii({
   const containerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLPreElement>(null);
   const frameIndexRef = useRef(0);
+  const measureRetryRef = useRef(0);
   const frames = FRAMES;
 
   useEffect(() => {
@@ -69,8 +76,8 @@ export default function StrokeAscii({
     return () => cancelAnimationFrame(animationId);
   }, [frames.length]);
 
-  useLayoutEffect(() => {
-    const measure = () => {
+  const measure = useCallback(() => {
+    const run = () => {
       const container = containerRef.current;
       const content = contentRef.current;
       if (!container || !content) return;
@@ -80,7 +87,16 @@ export default function StrokeAscii({
       const naturalWidth = content.scrollWidth;
       const naturalHeight = content.scrollHeight;
 
-      if (naturalWidth <= 0 || naturalHeight <= 0) return;
+      if (naturalWidth <= 0 || naturalHeight <= 0) {
+        if (measureRetryRef.current < 8) {
+          measureRetryRef.current += 1;
+          requestAnimationFrame(() => {
+            requestAnimationFrame(run);
+          });
+        }
+        return;
+      }
+      measureRetryRef.current = 0;
       if (availableWidth <= 0) return;
 
       const scaleW = availableWidth / naturalWidth;
@@ -96,12 +112,20 @@ export default function StrokeAscii({
         h: naturalHeight * newScale,
       });
     };
+    run();
+  }, []);
 
+  useLayoutEffect(() => {
     measure();
     const observer = new ResizeObserver(measure);
-    if (containerRef.current) observer.observe(containerRef.current);
+    const el = containerRef.current;
+    if (el) observer.observe(el);
     return () => observer.disconnect();
-  }, [currentFrame, frames.length]);
+  }, [measure]);
+
+  useLayoutEffect(() => {
+    measure();
+  }, [measure, currentFrame]);
 
   if (!frames.length) return null;
 

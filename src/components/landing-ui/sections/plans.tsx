@@ -278,7 +278,7 @@ const Plans = () => {
               </motion.div>
             </AnimatePresence>
           </motion.div>
-          <div className="relative self-stretch min-h-0">
+          <div className="relative min-h-0 self-stretch max-md:min-h-[min(42vh,360px)]">
             <div
               className="absolute inset-0"
               style={{
