@@ -29,12 +29,26 @@ export const APPEARANCE = {
 export const CHARS = " .:░▒▓█";
 export const FRAMES = FRAMES_JSON as string[];
 
+function clampFrameIndex(index: number, frameCount: number) {
+  if (frameCount <= 0) return 0;
+  return Math.max(0, Math.min(frameCount - 1, Math.floor(index)));
+}
+
 export default function HeroFlower({
   backgroundColor = APPEARANCE.backgroundColor,
+  controlledFrameIndex,
 }: {
   backgroundColor?: string;
+  /** When set, playback uses this 0-based index and the internal animation loop is off. */
+  controlledFrameIndex?: number;
 } = {}) {
-  const [currentFrame, setCurrentFrame] = useState(0);
+  const [internalFrame, setInternalFrame] = useState(0);
+  const runInternalPlayback = controlledFrameIndex === undefined;
+  const frames = FRAMES;
+  const displayFrame =
+    controlledFrameIndex === undefined
+      ? internalFrame
+      : clampFrameIndex(controlledFrameIndex, frames.length);
   const [scale, setScale] = useState(1);
   const [layoutSize, setLayoutSize] = useState<{ w: number; h: number } | null>(
     null,
@@ -43,7 +57,6 @@ export default function HeroFlower({
   const containerRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLPreElement>(null);
   const frameIndexRef = useRef(0);
-  const frames = FRAMES;
 
   const measure = useCallback(() => {
     const container = containerRef.current;
@@ -74,6 +87,7 @@ export default function HeroFlower({
   }, []);
 
   useEffect(() => {
+    if (!runInternalPlayback) return;
     frameIndexRef.current = 0;
     if (frames.length <= 1) return;
     let animationId: number;
@@ -93,7 +107,7 @@ export default function HeroFlower({
         const nextFrame = (frameIndexRef.current + stepCount) % frames.length;
         if (nextFrame !== frameIndexRef.current) {
           frameIndexRef.current = nextFrame;
-          setCurrentFrame(nextFrame);
+          setInternalFrame(nextFrame);
         }
       }
 
@@ -102,7 +116,7 @@ export default function HeroFlower({
 
     animationId = requestAnimationFrame(animate);
     return () => cancelAnimationFrame(animationId);
-  }, [frames.length]);
+  }, [frames.length, runInternalPlayback]);
 
   useLayoutEffect(() => {
     measure();
@@ -136,12 +150,12 @@ export default function HeroFlower({
   useEffect(() => {
     const id = requestAnimationFrame(() => measure());
     return () => cancelAnimationFrame(id);
-  }, [currentFrame, measure]);
+  }, [displayFrame, measure]);
 
   if (!frames.length) return null;
 
   const effect = APPEARANCE.textEffect;
-  const text = frames[currentFrame];
+  const text = frames[displayFrame];
 
   return (
     <div
@@ -183,7 +197,7 @@ export default function HeroFlower({
             <div
               style={{ opacity: 0.5, fontSize: "10px", marginBottom: "8px" }}
             >
-              Frame: {currentFrame + 1}/{frames.length}
+              Frame: {displayFrame + 1}/{frames.length}
             </div>
           )}
           <pre

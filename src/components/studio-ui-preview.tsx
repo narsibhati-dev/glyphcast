@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 import {
   ArrowUpRight,
   Bold,
@@ -26,7 +26,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import HeroFlower, { FRAMES as HERO_FRAMES } from "@/components/hero-flower";
+import HeroFlower, {
+  FPS,
+  FRAMES as HERO_FRAMES,
+} from "@/components/hero-flower";
 import { WindowTrafficLights } from "@/components/window-traffic-lights";
 import { BRAND_LOGO_RADIUS_CLASS, siteConfig } from "@/lib/site";
 import {
@@ -46,7 +49,6 @@ import { cn } from "@/lib/utils";
 
 const HERO_MOCK_FRAME_COUNT = HERO_FRAMES.length;
 const HERO_MOCK_SCRUB_MAX = Math.max(0, HERO_MOCK_FRAME_COUNT - 1);
-const HERO_MOCK_SCRUB_DEFAULT = Math.min(124, HERO_MOCK_SCRUB_MAX);
 
 const SIDEBAR_PANEL =
   "w-full shrink-0 rounded-3xl border border-[#E5E5E5] dark:border-zinc-800 bg-white dark:bg-zinc-900 shadow-xl shadow-black/6 dark:shadow-black/40 lg:w-[320px] lg:max-h-[680px] lg:overflow-y-auto [&::-webkit-scrollbar]:hidden [scrollbar-width:none]";
@@ -212,6 +214,35 @@ export default function StudioUiPreview() {
   const [showFrameCounter, setShowFrameCounter] = useState(false);
   const [isBold, setIsBold] = useState(false);
   const [isItalic, setIsItalic] = useState(false);
+  const [mockPreviewFrame, setMockPreviewFrame] = useState(0);
+  const heroFrameCountRef = useRef(HERO_MOCK_FRAME_COUNT);
+
+  useEffect(() => {
+    const frameCount = heroFrameCountRef.current;
+    if (frameCount <= 1) return;
+    let animationId: number;
+    let lastTime: number | null = null;
+    let accumulator = 0;
+    const frameDuration = 1000 / FPS;
+
+    const animate = (time: number) => {
+      if (lastTime === null) lastTime = time;
+      const delta = time - lastTime;
+      lastTime = time;
+      accumulator += delta;
+
+      if (accumulator >= frameDuration) {
+        const stepCount = Math.floor(accumulator / frameDuration);
+        accumulator -= stepCount * frameDuration;
+        setMockPreviewFrame((prev) => (prev + stepCount) % frameCount);
+      }
+
+      animationId = requestAnimationFrame(animate);
+    };
+
+    animationId = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(animationId);
+  }, []);
 
   return (
     <div
@@ -574,6 +605,7 @@ export default function StudioUiPreview() {
                 <div className="flex h-full min-h-0 w-full items-center justify-center">
                   <HeroFlower
                     backgroundColor={isDark ? "#0B0B0D" : "#FFFFFF"}
+                    controlledFrameIndex={mockPreviewFrame}
                   />
                 </div>
               </div>
@@ -586,13 +618,16 @@ export default function StudioUiPreview() {
               </span>
               <Slider
                 className={cn("flex-1", STUDIO_SLIDER_CLASS)}
-                defaultValue={[HERO_MOCK_SCRUB_DEFAULT]}
+                value={[mockPreviewFrame]}
                 min={0}
                 max={HERO_MOCK_SCRUB_MAX}
                 step={1}
+                onValueChange={([v]) =>
+                  v !== undefined && setMockPreviewFrame(v)
+                }
               />
               <span className="w-24 shrink-0 text-right font-mono text-xs tabular-nums text-[#111] dark:text-zinc-100">
-                {String(HERO_MOCK_SCRUB_DEFAULT + 1).padStart(3, "0")} /{" "}
+                {String(mockPreviewFrame + 1).padStart(3, "0")} /{" "}
                 {String(HERO_MOCK_FRAME_COUNT).padStart(3, "0")}
               </span>
             </div>

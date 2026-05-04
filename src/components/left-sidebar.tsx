@@ -36,11 +36,7 @@ import {
 import { ColorField } from "@/components/color-field";
 
 import { useAsciiStore, type StudioSource } from "@/lib/store";
-import {
-  ASCII_FONT_PRESETS,
-  ASCII_CHAR_PRESETS,
-  DEFAULT_ASCII_APPEARANCE,
-} from "@/lib/ascii-config";
+import { ASCII_FONT_PRESETS, ASCII_CHAR_PRESETS } from "@/lib/ascii-config";
 import {
   exportASCIIAnimationAsReactComponent,
   exportASCIIAnimationAsVideo,
@@ -471,14 +467,12 @@ function ConversionSection() {
   const invert = useAsciiStore((s) => s.invert);
   const charset = useAsciiStore((s) => s.charset);
   const charsetPresetId = useAsciiStore((s) => s.charsetPresetId);
-  const setColumns = useAsciiStore((s) => s.setColumns);
   const setThreshold = useAsciiStore((s) => s.setThreshold);
   const setInvert = useAsciiStore((s) => s.setInvert);
   const setCharset = useAsciiStore((s) => s.setCharset);
   const setCharsetPreset = useAsciiStore((s) => s.setCharsetPreset);
 
   const reset = () => {
-    setColumns(130);
     setThreshold(-12);
     setInvert(false);
     setCharsetPreset(DEFAULT_PRESET.id);
@@ -569,6 +563,7 @@ function ConversionSection() {
 function AppearanceSection() {
   const appearance = useAsciiStore((s) => s.appearance);
   const patchAppearance = useAsciiStore((s) => s.patchAppearance);
+  const resetAppearance = useAsciiStore((s) => s.resetAppearance);
 
   const isBold =
     appearance.fontWeight === "bold" ||
@@ -583,9 +578,7 @@ function AppearanceSection() {
     <AccordionSection
       title="Appearance"
       defaultOpen={true}
-      action={
-        <ResetChip onClick={() => patchAppearance(DEFAULT_ASCII_APPEARANCE)} />
-      }
+      action={<ResetChip onClick={resetAppearance} />}
     >
       <MiniDivider label="Typography" />
       <div className="space-y-2">

@@ -43,6 +43,8 @@ export interface StudioState {
   clearSource: () => void;
   /** Merge a partial update into the current appearance. */
   patchAppearance: (patch: Partial<ASCIIAppearance>) => void;
+  /** Replace appearance with defaults (Appearance section reset only). */
+  resetAppearance: () => void;
   setColumns: (n: number) => void;
   setThreshold: (n: number) => void;
   setCharset: (chars: string) => void;
@@ -107,6 +109,9 @@ export const useAsciiStore = create<StudioState>((set) => ({
   // so we do the partial merge manually here to preserve current state.
   patchAppearance: (patch) =>
     set((state) => ({ appearance: { ...state.appearance, ...patch } })),
+
+  resetAppearance: () =>
+    set(() => ({ appearance: { ...DEFAULT_ASCII_APPEARANCE } })),
 
   setColumns: (n) => set(() => ({ columns: clampInt(n, 40, 300) })),
   setThreshold: (n) => set(() => ({ threshold: clamp(n, -100, 100) })),

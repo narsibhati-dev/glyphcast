@@ -46,8 +46,8 @@ const Navbar = () => {
 
   const barSurface = scrolled
     ? isDark
-      ? "border-[#36363F]/95 bg-[#1C1C22]/88 shadow-[0_12px_48px_rgba(0,0,0,0.45)] backdrop-blur-xl"
-      : "border-black/8 bg-white/88 shadow-[0_8px_40px_rgba(0,0,0,0.09)] backdrop-blur-xl"
+      ? "border-[#36363F]/95 bg-[#1C1C22]/88 shadow-[0_4px_20px_rgba(0,0,0,0.28)] backdrop-blur-xl"
+      : "border-black/8 bg-white/88 shadow-[0_3px_16px_rgba(0,0,0,0.055)] backdrop-blur-xl"
     : "border-transparent bg-transparent shadow-none backdrop-blur-none";
 
   return (
