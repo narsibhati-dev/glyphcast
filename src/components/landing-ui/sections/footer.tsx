@@ -4,7 +4,7 @@ import { ChevronRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import { siteConfig } from "@/lib/site";
+import { BRAND_LOGO_RADIUS_CLASS, siteConfig } from "@/lib/site";
 
 const Footer = () => {
   return (
@@ -31,7 +31,7 @@ const Footer = () => {
             <Image
               src={siteConfig.logoPath}
               alt="Logo"
-              className="h-8 w-8 rounded-lg object-contain"
+              className={`h-8 w-8 object-contain ${BRAND_LOGO_RADIUS_CLASS}`}
               width={32}
               height={32}
               loading="lazy"

@@ -204,7 +204,7 @@ const Plans = () => {
           }}
         />
         <div
-          className="relative z-10 grid grid-cols-1 items-stretch gap-4 p-4 max-[920px]:gap-3 max-[920px]:p-3 md:[grid-template-columns:1fr_var(--plans-side-col)]"
+          className="relative z-10 grid grid-cols-1 items-stretch gap-4 p-4 max-[920px]:gap-3 max-[920px]:p-3 md:grid-cols-[1fr_var(--plans-side-col)]"
           style={
             {
               "--plans-side-col": `${sideColumnWidthPx}px`,

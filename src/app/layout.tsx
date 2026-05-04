@@ -79,6 +79,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
+      data-scroll-behavior="smooth"
       suppressHydrationWarning
       className={`${archivo.variable} ${jetbrainsMono.variable} ${asciiBrand.variable}`}
     >

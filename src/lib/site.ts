@@ -4,6 +4,8 @@ const repo = (
   process.env.NEXT_PUBLIC_GITHUB_REPO ?? DEFAULT_GITHUB_REPO
 ).trim();
 
+export const BRAND_LOGO_RADIUS_CLASS = "rounded-[10px] sm:rounded-[11px]";
+
 export const siteConfig = {
   productName: "Glyphcast",
   siteName: "Glyphcast",

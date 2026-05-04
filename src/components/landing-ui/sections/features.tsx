@@ -5,7 +5,7 @@ import { Settings, Download, Sparkles, ChevronRight } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { siteConfig } from "@/lib/site";
+import { BRAND_LOGO_RADIUS_CLASS, siteConfig } from "@/lib/site";
 import { BentoCardCanvasBg } from "@/components/landing-ui/bento-card-canvas-bg";
 import VideoShowcaseReel from "@/components/landing-ui/video-showcase-reel";
 
@@ -188,7 +188,7 @@ export default function Features() {
                 width={56}
                 height={56}
                 loading="lazy"
-                className="h-12 w-12 rounded-2xl object-contain ring-1 ring-white/25 shadow-md sm:h-14 sm:w-14"
+                className={`h-12 w-12 object-contain ring-1 ring-white/25 shadow-md sm:h-14 sm:w-14 ${BRAND_LOGO_RADIUS_CLASS}`}
               />
             </div>
             <div className="relative z-10 flex w-full flex-col items-start mt-auto pt-8">

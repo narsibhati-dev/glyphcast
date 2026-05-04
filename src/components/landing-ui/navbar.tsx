@@ -6,7 +6,7 @@ import React, { useEffect, useState } from "react";
 import { useTheme } from "@/components/theme-provider";
 import { Button } from "../ui/button";
 import { ChevronRight, Menu, X } from "lucide-react";
-import { siteConfig } from "@/lib/site";
+import { BRAND_LOGO_RADIUS_CLASS, siteConfig } from "@/lib/site";
 import { cn } from "@/lib/utils";
 
 const NAV_LINKS = [
@@ -72,7 +72,10 @@ const Navbar = () => {
               height={48}
               priority
               unoptimized
-              className="size-8 shrink-0 rounded-[10px] object-contain sm:size-9 sm:rounded-[11px] lg:size-11"
+              className={cn(
+                "size-8 shrink-0 object-contain sm:size-9 lg:size-11",
+                BRAND_LOGO_RADIUS_CLASS,
+              )}
             />
             <span className="[font-family:var(--font-ascii-brand)] truncate text-[14px] font-medium tracking-wide text-[#111] dark:text-zinc-100 sm:text-[15px] lg:text-lg">
               {siteConfig.productName}

@@ -114,11 +114,11 @@ export function PreviewStage() {
         </div>
       </div>
 
-      {/* ── Video scrubber ───────────────────────────────────────────── */}
+      {/* ── Video frame slider ──────────────────────────────────────── */}
       {isVideo && (
         <div className="flex shrink-0 items-center gap-4 border-t border-[#E5E5E5] dark:border-zinc-800 bg-white dark:bg-zinc-900 px-6 py-4">
           <span className="font-satoshi text-[11px] font-semibold uppercase tracking-[0.12em] text-[#888] dark:text-zinc-500">
-            Scrub
+            Frame
           </span>
           <Slider
             className={cn("flex-1", STUDIO_SLIDER_CLASS)}

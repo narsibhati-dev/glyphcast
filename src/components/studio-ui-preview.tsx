@@ -28,7 +28,7 @@ import {
 } from "@/components/ui/select";
 import HeroFlower, { FRAMES as HERO_FRAMES } from "@/components/hero-flower";
 import { WindowTrafficLights } from "@/components/window-traffic-lights";
-import { siteConfig } from "@/lib/site";
+import { BRAND_LOGO_RADIUS_CLASS, siteConfig } from "@/lib/site";
 import {
   STUDIO_CARD_OUTLINE,
   STUDIO_DROPZONE,
@@ -145,7 +145,10 @@ function MockTopBar() {
             width={32}
             height={32}
             unoptimized
-            className="h-8 w-8 object-contain rounded-lg md:h-9 md:w-9"
+            className={cn(
+              "h-8 w-8 object-contain md:h-9 md:w-9",
+              BRAND_LOGO_RADIUS_CLASS,
+            )}
           />
           <div className="flex min-w-0 items-baseline gap-1.5 sm:gap-2">
             <span className="[font-family:var(--font-ascii-brand)] text-base font-medium tracking-wide whitespace-nowrap text-[#111] dark:text-zinc-100 md:text-lg">
@@ -576,10 +579,10 @@ export default function StudioUiPreview() {
               </div>
             </div>
 
-            {/* Scrub */}
+            {/* Frame (mock video timeline) */}
             <div className="flex shrink-0 items-center gap-4 border-t border-[#E5E5E5] dark:border-zinc-800 bg-white dark:bg-zinc-900 px-6 py-4">
               <span className="font-mono text-[10px] uppercase tracking-widest text-[#888] dark:text-zinc-500">
-                Scrub
+                Frame
               </span>
               <Slider
                 className={cn("flex-1", STUDIO_SLIDER_CLASS)}
