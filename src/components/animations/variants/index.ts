@@ -21,13 +21,6 @@ import {
 } from "./flower";
 
 import {
-  APPEARANCE as MemeAppearance,
-  CHARS as MemeChars,
-  FPS as MemeFps,
-  FRAMES as MemeFrames,
-} from "./meme";
-
-import {
   APPEARANCE as MoonKnightMrKnightAppearance,
   CHARS as MoonKnightMrKnightChars,
   FPS as MoonKnightMrKnightFps,
@@ -69,6 +62,18 @@ export const ASCII_SHOWCASE: ASCIIShowcaseEntry[] = [
     appearance: CarAppearance as ASCIIAppearance,
   },
   {
+    id: "moon-knight-mr-knight",
+    title: "Moon Knight Mr Knight",
+    description: "ASCII moon-knight-mr-knight animation.",
+    filename: "moon-knight-mr-knight.tsx",
+    accentColor: "#B54B00",
+    componentName: "MoonKnightMrKnight",
+    frames: MoonKnightMrKnightFrames,
+    fps: MoonKnightMrKnightFps,
+    chars: MoonKnightMrKnightChars,
+    appearance: MoonKnightMrKnightAppearance as ASCIIAppearance,
+  },
+  {
     id: "fire",
     title: "Fire",
     description: "ASCII fire animation.",
@@ -91,30 +96,6 @@ export const ASCII_SHOWCASE: ASCIIShowcaseEntry[] = [
     fps: FlowerFps,
     chars: FlowerChars,
     appearance: FlowerAppearance as ASCIIAppearance,
-  },
-  {
-    id: "meme",
-    title: "Meme",
-    description: "ASCII meme animation.",
-    filename: "meme.tsx",
-    accentColor: "#B54B00",
-    componentName: "Meme",
-    frames: MemeFrames,
-    fps: MemeFps,
-    chars: MemeChars,
-    appearance: MemeAppearance as ASCIIAppearance,
-  },
-  {
-    id: "moon-knight-mr-knight",
-    title: "Moon Knight Mr Knight",
-    description: "ASCII moon-knight-mr-knight animation.",
-    filename: "moon-knight-mr-knight.tsx",
-    accentColor: "#B54B00",
-    componentName: "MoonKnightMrKnight",
-    frames: MoonKnightMrKnightFrames,
-    fps: MoonKnightMrKnightFps,
-    chars: MoonKnightMrKnightChars,
-    appearance: MoonKnightMrKnightAppearance as ASCIIAppearance,
   },
   {
     id: "stroke",
@@ -150,13 +131,6 @@ export {
   FPS as FLOWER_FPS,
   FRAMES as FLOWER_FRAMES,
 } from "./flower";
-
-export {
-  APPEARANCE as MEME_APPEARANCE,
-  CHARS as MEME_CHARS,
-  FPS as MEME_FPS,
-  FRAMES as MEME_FRAMES,
-} from "./meme";
 
 export {
   APPEARANCE as MOON_KNIGHT_MR_KNIGHT_APPEARANCE,
