@@ -52,7 +52,7 @@ Add your video file to `assets/site` and update this link path when ready.
 
 ## How Conversion Works
 
-Glyphcast’s conversion pipeline is implemented in `src/lib/ascii-converter.ts` and `src/lib/ascii-export.ts`.
+Glyphcast’s conversion pipeline is implemented in `src/lib/ascii/ascii-converter.ts` and `src/lib/ascii/ascii-export.ts`.
 
 1. Resolve source dimensions (`image`, `video`, or `canvas`)
 2. Downsample source to ASCII grid (`columns` x derived `rows`) on an offscreen canvas
@@ -92,13 +92,22 @@ glyphcast/
 ├── public/                    # static media, logos, preview clips
 ├── src/
 │   ├── app/
+│   │   ├── api/               # Next.js API routes (e.g. GitHub stars)
 │   │   ├── page.tsx           # landing page
 │   │   └── studio/page.tsx    # ASCII studio page
-│   ├── components/            # UI + studio + landing components
+│   ├── components/
+│   │   ├── animations/        # ASCII animations and shape variants
+│   │   ├── landing/           # Landing page sections and UI
+│   │   ├── providers/         # Global context providers (Theme, Studio)
+│   │   ├── shared/            # Reusable components
+│   │   ├── studio/            # ASCII Studio interface components
+│   │   └── ui/                # Base design system components
+│   ├── config/                # Site and SEO configurations
+│   ├── data/
+│   │   └── ascii-frames/      # JSON data for static ASCII animations
+│   ├── hooks/                 # Custom React hooks
 │   └── lib/
-│       ├── ascii-config.ts    # presets/defaults/types
-│       ├── ascii-converter.ts # source -> ASCII conversion
-│       ├── ascii-export.ts    # PNG/video/ZIP/React exports
+│       ├── ascii/             # Core ASCII conversion and export logic
 │       └── store.ts           # global studio state (Zustand)
 ├── example.env
 └── README.md
