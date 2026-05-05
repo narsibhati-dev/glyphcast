@@ -28,6 +28,13 @@ import {
 } from "./meme";
 
 import {
+  APPEARANCE as MoonKnightMrKnightAppearance,
+  CHARS as MoonKnightMrKnightChars,
+  FPS as MoonKnightMrKnightFps,
+  FRAMES as MoonKnightMrKnightFrames,
+} from "./moon-knight-mr-knight";
+
+import {
   APPEARANCE as StrokeAppearance,
   CHARS as StrokeChars,
   FPS as StrokeFps,
@@ -98,6 +105,18 @@ export const ASCII_SHOWCASE: ASCIIShowcaseEntry[] = [
     appearance: MemeAppearance as ASCIIAppearance,
   },
   {
+    id: "moon-knight-mr-knight",
+    title: "Moon Knight Mr Knight",
+    description: "ASCII moon-knight-mr-knight animation.",
+    filename: "moon-knight-mr-knight.tsx",
+    accentColor: "#B54B00",
+    componentName: "MoonKnightMrKnight",
+    frames: MoonKnightMrKnightFrames,
+    fps: MoonKnightMrKnightFps,
+    chars: MoonKnightMrKnightChars,
+    appearance: MoonKnightMrKnightAppearance as ASCIIAppearance,
+  },
+  {
     id: "stroke",
     title: "Stroke",
     description: "ASCII stroke animation.",
@@ -138,6 +157,13 @@ export {
   FPS as MEME_FPS,
   FRAMES as MEME_FRAMES,
 } from "./meme";
+
+export {
+  APPEARANCE as MOON_KNIGHT_MR_KNIGHT_APPEARANCE,
+  CHARS as MOON_KNIGHT_MR_KNIGHT_CHARS,
+  FPS as MOON_KNIGHT_MR_KNIGHT_FPS,
+  FRAMES as MOON_KNIGHT_MR_KNIGHT_FRAMES,
+} from "./moon-knight-mr-knight";
 
 export {
   APPEARANCE as STROKE_APPEARANCE,

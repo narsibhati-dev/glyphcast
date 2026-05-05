@@ -314,7 +314,6 @@ export function buildASCIIAnimationReactComponentSource({
     "",
     "\tuseEffect(() => {",
     "\t\tframeIndexRef.current = 0;",
-    "\t\tsetCurrentFrame(0);",
     "\t\tif (frames.length <= 1) return;",
     "\t\tlet animationId: number;",
     "\t\tlet lastTime: number | null = null;",
