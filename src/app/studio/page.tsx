@@ -2,15 +2,15 @@
 
 import { useEffect, useRef, useState } from "react";
 
-import { TopBar } from "@/components/top-bar";
-import { Studio } from "@/components/left-sidebar";
-import { PreviewStage } from "@/components/preview-stage";
-import { StudioProvider } from "@/lib/studio-context";
+import { TopBar } from "@/components/studio/top-bar";
+import { Studio } from "@/components/studio/left-sidebar";
+import { PreviewStage } from "@/components/studio/preview-stage";
+import { StudioProvider } from "@/components/providers/studio-context";
 import { useAsciiStore } from "@/lib/store";
-import { useKeyboardShortcuts } from "@/lib/use-keyboard-shortcuts";
+import { useKeyboardShortcuts } from "@/hooks/use-keyboard-shortcuts";
 import { cn } from "@/lib/utils";
-import { DesktopOnlyGate } from "@/components/desktop-only-gate";
-import { useTheme } from "@/components/theme-provider";
+import { DesktopOnlyGate } from "@/components/shared/desktop-only-gate";
+import { useTheme } from "@/components/providers/theme-provider";
 
 export default function StudioPage() {
   return (

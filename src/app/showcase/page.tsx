@@ -1,13 +1,13 @@
 "use client";
 
-import Navbar from "@/components/landing-ui/navbar";
-import ASCIIAnimation from "@/components/ascii-animation";
-import { useTheme } from "@/components/theme-provider";
-import { ThemeDockButton } from "@/components/theme-dock-button";
+import Navbar from "@/components/landing/navbar";
+import ASCIIAnimation from "@/components/animations/ascii-animation";
+import { useTheme } from "@/components/providers/theme-provider";
+import { ThemeDockButton } from "@/components/shared/theme-dock-button";
 import {
   ASCII_SHOWCASE,
   type ASCIIShowcaseEntry,
-} from "@/components/ascii-animations";
+} from "@/components/animations/variants";
 type ShowcaseConfig = ASCIIShowcaseEntry;
 const SHOWCASES: ShowcaseConfig[] = ASCII_SHOWCASE;
 const DARK_CARD_BASE = "#151518";

@@ -3,7 +3,7 @@ import {
   ASCII_CHAR_PRESETS,
   DEFAULT_ASCII_APPEARANCE,
   type ASCIIAppearance,
-} from "@/lib/ascii-config";
+} from "@/lib/ascii/ascii-config";
 
 export type StudioMode = "image" | "video" | "component";
 export type SourceKind = "image" | "video" | "gif";

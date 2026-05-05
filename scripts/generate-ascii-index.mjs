@@ -2,7 +2,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 const root = path.join(import.meta.dirname, "..");
-const componentsDir = path.join(root, "src/components/ascii-animations");
+const componentsDir = path.join(root, "src/components/animations/variants");
 const indexPath = path.join(componentsDir, "index.ts");
 
 function toPascalCase(value) {
@@ -97,7 +97,7 @@ const exportBlocks = entries
   )
   .join("\n\n");
 
-const source = `import type { ASCIIAppearance } from "@/lib/ascii-config";
+const source = `import type { ASCIIAppearance } from "@/lib/ascii/ascii-config";
 ${importBlocks}
 
 export interface ASCIIShowcaseEntry {

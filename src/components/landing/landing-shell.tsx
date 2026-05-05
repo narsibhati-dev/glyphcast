@@ -1,12 +1,12 @@
 "use client";
 
-import Navbar from "@/components/landing-ui/navbar";
-import Features from "@/components/landing-ui/sections/features";
-import Faq from "@/components/landing-ui/sections/faq";
-import Footer from "@/components/landing-ui/sections/footer";
-import HeroSection from "@/components/landing-ui/sections/herosection";
-import Plans from "@/components/landing-ui/sections/plans";
-import { ThemeDockButton } from "@/components/theme-dock-button";
+import Navbar from "@/components/landing/navbar";
+import Features from "@/components/landing/sections/features";
+import Faq from "@/components/landing/sections/faq";
+import Footer from "@/components/landing/sections/footer";
+import HeroSection from "@/components/landing/sections/herosection";
+import Plans from "@/components/landing/sections/plans";
+import { ThemeDockButton } from "@/components/shared/theme-dock-button";
 
 export function LandingShell() {
   return (
