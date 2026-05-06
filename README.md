@@ -21,7 +21,7 @@ The studio supports:
 
 ## Project Preview
 
-![Glyphcast hero section](./assets/site/hero-section.webp)
+![Glyphcast hero section](./assets/site/glyphcast.webp)
 ![Glyphcast dashboard](./assets/site/dashboard.webp)
 
 <table>
@@ -166,6 +166,16 @@ bun run format
 - Large files and high frame counts increase export time and memory usage.
 - The 30 MB upload cap is intentional so users cannot upload oversized videos/assets that degrade in-browser conversion performance.
 - Browser permissions can block clipboard access.
+
+## Star History
+
+<a href="https://www.star-history.com/?repos=narsibhati-dev%2Fglyphcast&type=date&legend=top-left">
+ <picture>
+   <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/chart?repos=narsibhati-dev/glyphcast&type=date&theme=dark&legend=top-left" />
+   <source media="(prefers-color-scheme: light)" srcset="https://api.star-history.com/chart?repos=narsibhati-dev/glyphcast&type=date&legend=top-left" />
+   <img alt="Star History Chart" src="https://api.star-history.com/chart?repos=narsibhati-dev/glyphcast&type=date&legend=top-left" />
+ </picture>
+</a>
 
 ## Links
 
