@@ -70,7 +70,8 @@ const Navbar = () => {
               alt={`${siteConfig.productName} home`}
               width={48}
               height={48}
-              priority
+              loading="eager"
+              fetchPriority="low"
               unoptimized
               className={cn(
                 "size-8 shrink-0 object-contain sm:size-9 lg:size-11",

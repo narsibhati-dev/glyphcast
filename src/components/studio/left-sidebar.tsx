@@ -62,7 +62,7 @@ import {
   STUDIO_TEXT_LABEL,
   STUDIO_TEXT_META,
 } from "@/lib/studio-theme";
-import { cn } from "@/lib/utils";
+import { cn, formControlSlug } from "@/lib/utils";
 
 /* ─────────────────────────────────────────────────────────────────────────── */
 /* Layout primitives                                                           */
@@ -178,6 +178,7 @@ function ColorSwatchRow({
 
 function SliderField({
   label,
+  name,
   value,
   min,
   max,
@@ -186,6 +187,8 @@ function SliderField({
   display,
 }: {
   label: string;
+  /** Radix Slider hidden input; required for autofill / DevTools "id or name" audits. */
+  name?: string;
   value: number;
   min: number;
   max: number;
@@ -193,6 +196,7 @@ function SliderField({
   onChange: (v: number) => void;
   display?: string;
 }) {
+  const fieldName = name ?? `studio-${formControlSlug(label)}`;
   return (
     <div className="space-y-2 py-1">
       <div className="flex items-center justify-between">
@@ -203,6 +207,7 @@ function SliderField({
       </div>
       <Slider
         className={STUDIO_SLIDER_CLASS}
+        name={fieldName}
         min={min}
         max={max}
         step={step}
@@ -281,7 +286,12 @@ function SourceSection() {
           isDragActive && "border-[#B54B00] bg-[#FFF5ED]/90",
         )}
       >
-        <input {...getInputProps()} />
+        <input
+          {...getInputProps({
+            id: "studio-source-upload",
+            name: "studio-source-media",
+          })}
+        />
         <Upload className="h-3.5 w-3.5 shrink-0 text-[#B54B00]/80" />
         <div className="space-y-1">
           <p className="font-sans text-xs font-semibold text-[#111] dark:text-zinc-100">
@@ -418,6 +428,8 @@ function BackgroundCanvasSection({
               </svg>
             </button>
             <input
+              id="studio-canvas-columns"
+              name="studio-canvas-columns"
               type="number"
               className="h-8 w-full min-w-0 bg-transparent text-center font-mono text-xs tabular-nums text-[#111] dark:text-zinc-100 outline-none [appearance:textfield] [&::-webkit-inner-spin-button]:hidden [&::-webkit-outer-spin-button]:hidden"
               value={columns}
@@ -446,6 +458,8 @@ function BackgroundCanvasSection({
         <div className="space-y-1.5">
           <FieldLabel>Height (Rows)</FieldLabel>
           <Input
+            id="studio-canvas-rows-display"
+            name="studio-canvas-rows-display"
             type="text"
             readOnly
             className={STUDIO_FIELD_READONLY_MUTED}
@@ -512,6 +526,7 @@ function ConversionSection() {
           </p>
         </div>
         <Select
+          name="studio-conversion-charset-preset"
           value={charsetPresetId ?? "__custom__"}
           onValueChange={(id) => {
             if (id !== "__custom__") setCharsetPreset(id);
@@ -543,6 +558,8 @@ function ConversionSection() {
           </SelectContent>
         </Select>
         <Input
+          id="studio-conversion-charset"
+          name="studio-conversion-charset"
           value={charset}
           onChange={(e) => setCharset(e.target.value)}
           spellCheck={false}
@@ -587,6 +604,7 @@ function AppearanceSection() {
       <div className="space-y-2">
         <FieldLabel>Font Family</FieldLabel>
         <Select
+          name="studio-appearance-font-family"
           value={fontId}
           onValueChange={(id) => {
             const preset = ASCII_FONT_PRESETS.find((f) => f.id === id);

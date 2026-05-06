@@ -9,6 +9,7 @@
     "lint": "eslint",
     "generate:ascii-index": "node scripts/generate-ascii-index.mjs",
     "format": "prettier --write .",
+    "lint:fix": "bun lint && bun format",
     "prepare": "husky"
   },
   "dependencies": {

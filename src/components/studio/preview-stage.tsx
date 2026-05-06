@@ -121,6 +121,7 @@ export function PreviewStage() {
             Frame
           </span>
           <Slider
+            name="studio-video-frame-index"
             className={cn("flex-1", STUDIO_SLIDER_CLASS)}
             value={[currentFrame]}
             min={0}

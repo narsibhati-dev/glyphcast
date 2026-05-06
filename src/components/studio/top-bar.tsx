@@ -38,7 +38,8 @@ export function TopBar({ sidebarOpen, onToggleSidebar }: TopBarProps) {
             alt="Logo"
             width={36}
             height={36}
-            priority
+            loading="eager"
+            fetchPriority="low"
             unoptimized
             className={cn(
               "h-8 w-8 object-contain md:h-9 md:w-9",

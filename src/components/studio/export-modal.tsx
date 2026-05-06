@@ -185,6 +185,8 @@ export function ExportModal({ open, onClose }: ExportModalProps) {
                   Art name
                 </span>
                 <Input
+                  id="studio-export-art-name"
+                  name="studio-export-art-name"
                   placeholder="art name (optional)"
                   value={exportFilename}
                   onChange={(e) => setExportFilename(e.target.value)}

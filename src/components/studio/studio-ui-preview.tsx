@@ -45,7 +45,7 @@ import {
   STUDIO_TEXT_LABEL,
   STUDIO_TEXT_META,
 } from "@/lib/studio-theme";
-import { cn } from "@/lib/utils";
+import { cn, formControlSlug } from "@/lib/utils";
 
 const HERO_MOCK_FRAME_COUNT = HERO_FRAMES.length;
 const HERO_MOCK_SCRUB_MAX = Math.max(0, HERO_MOCK_FRAME_COUNT - 1);
@@ -185,6 +185,7 @@ function MockSliderField({
   step: number;
   display?: string;
 }) {
+  const fieldName = `landing-studio-${formControlSlug(label)}`;
   return (
     <div className="space-y-1.5">
       <div className="flex items-center justify-between">
@@ -194,6 +195,7 @@ function MockSliderField({
         </span>
       </div>
       <Slider
+        name={fieldName}
         className={STUDIO_SLIDER_CLASS}
         defaultValue={[value]}
         max={max}
@@ -371,6 +373,8 @@ export default function StudioUiPreview() {
                     </svg>
                   </span>
                   <input
+                    id="landing-studio-canvas-columns"
+                    name="landing-studio-canvas-columns"
                     type="text"
                     readOnly
                     className="h-8 w-full min-w-0 bg-transparent text-center font-mono text-xs tabular-nums text-[#111] dark:text-zinc-100 outline-none"
@@ -391,6 +395,8 @@ export default function StudioUiPreview() {
               <div className="space-y-1.5">
                 <FieldLabel>Height (Rows)</FieldLabel>
                 <Input
+                  id="landing-studio-canvas-rows-display"
+                  name="landing-studio-canvas-rows-display"
                   type="text"
                   readOnly
                   className={STUDIO_FIELD_READONLY_MUTED}
@@ -425,7 +431,10 @@ export default function StudioUiPreview() {
                   color (set under Appearance).
                 </p>
               </div>
-              <Select defaultValue="terminal">
+              <Select
+                name="landing-studio-conversion-charset-preset"
+                defaultValue="terminal"
+              >
                 <SelectTrigger className={cn(STUDIO_FIELD_CLASS, "font-sans")}>
                   <SelectValue placeholder="Select preset…" />
                 </SelectTrigger>
@@ -444,6 +453,8 @@ export default function StudioUiPreview() {
                 </SelectContent>
               </Select>
               <Input
+                id="landing-studio-conversion-charset"
+                name="landing-studio-conversion-charset"
                 readOnly
                 spellCheck={false}
                 autoComplete="off"
@@ -464,7 +475,10 @@ export default function StudioUiPreview() {
             <MiniDivider label="Typography" />
             <div className="space-y-2">
               <FieldLabel>Font Family</FieldLabel>
-              <Select defaultValue="jetbrains-mono">
+              <Select
+                name="landing-studio-appearance-font-family"
+                defaultValue="jetbrains-mono"
+              >
                 <SelectTrigger className={cn(STUDIO_FIELD_CLASS, "font-sans")}>
                   <SelectValue />
                 </SelectTrigger>
@@ -617,6 +631,7 @@ export default function StudioUiPreview() {
                 Frame
               </span>
               <Slider
+                name="landing-studio-preview-frame-index"
                 className={cn("flex-1", STUDIO_SLIDER_CLASS)}
                 value={[mockPreviewFrame]}
                 min={0}

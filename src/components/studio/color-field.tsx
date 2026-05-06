@@ -7,6 +7,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
+import { formControlSlug } from "@/lib/utils";
 
 interface ColorFieldProps {
   label: string;
@@ -16,6 +17,7 @@ interface ColorFieldProps {
 }
 
 export function ColorField({ label, value, onChange, asRow }: ColorFieldProps) {
+  const hexFieldId = `studio-color-${formControlSlug(label)}`;
   const trigger = (
     <button
       type="button"
@@ -60,6 +62,8 @@ export function ColorField({ label, value, onChange, asRow }: ColorFieldProps) {
         <PopoverContent align="end" className="flex w-auto flex-col gap-3 p-3">
           <HexColorPicker color={value} onChange={onChange} />
           <Input
+            id={hexFieldId}
+            name={hexFieldId}
             value={value}
             onChange={(e) => onChange(normalizeHex(e.target.value))}
             spellCheck={false}
@@ -81,6 +85,8 @@ export function ColorField({ label, value, onChange, asRow }: ColorFieldProps) {
         <PopoverContent align="end" className="flex w-auto flex-col gap-3 p-3">
           <HexColorPicker color={value} onChange={onChange} />
           <Input
+            id={hexFieldId}
+            name={hexFieldId}
             value={value}
             onChange={(e) => onChange(normalizeHex(e.target.value))}
             spellCheck={false}
