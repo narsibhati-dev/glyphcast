@@ -7,6 +7,16 @@
 <p align="center">Convert videos into ASCII sequences.</p>
 <p align="center">Browser-native ASCII studio for image, GIF, and video workflows.</p>
 
+<p align="center">
+  <a href="https://peerlist.io/narsibhati31/project/glyphcast" target="_blank" rel="noreferrer">
+    <img src="https://peerlist.io/api/v1/projects/embed/PRJH8OENNOBNB8QQG3DRKRBNBDKJJB?showUpvote=true&theme=dark" alt="Glyphcast" style="height: 54px; width: auto;" />
+  </a>
+  &nbsp;
+  <a href="https://www.producthunt.com/products/glyphcast?embed=true&utm_source=badge-featured&utm_medium=badge&utm_campaign=badge-glyphcast" target="_blank" rel="noopener noreferrer">
+    <img alt="Glyphcast - Convert Videos into ASCII  Sequences | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1150427&theme=light&t=1779169623504" style="height: 54px; width: auto;" />
+  </a>
+</p>
+
 ## About The Project
 
 Glyphcast is an interactive studio that converts visual media into animated ASCII output.  
