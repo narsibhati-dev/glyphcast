@@ -20,6 +20,7 @@ type ASCIIVideoExportParams = {
   ) => Promise<void>;
   onProgress?: (pct: number) => void;
   onStage?: (label: string) => void;
+  signal?: AbortSignal;
 };
 
 type ASCIIComponentExportParams = {
@@ -49,7 +50,9 @@ export async function exportASCIIAnimationAsVideo({
   streamFrames,
   onProgress,
   onStage,
+  signal,
 }: ASCIIVideoExportParams) {
+  throwIfAborted(signal);
   if (typeof MediaRecorder === "undefined") {
     throw new Error(
       "This browser does not support MediaRecorder video export.",
@@ -80,6 +83,7 @@ export async function exportASCIIAnimationAsVideo({
   let yOffset = 0;
 
   await streamFrames(async (text, colors, frameIndex, frameTotal) => {
+    throwIfAborted(signal);
     if (frameIndex === 0) {
       metrics = measureFrames(context, [text], exportAppearance);
       const sourceAspect = sourceWidth / sourceHeight;
@@ -92,7 +96,10 @@ export async function exportASCIIAnimationAsVideo({
     }
     collectedFrames.push({ text, colors });
     onProgress?.(Math.round((frameIndex / frameTotal) * 55));
-  });
+  }, signal);
+
+  // Do not encode and download frames collected before cancellation.
+  throwIfAborted(signal);
 
   if (collectedFrames.length === 0 || !metrics) {
     throw new Error("No frames were captured — load a file first.");
@@ -131,6 +138,7 @@ export async function exportASCIIAnimationAsVideo({
 
   try {
     for (let i = 0; i < total; i++) {
+      throwIfAborted(signal);
       const { text, colors } = collectedFrames[i];
       drawFrame({
         appearance: exportAppearance,
@@ -149,19 +157,22 @@ export async function exportASCIIAnimationAsVideo({
 
       const targetMs = (i + 1) * frameDuration;
       const remaining = targetMs - (performance.now() - loopStart);
-      if (remaining > 0) await wait(remaining);
+      if (remaining > 0) await wait(remaining, signal);
 
       onProgress?.(55 + Math.round((i / total) * 40));
     }
 
     onStage?.("Finalizing");
     onProgress?.(97);
-    await wait(frameDuration);
+    await wait(frameDuration, signal);
+    throwIfAborted(signal);
     recorder.stop();
     const blob = await blobPromise;
+    throwIfAborted(signal);
     onProgress?.(100);
     downloadBlob(blob, `${sanitizeFileStem(fileName)}.${extension}`);
   } finally {
+    if (recorder.state !== "inactive") recorder.stop();
     captureStream.getTracks().forEach((track) => track.stop());
   }
 }
@@ -787,8 +798,37 @@ function toPascalCase(value: string) {
   return /^[A-Z]/.test(joined) ? joined : `Ascii${joined}`;
 }
 
-function wait(duration: number) {
-  return new Promise<void>((resolve) => {
-    window.setTimeout(resolve, duration);
+function throwIfAborted(signal?: AbortSignal): void {
+  if (!signal?.aborted) return;
+  throw signal.reason instanceof Error
+    ? signal.reason
+    : new DOMException("The operation was aborted.", "AbortError");
+}
+
+function wait(duration: number, signal?: AbortSignal): Promise<void> {
+  return new Promise<void>((resolve, reject) => {
+    throwIfAborted(signal);
+
+    const timer = window.setTimeout(done, duration);
+    signal?.addEventListener("abort", abort, { once: true });
+
+    function cleanup() {
+      window.clearTimeout(timer);
+      signal?.removeEventListener("abort", abort);
+    }
+
+    function done() {
+      cleanup();
+      resolve();
+    }
+
+    function abort() {
+      cleanup();
+      reject(
+        signal?.reason instanceof Error
+          ? signal.reason
+          : new DOMException("The operation was aborted.", "AbortError"),
+      );
+    }
   });
 }
