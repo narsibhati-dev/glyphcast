@@ -372,6 +372,7 @@ export function AsciiCanvas({ ref, className }: AsciiCanvasProps) {
         return canvas.toDataURL("image/png");
       },
       getFrames: async (onProgress, signal) => {
+        signal?.throwIfAborted();
         if (!source) return [];
         const opts = {
           columns,
@@ -384,6 +385,7 @@ export function AsciiCanvas({ ref, className }: AsciiCanvasProps) {
 
         if (source.kind === "image") {
           const result = imageToAscii(source.el as HTMLImageElement, opts);
+          signal?.throwIfAborted();
           onProgress?.(1, 1);
           return [useColors ? result : { ...result, colors: undefined }];
         }
@@ -398,7 +400,7 @@ export function AsciiCanvas({ ref, className }: AsciiCanvasProps) {
           const exportCtx = exportCanvas.getContext("2d")!;
           const results: ImageToAsciiResult[] = [];
           for (let f = 0; f < total; f++) {
-            if (signal?.aborted) break;
+            signal?.throwIfAborted();
             exportCtx.clearRect(0, 0, source.width, source.height);
             exportCtx.drawImage(frames[f].canvas, 0, 0);
             const result = imageToAscii(exportCanvas, opts);
@@ -416,7 +418,7 @@ export function AsciiCanvas({ ref, className }: AsciiCanvasProps) {
         const results: ImageToAsciiResult[] = [];
         try {
           for (let f = 0; f < total; f++) {
-            if (signal?.aborted) break;
+            signal?.throwIfAborted();
             const t = (f / total) * (video.duration || 1);
             await seekVideo(video, t);
             const result = imageToAscii(video, opts);
@@ -455,7 +457,7 @@ export function AsciiCanvas({ ref, className }: AsciiCanvasProps) {
           exportCanvas.height = source.height;
           const exportCtx = exportCanvas.getContext("2d")!;
           for (let f = 0; f < total; f++) {
-            if (signal?.aborted) break;
+            signal?.throwIfAborted();
             exportCtx.clearRect(0, 0, source.width, source.height);
             exportCtx.drawImage(frames[f].canvas, 0, 0);
             const result = imageToAscii(exportCanvas, opts);
@@ -470,7 +472,7 @@ export function AsciiCanvas({ ref, className }: AsciiCanvasProps) {
         const total = Math.max(1, totalFrames);
         try {
           for (let f = 0; f < total; f++) {
-            if (signal?.aborted) break;
+            signal?.throwIfAborted();
             const t = (f / total) * (video.duration || 1);
             await seekVideo(video, t);
             const result = imageToAscii(video, opts);

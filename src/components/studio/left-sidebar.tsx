@@ -864,6 +864,7 @@ export function ExportSection() {
         sourceHeight: source.height,
         onStage: setExportStage,
         onProgress: setProgress,
+        signal: ctrl.signal,
         streamFrames: (onFrame, signal) => {
           if (!canvasRef.current) return Promise.resolve();
           return canvasRef.current.streamFrames(
@@ -909,11 +910,15 @@ export function ExportSection() {
     setIsExporting(true);
     setProgress(0);
     setExportStage("Capturing frames");
+    const ctrl = new AbortController();
+    abortRef.current = ctrl;
     try {
       const results =
-        (await canvasRef.current?.getFrames((done, total) =>
-          setProgress(Math.round((done / total) * 80)),
+        (await canvasRef.current?.getFrames(
+          (done, total) => setProgress(Math.round((done / total) * 80)),
+          ctrl.signal,
         )) ?? [];
+      ctrl.signal.throwIfAborted();
       if (!results.length) {
         toast.error("No frames captured");
         return;
@@ -934,11 +939,16 @@ export function ExportSection() {
       });
     } catch (err) {
       dismissProgressToast();
-      toast.error(err instanceof Error ? err.message : "Failed");
+      if (err instanceof DOMException && err.name === "AbortError") {
+        toast.message("Export cancelled", { position: "bottom-center" });
+      } else {
+        toast.error(err instanceof Error ? err.message : "Failed");
+      }
     } finally {
       setIsExporting(false);
       setProgress(0);
       setExportStage("");
+      abortRef.current = null;
     }
   }, [
     appearance,
