@@ -30,7 +30,9 @@ interface StarsErrorPayload {
 
 // --- Route handler -----------------------------------------------------------
 
-export const revalidate = REVALIDATE_SECONDS;
+// Next.js requires route segment config values to be literals; it can't
+// resolve a reference to the REVALIDATE_SECONDS const above.
+export const revalidate = 3600;
 
 export async function GET(): Promise<
   NextResponse<StarsSuccessPayload | StarsErrorPayload>
